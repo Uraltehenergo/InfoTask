@@ -1,0 +1,1 @@
+%~dp0\RegAsm.exe %~dp0..\Controller\VersionSynch.dll /tlb VersionSynch.tlb /codebase VersionSynch

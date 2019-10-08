@@ -1,0 +1,71 @@
+﻿<Window x:Class="Controller.SetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:BaseLibrary="clr-namespace:BaseLibrary;assembly=BaseLibrary" 
+        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}"
+        Height="611" Width="754" Closing="Window_Closing" Loaded="Window_Loaded" Icon="/Controller;component/Images/ITicon32.M.ico">
+    <Window.Resources>
+        <BaseLibrary:BoolToVisibleConverter x:Key="BoolToVisibleConverter"></BaseLibrary:BoolToVisibleConverter>
+    </Window.Resources>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="26" />
+            <RowDefinition Height="145*" />
+            <RowDefinition Height="24" />
+            <RowDefinition Height="178*" />
+            <RowDefinition Height="123" />
+        </Grid.RowDefinitions>
+        <TextBox BorderThickness="1" FontSize="14" Height="24" HorizontalAlignment="Stretch" Margin="142,2,0,0" Name="Comment" Text="{Binding Path=Comment}" VerticalAlignment="Top" FontFamily="Arial" TabIndex="5" />
+        <TextBlock FontSize="14" FontWeight="Normal" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="textBlock10" Text="Описание потока" TextAlignment="Left" VerticalAlignment="Top" Width="135" FontFamily="Arial" Grid.RowSpan="2" />
+        <TextBlock FontSize="14" FontWeight="Normal" Grid.Row="1" Height="20" HorizontalAlignment="Left" Margin="6,0,0,1" Name="textBlock4" Text="Проекты" VerticalAlignment="Bottom" Width="84" FontFamily="Arial" />
+        <Button Click="butAddFile_Click" Content="Добавить проект" Grid.Row="1" Height="25" HorizontalAlignment="Left" Margin="142,1,0,0" Name="butAddFile" VerticalAlignment="Top" Width="134" FontSize="13" FontFamily="Arial" TabIndex="10" />
+        <Button Click="butDel_Click" Content="Удалить проект" Grid.Row="1" Height="25" HorizontalAlignment="Left" Margin="278,1,0,0" Name="butDel" VerticalAlignment="Top" Width="114" FontSize="13" FontFamily="Arial" TabIndex="15" />
+        <Button Click="butExport_Click" Content="В другой поток" Grid.Row="1" Height="25" HorizontalAlignment="Left" Margin="394,1,0,0" Name="butExport" VerticalAlignment="Top" Width="119" FontSize="13" FontFamily="Arial" TabIndex="20" />
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" Grid.Row="2" HeadersVisibility="Column" HorizontalAlignment="Stretch" ItemsSource="{Binding Path=ProjectsList}" Name="gridProjects" VerticalAlignment="Stretch" SelectionChanged="gridProjects_SelectionChanged" FontSize="14" CanUserDeleteRows="False" FontFamily="Arial" RowHeight="22" TabIndex="25">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Path=Otm}" CanUserResize="False" CanUserSort="True" Header="Вкл." Width="40" />
+                <DataGridTextColumn Binding="{Binding Path=Code, Mode=OneWay}" CanUserReorder="False" Header="Код" IsReadOnly="True" Width="170" />
+                <DataGridTextColumn Binding="{Binding Path=Name, Mode=OneWay}" CanUserReorder="False" Header="Имя" IsReadOnly="True" Width="200" />
+                <DataGridTextColumn Binding="{Binding Path=File, Mode=OneWay}" CanUserReorder="False" Header="Файл" IsReadOnly="True" Width="250" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock FontSize="13" Grid.Row="3" Grid.RowSpan="2" Height="23" HorizontalAlignment="Left" Margin="117,4,0,0" Name="textBlock5" Text="изменение свойств двойным щелчком" VerticalAlignment="Top" FontFamily="Arial" />
+        <TextBlock FontSize="14" FontWeight="Normal" Grid.Row="3" Height="20" HorizontalAlignment="Left" Margin="6,0,0,0" Name="textBlock9" Text="Провайдеры" VerticalAlignment="Bottom" Width="97" FontFamily="Arial" />
+        <DataGrid AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserResizeRows="False" Grid.Row="4" HeadersVisibility="Column" HorizontalAlignment="Stretch" ItemsSource="{Binding Path=Providers}" MouseDoubleClick="gridProviders_MouseDoubleClick" Name="gridProviders" SelectionMode="Single" SelectionUnit="Cell" VerticalAlignment="Stretch" FontSize="14" IsSynchronizedWithCurrentItem="True" RowHeight="22" FontFamily="Arial" TabIndex="35">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Path=Otm}" CanUserResize="True" CanUserSort="True" Header="Вкл." Width="40" />
+                <DataGridTextColumn Binding="{Binding Path=Type, Mode=OneWay}" CanUserResize="True" Header="Тип" IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Binding="{Binding Path=NameStr, Mode=OneWay}" CanUserResize="True" Header="Имя" IsReadOnly="True" Width="170" />
+                <DataGridTemplateColumn Header="Код" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" HorizontalAlignment="Stretch" ItemsSource="{Binding Path=Codes}" Padding="0" SelectionChanged="ComboBox_SelectionChanged" Text="{Binding Path=Code, Mode=TwoWay}" VerticalAlignment="Stretch" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Path=Inf, Mode=OneWay}" CanUserResize="True" Header="Свойства" IsReadOnly="True" Width="300" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="5" HorizontalAlignment="Left" Margin="29,1,0,0" Name="grid1" VerticalAlignment="Top" Width="626" Height="88">
+            <CheckBox Content="Включить периодический расчет" FontFamily="Arial" FontSize="13" FontWeight="Bold" Height="26" HorizontalAlignment="Left" IsChecked="{Binding Path=IsPeriodic}" Margin="9,3,0,0" Name="IsPeriodic" VerticalAlignment="Top" TabIndex="40" />
+            <TextBox BorderThickness="1" Height="25" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=IsPeriodic, Path=IsChecked}" Margin="130,29,0,0" Name="PeriodLength" Text="{Binding Path=PeriodLength}" Width="40" FontSize="14" VerticalAlignment="Top" FontFamily="Arial" TabIndex="45" />
+            <TextBlock Height="39" HorizontalAlignment="Left" Margin="6,22,0,0" Name="textBlock1" Text="Длина цикла расчета (мин)" TextAlignment="Right" VerticalAlignment="Top" Width="112" FontSize="14" TextWrapping="Wrap" FontFamily="Arial" />
+            <TextBlock Height="20" HorizontalAlignment="Left" Margin="294,5,0,0" Name="textBlock2" Text="Возможная задержка источников (мин)" TextAlignment="Right" VerticalAlignment="Top" Width="264" FontSize="14" FontFamily="Arial" />
+            <TextBox BorderThickness="1" Height="25" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=IsPeriodic, Path=IsChecked}" Margin="564,3,0,0" Name="textBox1" Text="{Binding Path=SourcesLate}" VerticalAlignment="Top" Width="40" FontSize="14" FontFamily="Arial" TabIndex="50" />
+            <TextBlock Height="23" HorizontalAlignment="Left" Margin="214,59,0,0" Name="textBlock3" Text="Ожидание повтороного расчета после ошибки (мин)" TextAlignment="Right" VerticalAlignment="Top" Width="344" FontSize="14" FontFamily="Arial" />
+            <TextBox BorderThickness="1" Height="25" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=IsPeriodic, Path=IsChecked}" Margin="564,59,0,0" Name="textBox2" Text="{Binding Path=TimeAfterError}" VerticalAlignment="Top" Width="40" FontSize="14" FontFamily="Arial" TabIndex="55" />
+            <TextBlock FontFamily="Arial" FontSize="14" Height="20" HorizontalAlignment="Left" Margin="236,33,0,0" Name="textBlock6" Text="Время ожидания в режиме выравнивания (мин)" TextAlignment="Right" VerticalAlignment="Top" Width="322" />
+            <TextBox BorderThickness="1" FontFamily="Arial" FontSize="14" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=IsPeriodic, Path=IsChecked}" Margin="564,31,0,0" Name="textBox3" TabIndex="50" Text="{Binding Path=RushWaitingTime}" Width="40" Height="25" VerticalAlignment="Top" />
+        </Grid>
+        <Grid Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="29,88,0,0" Name="grid2" Width="626" Height="31">
+            <CheckBox Content="Включить имитацию" FontFamily="Arial" FontSize="13" FontWeight="Bold" Height="20" HorizontalAlignment="Left" IsChecked="{Binding Path=IsImit}" Margin="9,5,0,0" Name="IsImit" VerticalAlignment="Top" TabIndex="60" />
+            <ComboBox Height="23" HorizontalAlignment="Left" Margin="198,2,0,0" Name="ImitMode" Text="{Binding Path=ImitModeStr}" IsEnabled="{Binding ElementName=IsImit, Path=IsChecked}" VerticalAlignment="Top" Width="286" FontSize="14" FontFamily="Arial" TabIndex="65">
+                <ComboBoxItem Content="Отсчитывать от начала периода" />
+                <ComboBoxItem Content="Отсчитывать от начала часа" />
+                <ComboBoxItem Content="Отсчитывать от начала суток" IsSelected="True" />
+            </ComboBox>
+        </Grid>
+        <Button Content="Очистка архива" Grid.Row="3" Height="24" HorizontalAlignment="Left" Margin="550,0,0,0" Name="ButClearArchive" VerticalAlignment="Top" Width="141" Click="ButClearArchive_Click" FontFamily="Arial" FontSize="13" TabIndex="30" />
+    </Grid>
+</Window>

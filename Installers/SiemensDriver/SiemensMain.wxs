@@ -1,0 +1,145 @@
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="InfoTask. Siemens" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{B0EC42E4-996E-4DE5-89F1-478C1DAADDAF}"?>
+  <?define UpgradeCode="{7D4FD2D7-1EFA-4336-83D8-0A044916D63A}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Siemens providers" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="Ovation.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--Program files-->
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Providers" Name="Providers">
+          <Directory Id="PSiemens" Name="Siemens"/>
+        </Directory>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+
+      <!--System folder-->
+      <Directory Id="SystemFolder" Name="SystemFolder" />
+    </Directory>
+
+    <DirectoryRef Id="PSiemens">
+      <Component Id="SiemensPart1" Guid="{22AAC814-62EA-473E-8816-08963CC0BAE9}">
+        <File Id="SimaticCommaccde" Name="SimaticComm.accde"
+											Source="..\..\Release\Providers\Siemens\SimaticComm.accde"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="SiemensPart2" Guid="{5C4D8238-BC6C-4121-B033-096684A4CBE2}">
+        <File Id="SimaticCommDataaccdb" Name="SimaticCommData.accdb"
+											Source="..\..\Release\Providers\Siemens\SimaticCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="SiemensPart3" Guid="{C2564805-BBCB-4540-94F4-F7D2B7DBA7DA}">
+        <File Id="ProvidersSiemensdll" Name="ProvidersSiemens.dll"
+                      Source="..\..\Release\Providers\Siemens\ProvidersSiemens.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersSiemenspdb" Name="ProvidersSiemens.pdb"
+                      Source="..\..\Release\Providers\Siemens\ProvidersSiemens.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Siemens\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Siemens\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Siemens\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Siemens\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <!--<DirectoryRef Id="SystemFolder">
+      <Component Id="OPCDAAuto" Guid="{B75CB667-61FA-44F5-B0CC-C046ADF86778}" Permanent="yes">
+        <File Id="OPCDAAutodll" Name="OPCDAAuto.dll"  SelfRegCost="0"
+								Source="..\..\Release\Providers\Siemens\OPCDAAuto.dll"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef> -->
+
+    <!--<DirectoryRef Id="Docs">
+      <Component Id="DocsSiemens" Guid="{F0F9A3C2-ED08-4630-99C0-32B4EC8FBCA3}">
+        <File Id="InfoTaskPR05Siemenspdf" Name="InfoTask-PR.05-Siemens.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.05-Siemens.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef> -->
+
+    <Feature Id="ProductFeature" Title="InstallSiemensDriver" Level="1">
+      <Feature Id='SiemensFeature' Title="Simatic" Description='Драйвер' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+        <ComponentRef Id="SiemensPart1"/>
+        <ComponentRef Id="SiemensPart2"/>
+        <ComponentRef Id="SiemensPart3"/>
+        <!--<ComponentRef Id="OPCDAAuto"/>
+        <ComponentRef Id="DocsOvation"/>-->
+      </Feature>
+      <!--<Condition Level="0">
+				<![CDATA[INSTALLLOCATION = ""]]>
+			</Condition>-->
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillS"
+			Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillSU"
+			Return="check" />
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

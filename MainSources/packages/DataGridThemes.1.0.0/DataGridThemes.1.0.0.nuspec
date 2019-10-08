@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>DataGridThemes</id>
+    <version>1.0.0</version>
+    <title>DataGridThemes</title>
+    <authors>TWebster</authors>
+    <owners>TWebster</owners>
+    <licenseUrl>http://datagridthemesfromsl.codeplex.com/license</licenseUrl>
+    <projectUrl>http://datagridthemesfromsl.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Collection of WPF themes for DataGrid control plus some additional attached behavior. Together they make DataGrid look and behave like in Silverlight. Available themes: ExpressionLight, ExpressionDark, WhistlerBlue, etc.</description>
+    <summary>Collection of WPF themes for DataGrid control.</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>wpf theme expression toolkit</tags>
+    <references>
+      <reference file="DataGridThemes.dll" />
+    </references>
+  </metadata>
+</package>

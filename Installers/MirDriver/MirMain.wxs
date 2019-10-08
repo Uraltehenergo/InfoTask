@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="InfoTask. Mir" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{17E5812C-77B1-4892-ABAE-4D791A9D1B04}"?>
+  <?define UpgradeCode="{609ECD93-C3BE-48A1-8BFB-2A99FDBB2AD0}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+           Language="1049" Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Mir providers" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="Mir.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+                      Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence" 
+                      Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--Program files-->
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Providers" Name="Providers">
+          <Directory Id="PMir" Name="Mir"/>
+        </Directory>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+
+      <!--System folder-->
+      <Directory Id="SystemFolder" Name="SystemFolder" />
+    </Directory>
+
+    <DirectoryRef Id="PMir">
+      <Component Id="MirPart1" Guid="{486CCF52-E1F1-40FB-A03C-50C6948C94BA}">
+        <File Id="MirCommaccde" Name="MirComm.accde"
+                      Source="..\..\Release\Providers\Mir\MirComm.accde"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="MirPart2" Guid="{2FAB030A-AF8B-4007-9ABF-036102202899}">
+        <File Id="MirCommDataaccdb" Name="MirCommData.accdb"
+                     Source="..\..\Release\Providers\Mir\MirCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="MirPart3" Guid="{D3954213-D92C-469E-8A74-A7EBD72C8C24}">
+        <File Id="ProvidersMirdll" Name="ProvidersMir.dll"
+                      Source="..\..\Release\Providers\Mir\ProvidersMir.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersMirpdb" Name="ProvidersMir.pdb"
+                      Source="..\..\Release\Providers\Mir\ProvidersMir.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Mir\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Mir\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Mir\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Mir\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsMir" Guid="{A7B5533D-F6DB-4681-9005-672CCF2E8DBC}">
+        <File Id="InfoTaskPR06Mirpdf" Name="InfoTask-PR.06-Mir.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.06-Mir.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="ProductFeature" Title="InstallMirDriver" Level="1">
+      <Feature Id='MirFeature' Title="MirFeature" Description='Драйвер' Display='expand' Level="1"
+             ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+        <ComponentRef Id="MirPart1"/>
+        <ComponentRef Id="MirPart2"/>
+        <ComponentRef Id="MirPart3"/>
+        <ComponentRef Id="DocsMir"/>
+      </Feature>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillMir"
+      Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillMirU"
+      Return="check" />
+
+    <CustomAction Id="KillProcessId"
+     BinaryKey="ConfigFillB"
+      DllEntry="KillProcess"
+      Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+              />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

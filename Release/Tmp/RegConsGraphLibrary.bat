@@ -1,0 +1,1 @@
+%~dp0\RegAsm.exe %~dp0..\Graphics\ConsGraphLibrary.dll /tlb ConsGraphLibrary.tlb /codebase ConsGraphLibrary

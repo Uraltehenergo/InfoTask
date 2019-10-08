@@ -1,0 +1,8 @@
+﻿<Window x:Class="TuneService.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Отладочные сервисы InfoTask" Height="206" Width="359">
+    <Grid>
+        <Button Content="Проверка записи в OPC" Height="50" HorizontalAlignment="Left" Margin="5,12,0,0" Name="ButOPC" VerticalAlignment="Top" Width="329" FontSize="14" FontWeight="Normal" Click="ButOPC_Click" />
+    </Grid>
+</Window>

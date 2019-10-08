@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="InfoTask. Wonderware" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{4C9063EA-A4AC-43E2-A83D-EABE2EB6F9E5}"?>
+  <?define UpgradeCode="{E9D58F49-12B9-41AB-92FD-0342E2CBA840}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+           Language="1049" Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Wonderware providers" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="Wonderware.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+                      Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+                      Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--Program files-->
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Providers" Name="Providers">
+          <Directory Id="PWonderware" Name="Wonderware"/>
+        </Directory>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+
+      <!--System folder-->
+      <Directory Id="SystemFolder" Name="SystemFolder" />
+    </Directory>
+
+    <DirectoryRef Id="PWonderware">
+      <Component Id="WonderwarePart1" Guid="{DBF66416-C83C-472A-A760-4ECCC4E7F9A2}">
+        <File Id="WonderwareCommaccde" Name="WonderwareComm.accde"
+                      Source="..\..\Release\Providers\Wonderware\WonderwareComm.accde"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="WonderwarePart2" Guid="{91911783-F8D4-4A10-AD4D-50B5A177DB30}">
+        <File Id="WonderwareCommDataaccdb" Name="WonderwareCommData.accdb"
+                     Source="..\..\Release\Providers\Wonderware\WonderwareCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="WonderwarePart3" Guid="{44761324-4667-4F63-88F2-FC8C2F3F76E9}">
+        <File Id="ProvidersWonderwaredll" Name="ProvidersWonderware.dll"
+                      Source="..\..\Release\Providers\Wonderware\ProvidersWonderware.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersWonderwarepdb" Name="ProvidersWonderware.pdb"
+                      Source="..\..\Release\Providers\Wonderware\ProvidersWonderware.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Wonderware\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Wonderware\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Wonderware\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Wonderware\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsWonder" Guid="{916D8C7F-E5C9-404A-8C91-9C5211C2FC1A}">
+        <File Id="InfoTaskPR04Wonderwarepdf" Name="InfoTask-PR.04-Wonderware.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.04-Wonderware.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="SystemFolder">
+      <Component Id="OPCDAAuto" Guid="{878207B8-20D7-47D0-848F-DD9EA65AFDBD}" Permanent="yes">
+        <File Id="OPCDAAutodll" Name="OPCDAAuto.dll"
+                Source="..\..\Release\Providers\Ovation\OPCDAAuto.dll"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="ProductFeature" Title="InstallWonderwareDriver" Level="1">
+      <Feature Id='WonderwareFeature' Title="WonderwareFeature" Description='Драйвер' Display='expand' Level="1"
+             ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+        <ComponentRef Id="WonderwarePart1"/>
+        <ComponentRef Id="WonderwarePart2"/>
+        <ComponentRef Id="WonderwarePart3"/>
+        <ComponentRef Id="OPCDAAuto"/>
+        <ComponentRef Id="DocsWonder"/>
+      </Feature>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+    
+    <UI Id='MyWixUI_Mondo'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+    
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+    
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillW"
+      Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillWU"
+      Return="check" />
+
+    <CustomAction Id="KillProcessId"
+     BinaryKey="ConfigFillB"
+      DllEntry="KillProcess"
+      Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+              />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

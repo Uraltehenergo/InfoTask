@@ -1,0 +1,1 @@
+%~dp0\RegAsm.exe %~dp0..\Tablik\Tablik.dll /tlb Tablik.tlb /codebase Tablik

@@ -1,0 +1,23 @@
+﻿<Window x:Class="TuneService.OpcWriteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Запись в OPC сервер" Height="302" Width="529" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Grid Height="262">
+        <ComboBox Height="23" Margin="160,12,0,0" Name="OpcServerName" VerticalAlignment="Top" FontSize="14" IsEditable="True" HorizontalAlignment="Left" Width="341" />
+        <Label Content="Имя OPC-сервера" Height="28" HorizontalAlignment="Left" Margin="28,12,0,0" Name="label1" VerticalAlignment="Top" FontSize="14" />
+        <Label Content="Имя рабочей станции" FontSize="14" Height="28" HorizontalAlignment="Left" Margin="2,37,0,0" Name="label2" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="160,41,0,0" Name="Node" VerticalAlignment="Top" Width="341" FontSize="14" />
+        <Label Content="OPC Tag" FontSize="14" Height="28" HorizontalAlignment="Left" Margin="23,122,0,0" Name="label3" VerticalAlignment="Top" />
+        <TextBox FontSize="14" Height="23" HorizontalAlignment="Left" Margin="93,126,0,0" Name="OpcTag" VerticalAlignment="Top" Width="408" />
+        <ComboBox FontSize="14" Height="23" HorizontalAlignment="Left" IsEditable="True" Margin="93,156,0,0" Name="DataType" VerticalAlignment="Top" Width="186">
+            <ComboBoxItem Content="действ" />
+            <ComboBoxItem Content="целое" />
+            <ComboBoxItem Content="логич" />
+        </ComboBox>
+        <Label Content="Тип данных" FontSize="14" Height="28" HorizontalAlignment="Left" Margin="2,151,0,0" Name="label4" VerticalAlignment="Top" />
+        <TextBox FontSize="14" Height="23" HorizontalAlignment="Left" Margin="93,185,0,0" Name="TagValue" VerticalAlignment="Top" Width="186" />
+        <Label Content="Значение" FontSize="14" Height="28" HorizontalAlignment="Left" Margin="15,181,0,0" Name="label5" VerticalAlignment="Top" />
+        <Button Content="Записать значение" Height="36" HorizontalAlignment="Left" Margin="160,214,0,0" Name="ButWriteOpc" VerticalAlignment="Top" Width="181" FontSize="14" Click="ButWriteOpc_Click" />
+        <Button Content="Проверка соединения" FontSize="14" Height="36" HorizontalAlignment="Left" Margin="160,70,0,0" Name="ButCheck" VerticalAlignment="Top" Width="181" Click="ButCheck_Click" />
+    </Grid>
+</Window>

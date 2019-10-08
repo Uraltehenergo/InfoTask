@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="InfoTask. Logika" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{42ADB167-E054-4A78-BE39-B9957D3033BF}"?>
+  <?define UpgradeCode="{A8D44A6F-BC6A-4671-81C7-66AAAF559FCE}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+           Language="1049" Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Logika providers" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="Logika.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+                      Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+                      Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--Program files-->
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Providers" Name="Providers">
+          <Directory Id="PLogika" Name="Logika"/>
+        </Directory>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+
+      <!--System folder-->
+      <Directory Id="SystemFolder" Name="SystemFolder" />
+    </Directory>
+
+    <DirectoryRef Id="PLogika">
+      <Component Id="LogikaPart1" Guid="{7E7FB1BB-E066-49B4-970C-70D33D28B227}">
+        <File Id="PrologCommaccde" Name="PrologComm.accde"
+                      Source="..\..\Release\Providers\Logika\PrologComm.accde"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="LogikaPart2" Guid="{D2A1371A-C8DC-4910-896F-F2E7491370B2}">
+        <File Id="PrologCommDataaccdb" Name="PrologCommData.accdb"
+                     Source="..\..\Release\Providers\Logika\PrologCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="LogikaPart3" Guid="{9B67F893-434C-467E-B47D-D06C4A95CDB3}">
+        <File Id="ProvidersLogikadll" Name="ProvidersLogika.dll"
+                      Source="..\..\Release\Providers\Logika\ProvidersLogika.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersLogikapdb" Name="ProvidersLogika.pdb"
+                      Source="..\..\Release\Providers\Logika\ProvidersLogika.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Logika\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Logika\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Logika\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Logika\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsProlog" Guid="{EEC71348-0324-42DC-8C1F-3C2928CD9240}">
+        <File Id="InfoTaskPR07Prologpdf" Name="InfoTask-PR.07-Prolog.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.07-Prolog.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="ProductFeature" Title="InstallLogikaDriver" Level="1">
+      <Feature Id='LogikaFeature' Title="LogikaFeature" Description='Драйвер' Display='expand' Level="1"
+             ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+        <ComponentRef Id="LogikaPart1"/>
+        <ComponentRef Id="LogikaPart2"/>
+        <ComponentRef Id="LogikaPart3"/>
+        <ComponentRef Id="DocsProlog"/>
+      </Feature>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillLogika"
+      Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillLogikaU"
+      Return="check" />
+
+    <CustomAction Id="KillProcessId"
+     BinaryKey="ConfigFillB"
+      DllEntry="KillProcess"
+      Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+              />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

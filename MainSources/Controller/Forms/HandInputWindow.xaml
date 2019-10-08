@@ -1,0 +1,53 @@
+﻿<Window x:Class="Controller.HandInputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:BaseLibrary="clr-namespace:BaseLibrary;assembly=BaseLibrary" Title="Параметры ручного ввода" Height="455" Width="1281" Closing="Window_Closing" Icon="/Controller;component/Images/ITicon32.M.ico">
+    <Window.Resources>
+        <BaseLibrary:BoolToBlackConverter x:Key="BoolToBlackConverter"></BaseLibrary:BoolToBlackConverter>        
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>            
+            <RowDefinition Height="30" />
+            <RowDefinition Height="425*" />
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GridInputParams}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserReorderColumns="True" CanUserResizeColumns="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="gridParams" HeadersVisibility="Column" CanUserDeleteRows="False" FontFamily="Arial" RowHeight="20" MouseDoubleClick="gridParams_MouseDoubleClick" TabIndex="35">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=Project, Mode=OneWay}" Header="Проект" IsReadOnly="True" Width="110" />
+                <DataGridTextColumn Binding="{Binding Path=Code, Mode=OneWay}" Header="Код" IsReadOnly="True" Width="130" />
+                <DataGridTextColumn Binding="{Binding Path=Name, Mode=OneWay}" Header="Имя" IsReadOnly="True" Width="150" />
+                <DataGridTextColumn Binding="{Binding Path=DataType, Mode=OneWay}" Header="Тип" IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Binding="{Binding Path=Units, Mode=OneWay}" Header="Ед. изм." IsReadOnly="True" Width="70" />
+                <DataGridTextColumn Binding="{Binding Path=Time, Mode=TwoWay}" Header="Новое время" IsReadOnly="False" Width="140" FontWeight="Bold" />
+                <DataGridTextColumn Binding="{Binding Path=Value, Mode=TwoWay}" Header="Новое значение" IsReadOnly="False" Width="110" FontWeight="Bold" />
+                <!--<DataGridTemplateColumn Header="Время отсчета" IsReadOnly="False" Width="160">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                            <TextBox Text="{Binding Path=Time, Mode = TwoWay}" FontWeight="Bold" Foreground="{Binding Path=TimeCorrect, Converter={StaticResource BoolToBlackConverter}}"/>
+                        </DataTemplate> </DataGridTemplateColumn.CellTemplate>                            
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Новое значение" IsReadOnly="False" Width="110">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=Value, Mode = TwoWay}" FontWeight="Bold" Foreground="{Binding Path=ValueCorrect, Converter={StaticResource BoolToBlackConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>/!-->
+                <DataGridTextColumn Binding="{Binding Path=OldTime, Mode=OneWay}" Header="Старое время" IsReadOnly="True" Width="140" />
+                <DataGridTextColumn Binding="{Binding Path=OldValue, Mode=OneWay}" Header="Старое значение" IsReadOnly="True" Width="110" />
+                <DataGridTextColumn Binding="{Binding Path=DefaultValue, Mode=OneWay}" Header="По умолчанию" IsReadOnly="True" Width="110" />
+                <DataGridTextColumn Binding="{Binding Path=Task, Mode=OneWay}" Header="Задача" IsReadOnly="True" Width="120" />
+                <DataGridTextColumn Binding="{Binding Path=Comment, Mode=OneWay}" Header="Комментарий" IsReadOnly="True" Width="100" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Label Content="Проект" Height="24" HorizontalAlignment="Left" Name="label1" VerticalAlignment="Top" Width="55" Margin="3,7,0,0" Grid.RowSpan="2" FontFamily="Arial" />
+        <ComboBox ItemsSource="{Binding Path=ProjectsForFilter}" Height="23" HorizontalAlignment="Left" Margin="49,3,0,0" Name="FilterProject" VerticalAlignment="Top" Width="153" Background="#FFADFFF3" Text="&lt;Все&gt;" IsEditable="True" FontFamily="Arial" TabIndex="5" />
+        <Label Content="Код" Height="24" HorizontalAlignment="Left" Margin="208,7,0,0" Name="label2" VerticalAlignment="Top" Width="34" Grid.RowSpan="2" FontFamily="Arial" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="233,3,0,0" Name="FilterCode" VerticalAlignment="Top" Width="148" Background="#FFADFFF3" AutoWordSelection="True" BorderThickness="1" BorderBrush="#FF707070" FontFamily="Arial" TabIndex="10" />
+        <Label Content="Имя" Height="24" HorizontalAlignment="Left" Margin="385,7,0,0" Name="label3" VerticalAlignment="Top" Width="34" Grid.RowSpan="2" FontFamily="Arial" />
+        <TextBox AutoWordSelection="True" Background="#FFADFFF3" BorderBrush="#FF707070" BorderThickness="1" Height="23" HorizontalAlignment="Left" Margin="415,3,0,0" Name="FilterName" VerticalAlignment="Top" Width="148" FontFamily="Arial" TabIndex="15" />
+        <Label Content="Задача" Height="24" HorizontalAlignment="Left" Margin="569,7,0,0" Name="label4" VerticalAlignment="Top" Width="56" Grid.RowSpan="2" FontFamily="Arial" />
+        <ComboBox ItemsSource="{Binding Path=TasksForFilter}" Background="#FFADFFF3" Height="23" HorizontalAlignment="Left" Margin="613,3,0,0" Name="FilterTask" VerticalAlignment="Top" Width="136" Text="&lt;Все&gt;" IsEditable="True" FontFamily="Arial" TabIndex="20" />
+        <Label Content="Тип" Height="24" HorizontalAlignment="Left" Margin="755,7,0,0" Name="label" VerticalAlignment="Top" Width="37" Grid.RowSpan="2" FontFamily="Arial" />
+        <ComboBox ItemsSource="{Binding Path=DataTypesForFilter}" Background="#FFADFFF3" Height="23" HorizontalAlignment="Left" Margin="785,3,0,0" Name="FilterDataType" VerticalAlignment="Top" Width="75" Text="&lt;Все&gt;" IsEditable="True" FontFamily="Arial" TabIndex="25" />
+        <Button Content="Фильтр" Height="23" Margin="866,3,0,0" Name="butFilter" VerticalAlignment="Top" Click="butFilter_Click" HorizontalAlignment="Left" Width="54" FontFamily="Arial" TabIndex="30" />
+    </Grid>
+</Window>

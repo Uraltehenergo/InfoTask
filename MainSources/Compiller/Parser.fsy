@@ -1,0 +1,164 @@
+﻿%{
+
+open Ast
+
+%}
+
+// The start token becomes a parser function in the compiled code:
+%start start
+
+// These are the terminal tokens of the grammar along with the types of
+// the data carried by each token:
+%token <Token> INT TIME REAL STRING
+%token <Token> IDENT
+%token <Token> SIGNAL
+%token <Token> OPER6 OPER5 OPER4 OPER3 OPER2 OPER1
+%token <Token> NOT MINUS
+%token <Token> ASSIGN
+%token <Token> OP VOID PREV
+%token <Token> LPAREN RPAREN
+%token <Token> DOT COMMA COLON 
+%token <Token> LFIGURE RFIGURE
+%token <Token> BEGINEXPR BEGINPARAM
+%token EOF
+%token <Token> IF WHILE FOR
+%token <Token> DATATYPE
+%token <Token> TASK GETSIGNAL
+
+// This is the type of the data produced by a successful reduction of the 'start'
+// symbol:
+%type < Ast.FullProg > start
+%%
+
+// These are the rules of the grammar along with the F# code of the 
+// actions executed as rules are reduced.  In this case the actions 
+// produce data using F# data construction terms.
+start: FullProg { FullProg($1) }
+
+FullProg:
+	| ProgVariant EOF			{$1}
+
+ProgVariant:
+	| BEGINEXPR Prog EOF					{ GetProg($2) }
+	| BEGINPARAM ProgP EOF				{ GetProgP($2) }
+
+//Выражение для списка параметров
+ProgP:
+	| ParamP											{ ParamP($1) }
+	| ParamP COMMA ProgP						{ GetListP($1, $3) }
+
+ParamP:
+	| ClassP IDENT											{ ParamClassP($1, $2) }
+	| ArgP														{ ParamArgP($1) }	
+	| ArgP ASSIGN Const								{ ParamArgDefaultP($1, $3)}	
+	| ArgP GETSIGNAL LPAREN SignalsListP RPAREN		{ParamSignalP($1, $3, $4)}
+
+SignalsListP:
+	| ArgP													{ SignalArgP($1) }	
+	| ArgP COMMA SignalsListP					{ SignalsListArgP($1, $3) }	
+	
+ArgP:
+	| IDENT												{ ArgIdentP($1) }
+	| DATATYPE IDENT								{ TypeIdentP($1, $2) }
+
+ClassP:
+	| IDENT										{ ClassNameP($1) }
+	| IDENT DOT ClassP						{ GetClassP($1, $3) }				
+
+//Расчетное выражение
+Prog:
+	| VoidProg                                  { VoidProg($1) }
+	| ValueProg							    	{ ValueProg($1) }
+
+ValueProg:
+	| Expr                           { Expr($1) }
+	| VoidProg COLON Expr            { GetValueProg($1, $3)}
+
+VoidProg:
+	| VoidExpr                       { VoidExpr($1)}
+	| VoidProg COLON VoidExpr        { GetVoidExpr($1, $3)}
+
+VoidExpr:
+	| VOID													   	{ Void($1)}
+	| IDENT ASSIGN Expr				              { Assign($1, $2, $3) }
+	| IDENT LFIGURE Expr RFIGURE ASSIGN Expr				              { AssignArr($1, $3, $5, $6) }
+	| IF LPAREN IfVoidList RPAREN 		 	      { IfVoid($1, $3) }	
+	| WHILE	LPAREN Expr COMMA VoidProg RPAREN			     { While($1, $3, $5) }    
+	| FOR LPAREN IDENT COMMA Expr COMMA VoidProg RPAREN     { For($1, $3, $5, $7) }    
+
+Expr:	
+	| Expr OPER1 Term1			{ ApplyOper1($1, $2, $3)  }        	
+	| Term1								{ Term1($1) }   
+Term1:
+	| Term1 OPER2 Term2		{ ApplyOper2($1, $2, $3)  }        
+	| NOT Term1						{ ApplyNot($1, $2)}
+	| Term2							    { Term2($1) }
+Term2:
+	| Term2 OPER3 Term3		{ ApplyOper3($1, $2, $3)  }        
+	| Term3							    { Term3($1) }
+Term3:
+	| Term3 OPER4 Term4		{ ApplyOper4($1, $2, $3)  }        
+	| Term3 MINUS Term4		{ ApplyMinus($1, $2, $3)  }    
+	| Term4							    { Term4($1) }
+Term4:
+	| Term4 OPER5 Term5		{ ApplyOper5($1, $2, $3)  }        
+	| Term5							    { Term5($1) }
+Term5:
+	| Term5 OPER6 Term		    { ApplyOper6($1, $2, $3)  }        
+	| Term								    { Term($1) }
+
+Term:
+	| Const								    { Const($1) }	
+	| SIGNAL							{ Signal($1) }
+	| LPAREN Expr RPAREN	    { ParenExpr($2) }	
+	| MINUS Term					{ ApplyMinusUn($1, $2)}
+	| PREV LPAREN PrevChain COMMA ParamList RPAREN    	{ PrevExpr($1, $3, $5) }
+	| IF LPAREN IfValueList RPAREN					    { IfValue($1, $3) }
+	|TASK LPAREN STRING RPAREN    {Task($1, $3)}
+	| FunExpr LFIGURE Expr RFIGURE	    { GetArr($1, $3) }
+	| FunExpr DOT MetExpr		    { GetMetExpr ($1, $3) }
+	| FunExpr							    { FunExpr($1) }			
+
+Const:
+	| INT								{ Int($1) }
+	| TIME								{ Time($1) }
+	| REAL								{ Real($1) }
+	| STRING							{ Str($1) }
+
+PrevChain:
+	| IDENT										{ GetPrevParam($1) }
+	| PrevChain DOT IDENT 				{ GetPrevChain($1, $3) }
+
+FunExpr:
+	| FunName													{ FunName($1) }
+	| FunName LPAREN RPAREN						{ FunName($1) }
+	| FunName LPAREN ParamList RPAREN		{ GetFun($1, $3)}	
+	| GETSIGNAL LPAREN Expr COMMA Expr RPAREN  { GetSignal($1, $3, $5)}
+
+FunName:
+	| IDENT					{ Func($1) }
+	| DATATYPE			{ FunType($1) }
+	| OP					        { Op($1) }	
+
+MetExpr:
+	| MetName													{ MetName($1) }
+	| MetName LPAREN RPAREN						{ MetName($1) }
+	| MetName LPAREN ParamList RPAREN		{ GetMet($1, $3)}	
+
+MetName:
+	| IDENT					{ Met($1) }	
+
+ParamList:
+	| Expr									    { Param($1) }
+	| Expr COMMA ParamList		{ GetParamList($1, $3) }
+	
+IfVoidList:                                           
+	| Expr COMMA VoidProg                                              { GetIf($1, $3)}
+	| Expr COMMA VoidProg COMMA VoidProg                { GetIfElse($1, $3, $5)}
+	| Expr COMMA VoidProg COMMA IfVoidList                 { GetIfList($1, $3, $5)}
+	
+IfValueList:
+	| Expr COMMA ValueProg                                             { GetIfValue($1, $3)}
+	| Expr COMMA ValueProg COMMA ValueProg              { GetIfElseValue($1, $3, $5)}
+	| Expr COMMA ValueProg COMMA IfValueList               { GetIfListValue($1, $3, $5)}
+

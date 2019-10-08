@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define Version = "1.3.5.0" ?>
+<?define ProductName="InfoTask. Reporter" ?>
+<?define Manufacturer="InfoTask"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)"
+					UpgradeCode="{D13E06C5-FE36-4AAD-B5F9-A5B90AC6760D}" >
+
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+			<bal:WixStandardBootstrapperApplication SuppressOptionsUI="yes" LicenseFile="License.rtf" LocalizationFile="..\KernelBootstrapper\RtfThemeRu.wxl"/>
+		</BootstrapperApplicationRef>
+		<WixVariable Id="WixStdbaLicenseUrl" Value="" />
+
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\14.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2010" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\12.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2007" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\15.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2013" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\16.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2016" />
+
+		<bal:Condition Message="Необходимо установить Microsoft Office">IsExcel2010 OR IsExcel2007 OR IsExcel2013 OR IsExcel2016</bal:Condition>
+
+		<Chain>
+			<PackageGroupRef Id="VstoR" />
+
+			<RollbackBoundary />
+
+			<MsiPackage
+				Id="Setup"
+				DisplayInternalUI="yes"
+				Compressed="yes"
+				SourceFile="ReporterSetup.msi"
+				ForcePerMachine="yes"
+				Vital="yes">
+			</MsiPackage>
+
+		</Chain>
+	</Bundle>
+</Wix>

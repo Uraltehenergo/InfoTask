@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="POvation">
+            <Directory Id="dirF900FDE21AEB6667E1AEEC8659CF5D57" Name="Ovation" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="OvFiles">
+            <Component Id="cmpD5F68EB569F05C8DBB940DBB9894DB9A" Directory="dirF900FDE21AEB6667E1AEEC8659CF5D57" Guid="{3E9BB9AD-5644-485D-8E8E-C036C53D72C2}">
+                <File Id="filB6985A19143418C19A1FC200F7299C38" KeyPath="yes" Source="SourceDir\OvationHistorianComm.accdb" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF900FDE21AEB6667E1AEEC8659CF5D57" />
+    </Fragment>
+</Wix>

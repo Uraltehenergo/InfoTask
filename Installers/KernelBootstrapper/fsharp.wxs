@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\FSharp\2.0\Runtime\v2.0\Install" Value="InstallSuccess" Variable="FSharp2Exists" />
+		<!--<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\FSharp\2.0\Runtime\v2.0_1049\Install" Value="InstallSuccess" Variable="FSharp2RusExists" /> -->
+		<util:RegistrySearch Root="HKLM" Key="Software\Microsoft\.NETFramework\v2.0.50727\AssemblyFoldersEx\FSharp.PowerPack-2.0.0.0" Value="Description" Variable="FSharp2ppExists" />
+
+		<PackageGroup Id="FSharp">
+			<ExePackage Id="FSharp2"
+				Cache="no"
+				Compressed="yes"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="FSharpRedist2.0.exe"
+			SourceFile="FSharpRedist2.0.exe"
+			InstallCommand="/q /norestart /lang:ENU"
+			RepairCommand="/q /norestart /lang:ENU"
+			UninstallCommand="/q /norestart /lang:ENU"
+				InstallCondition="NOT FSharp2Exists"
+				DetectCondition="FSharp2Exists">
+				<!--<ExitCode Value ="3012" Behavior="forceReboot" />-->
+			</ExePackage>
+			<MsiPackage Id="FSharp2pp"
+				Cache="no"
+				Compressed="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="InstallFSharpPowerPack.msi"
+				SourceFile="InstallFSharpPowerPack.msi"
+				InstallCondition="NOT FSharp2ppExists"
+				ForcePerMachine="yes"
+				Visible="yes"
+				After="FSharp2">
+			</MsiPackage>
+			<!--<ExePackage Id="FSharp2Rus"
+				Cache="no"
+				Compressed="yes"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="FSharpLangpack2.0.exe"
+				SourceFile="FSharpLangpack2.0.exe"
+				InstallCommand="/q /norestart /lang:ENU"
+				RepairCommand="/q /norestart /lang:ENU"
+				UninstallCommand="/q /norestart /lang:ENU"
+				InstallCondition="NOT FSharp2RusExists"
+				DetectCondition="FSharp2RusExists"
+				After="FSharp2pp">
+			</ExePackage>-->      
+		</PackageGroup>
+	</Fragment>
+</Wix>

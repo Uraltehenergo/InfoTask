@@ -1,0 +1,314 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using BaseLibrary;
+using CommonTypes;
+
+namespace Calculation
+{
+    //Сохранение результатов в Result
+    public class ResultSaver : ExternalThreadLogger, IDisposable
+    {
+        public ResultSaver(ThreadApp thread) :base (thread)
+        {
+        }
+
+        //Унеследовано от ExternalLogger
+        public override string Context { get { return ""; } }
+        protected override string LoggerObject { get { return ""; } }
+
+        //Очистка ресурсов
+        public void Dispose()
+        {
+            try {_rec.Dispose();} catch { }
+            try { _recv.Dispose();} catch { }
+            try { _db.Dispose(); } catch { }
+        }
+
+        //Запись результатов расчета по потоку, возвращает строку с ошибкой
+        public string SaveToResult()
+        {
+            Start();
+            try
+            {
+                StartAtom(Atom.PrepareResult, PrepareResultFile, 0, 10);
+                double p = Procent = 10;
+                int n = ThreadCalc.Sources.Count + ThreadCalc.Imitators.Count + ThreadCalc.Receivers.Count + ThreadCalc.Projects.Values.Count;
+                double d = 90.0/n;
+
+                foreach (var provider in ThreadCalc.ProvidersDic.Values)
+                    if (provider.ProviderType == ProviderType.Source && provider.IsActive)
+                    {
+                        var source = (ISource) provider.Instance;
+                        using (StartAtom(Atom.SaveSourceDebug, p, p += d, source.Context, source.Name))
+                        {
+                            using (Start(0, 70)) 
+                                SaveSourceDebug(source);
+                            using (Start(70)) 
+                                SaveSourceCalcSignals(provider);
+                        }
+                    }
+
+                foreach (var imitator in ThreadCalc.Imitators.Values)
+                    using (StartAtom(Atom.SaveSourceDebug, p, p += d, imitator.Context, imitator.Name))
+                        SaveSourceDebug(imitator);
+
+                foreach (var receiver in ThreadCalc.Receivers.Values)
+                    using (StartAtom(Atom.SaveSourceDebug, p, p += d, receiver.Context, receiver.Name))
+                        SaveReceiverDebug(receiver);
+
+                foreach (var project in ThreadCalc.Projects.Values)
+                    using (StartAtom(Atom.SaveCalcDebug, p, p += d, "Проект=" + project.Code, project.Code))
+                        SaveCalcDebug(project);
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при сохранении значений", ex);
+            }
+            return Finish().ErrorMessage();
+        }
+
+        //Продготовка файла Result 
+        private void PrepareResultFile()
+        {
+            try
+            {
+                var resultFile = General.ControllerDir + @"Result\Result" + ThreadCalc.Id + ".accdb";
+                DaoDb.FromTemplate(General.ControllerDir + "ResultTemplate.accdb", resultFile, ReplaceByTemplate.Always);
+                Thread.Sleep(100);
+                _db = new DaoDb(resultFile);
+                _rec = new RecDao(_db, "DebugParams");
+                _recv = new RecDao(_db, "DebugParamsValues");
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка подготовки отладочного файла Result", ex);
+            }
+        }
+
+        //Сохраняет результаты расчета по проекту в таблицу
+        private void SaveCalcDebug(Project project)
+        {
+            try
+            {
+                AddEvent("Сохранение расчетных значений в таблицу", project.Code);
+                int i = 0;
+                foreach (var c in project.CalcParamsId.Values)
+                    if (c.Inputs.Count == 0)
+                    {
+                        SaveValues(project.Code, c.FullCode, "Параметр", c.Id, c.RunParam, null, 0);
+                        if (++i % 20 == 0) Procent = 10 + 100.0 * i / project.CalcParamsId.Count;
+                    }
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка подготовки отладочного файла Result.accdb", ex);
+            }
+        }
+
+        //Сохраняет мгновенные значения сигналов одного источника в таблицу
+        private void SaveSourceDebug(IProviderSource source)
+        {
+            try
+            {
+                if (source.Signals == null || source.Signals.Count == 0) return;
+                AddEvent("Сохранение значений сигналов источника в таблицу", source.Name);
+                int i = 0;
+                foreach (var sig in source.Signals.Values)
+                {
+                    ValuesToRec(source.Name, sig.Code, "Сигнал", 0, null, sig.Value);
+                    if (++i % 20 == 0) Procent = 10 + 90.0 * i / (source.Signals.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка подготовки отладочного файла Result", ex);
+            }
+        }
+
+        //Сохраняет мгновенные значения расчетных сигналов одного источника в таблицу
+        private void SaveSourceCalcSignals(Provider provider)
+        {
+            try
+            {
+                if (provider.CalcSignals.Count == 0) return;
+                AddEvent("Сохранение значений расчетных сигналов в таблицу", provider.Name);
+                int i = 0;
+                foreach (var sig in provider.CalcSignals.Values)
+                {
+                    ValuesToRec(provider.Name, sig.FullCode, "Сигнал", 0, null, sig.CalcSignalValue);
+                    if (++i % 20 == 0) Procent = 10 + 90.0 * i / (provider.CalcSignals.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка подготовки отладочного файла Result", ex);
+            }
+        }
+
+        //Сохраняет значения сигналов одного приемника в таблицу
+        private void SaveReceiverDebug(IReceiver receiver)
+        {
+            try
+            {
+                if (receiver.Signals == null || receiver.Signals.Count == 0) return;
+                AddEvent("Сохранение значений сигналов приемника в таблицу", receiver.Name);
+                int i = 0;
+                foreach (var sig in receiver.Signals.Values)
+                {
+                     ValuesToRec(receiver.Name, sig.Code, "СигналПриемника", 0, null, receiver.AllowListValues ? sig.Value : new SingleValue(sig.Value.LastMoment));
+                     if (++i % 20 == 0) Procent = 100.0 * i / (receiver.Signals.Count);
+                }
+            }
+            catch (Exception ex)
+            {
+                AddError("Ошибка при записи в отладочный файл Result", ex);
+            }
+        }
+
+        //Запись значений
+        #region
+        //Рекордсеты DebugParams и DebugParamsValues
+        private RecDao _rec, _recv;
+        //База данных Result
+        private DaoDb _db;
+
+        //Значение для записи в Value или Variables
+        private static string SvToStr(SingleValue sv)
+        {
+            if (sv == null || sv.Type == SingleType.Void) return "";
+            if (sv.Type == SingleType.Segments)
+            {
+                if (sv.Error != null) return "сегменты(Ошибка)";
+                return "сегменты";
+            }
+            var mv = sv.LastMoment;
+            string s = "";
+            if (mv.DataType != DataType.Value)
+                s = mv.DataType == DataType.Time ? mv.Date.ToStringWithMs() : mv.String;
+            if (mv.Error == null)
+            {
+                if (mv.Nd == 0) return s;
+                return s + "(Nd=" + mv.Nd + ")";
+            }
+            if (mv.Nd == 0) return s + "(Ошибка)";
+            return s + "(Ошибка,Nd=" + mv.Nd + ")";
+        }
+
+        //Запись мгновенного значения в DebugValues
+        private static void MomToRec(Moment mv, RecDao recv, int id)
+        {
+            if (mv == null) return;
+            recv.AddNew();
+            recv.Put("DebugParamId", id);
+            if (mv.DataType == DataType.Time)
+                recv.Put("StrValue", mv.Date.ToStringWithMs());
+            else
+            {
+                if (mv.DataType == DataType.String)
+                    recv.Put("StrValue", mv.String);
+                else recv.Put("Value", mv.Real);
+            }
+            recv.Put("Time", mv.Time);
+            recv.Put("Nd", mv.Nd);
+            if (mv.Error != null) recv.Put("ErrMess", mv.Error.ToString(), true);
+            recv.Update();
+        }
+
+        //Запись SingleValue в DebugParams и DebugValues, возвращает записываемую ошибку, adderr - для записи сообщения об ошибке в подпараметрах
+        public void ValuesToRec(string projectProvider, string realCode, string debugType, int paramId, Dictionary<string, string> variables, SingleValue sv, string adderr = "")
+        {
+            if (sv == null) return;
+            _rec.AddNew();
+            _rec.Put("ProjectProvider", projectProvider);
+            _rec.Put("Code", realCode);
+            _rec.Put("ResultType", sv.DataType.ToRussian());
+            _rec.Put("DebugParamType", debugType);
+            _rec.Put("ParamId", paramId);
+            if (variables != null) _rec.Put("Variables", variables.ToPropertyString());
+            var err = sv.LastError;
+            if (err.IsEmpty()) err = adderr;
+            else err += "; " + adderr;
+            _rec.Put("ErrMess", err, true);
+            _rec.Put("Value", SvToStr(sv));
+            _rec.Put("MomentsCount", sv.Type == SingleType.Moment ? 1 : (sv.Moments == null ? 0 : sv.Moments.Count));
+            int id = _rec.GetInt("DebugParamId");
+            _rec.Update();
+            if (sv.Type == SingleType.Moment)
+                MomToRec(sv.Moment, _recv, id);
+            if (sv.Type == SingleType.List && sv.Moments != null)
+                foreach (var mv in sv.Moments)
+                    MomToRec(mv, _recv, id);
+        }
+
+        private void AddDic(Dictionary<string, string> dic, Dictionary<string, string> add, string code)
+        {
+            foreach (var s in add)
+            {
+                var scode = code == null ? s.Key : (s.Key == "" ? code : code + "." + s.Key);
+                if (!dic.ContainsKey(scode)) dic.Add(scode, s.Value);
+            }
+        }
+
+        //Сохранение одного параметра или одной переменной, возвращает словарь ключи - коды переменных, значения - величичны
+        //projectProvider - имя провайдера или код проекта, code - полный код для для записи в DebugParams
+        //debugType - Параметр, Подпараметр, Объект, Переменная, Сигнал, paramId - id параметра или подпараметра, для остальных 0
+        //c - расчетный параметр, v - переменная, всегда одно из двух, level - уровень вложенности, 
+        //saveToRec - сохранять в рекордсет и переменные, если false, то сам параметр не сохраняется но могут сохраняться его подпараметры и переменные
+        public Dictionary<string, string> SaveValues(string projectProvider, string code, string debugType, int paramId, CalcParamRun c, VarRun v, int level, bool saveToRec = true)
+        {
+            if (level > 3) return null;
+            var dic = new Dictionary<string, string>();
+            CalcValue cv;
+            string adderr = "";
+            if (v != null) cv = v.CalcValue;
+            else
+            {
+                if (c == null || c.CalcValue == null) return null;
+                foreach (var met in c.Methods.Values)
+                {
+                    bool e = met.CalcParam.IsNotObject;
+                    AddDic(dic, SaveValues(projectProvider, code + "." + met.CalcParam.Code, e ? "Подпараметр" : "Порождаемый", e ? met.CalcParam.Id : 0, met, null, level + 1), met.CalcParam.Code);
+                    if (met.CalcValue.Error != null && adderr.IsEmpty())
+                        adderr = "Ошибки в " + (e ? "" : "порожденных ") + "подпараметрах";
+                }
+                foreach (var vr in c.Vars.Dic)
+                    if (vr.Key != "calc" || (c.CalcValue.Type == CalcValueType.Single && c.CalcValue.SingleValue != vr.Value.CalcValue.SingleValue))
+                        AddDic(dic, SaveValues(projectProvider, code + "." + vr.Key, "Переменная", 0, null, vr.Value, level + 1), vr.Key);
+                cv = c.CalcValue;
+            }
+
+            if (cv != null)
+            {
+                switch (cv.Type)
+                {
+                    case CalcValueType.Void:
+                    case CalcValueType.Single:
+                        if ((saveToRec && cv.SingleValue != null) || !adderr.IsEmpty())
+                        {
+                            ValuesToRec(projectProvider, code, debugType, paramId, dic, cv.SingleValue ?? new SingleValue(), adderr);
+                            dic.Add("", SvToStr(cv.SingleValue));   
+                        }
+                        break;
+                    case CalcValueType.IntArray:
+                        foreach (var a in cv.IntArray)
+                            AddDic(dic, SaveValues(projectProvider, code + "[" + a.Key + "]", "Переменная", 0, null, a.Value, level + 1), null);
+                        break;
+                    case CalcValueType.StringArray:
+                        foreach (var a in cv.StringArray)
+                            AddDic(dic, SaveValues(projectProvider, code + "[" + a.Key + "]", "Переменная", 0, null, a.Value, level + 1), null);
+                        break;
+                }
+                if (cv.ParentParam != null && cv.ParentParam.Inputs.Count != 0)
+                {
+                    if (c == cv.ParentParam)
+                        ValuesToRec(projectProvider, code, debugType, paramId, dic, new SingleValue());
+                    else
+                        AddDic(dic, SaveValues(projectProvider, code + ":" + cv.ParentParam.CalcParam.Code, debugType, paramId, cv.ParentParam, null, level, false), null);
+                }
+            }
+            return dic;
+        }
+        #endregion
+    }
+}

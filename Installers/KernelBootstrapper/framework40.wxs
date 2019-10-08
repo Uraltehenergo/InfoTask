@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+		<!--<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\FULL" Value="Version" Variable="Netfx40Version" />-->
+		<!--<PackageGroup Id="Netfx40">
+			<ExePackage Id="Netfx40"
+				Cache="no"
+				Compressed="yes"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="dotNetFx40_Full_x86_x64.exe"
+				SourceFile="dotNetFx40_Full_x86_x64.exe"
+				InstallCommand="/q /lang:ENU"
+				RepairCommand="/q /norestart /lang:ENU"
+				UninstallCommand="/q /norestart /lang:ENU"
+				InstallCondition="NOT Netfx40Version"
+				DetectCondition="Netfx40Version">
+				<ExitCode Behavior="forceReboot" />
+			</ExePackage>
+		</PackageGroup>-->
+	</Fragment>
+</Wix>

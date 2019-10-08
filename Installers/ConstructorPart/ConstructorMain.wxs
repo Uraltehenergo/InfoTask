@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ProductName="InfoTask. Constructor" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{880BC61C-44CD-4320-ADB4-7ECF8636AD15}"?>
+	<?define UpgradeCode="{640BA889-0836-4405-B328-4B868F0DC6AF}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Constructor package" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="Constructor.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Constructor" Name="Constructor"/>
+				<Directory Id="Providers" Name="Providers">
+					<Directory Id="PTest" Name="Test"/>
+				</Directory>
+        <Directory Id="tmp" Name="Tmp"/>
+        <Directory Id="Docs" Name="Docs"/>
+			</Directory>
+
+			<!--Пуск_Программы-->
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+					<!--<Directory Id="ProgramMenuITDir" Name="$(var.ProductName)" />-->
+				</Directory>
+			</Directory>
+
+			<!--Рабочий стол-->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+
+		<!--Constructor-->
+		<DirectoryRef Id="Constructor">
+			<Component Id="ConstructorPart1" Guid="5C83DDD5-6D54-42AD-B6E6-C3D1C8BEC72D">
+				<!--<File Id="CalcArchiveaccdb_Cons" Name="CalcArchive.accdb"
+											Source="..\..\Release\Constructor\CalcArchive.accdb"	Vital="yes" DiskId="1" />-->
+				<File Id="Constructoraccde_Cons" Name="Constructor.accde"
+											Source="..\..\Release\Constructor\Constructor.accde"	Vital="yes" DiskId="1" />
+				<!--<File Id="ProjectTemplateaccdb_Cons" Name="ProjectTemplate.accdb"
+											Source="..\..\Release\Constructor\ProjectTemplate.accdb"	Vital="yes" DiskId="1" />-->
+			</Component>
+			<Component Id="ConstructorPart2" Guid="E0B3C7B9-4675-452F-A1BE-71D8CD2FA54A" Permanent="yes">
+				<File Id="AppDataaccdb_Cons" Name="AppData.accdb"
+											Source="..\..\Release\Constructor\AppData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+		
+		<!--Providers-->
+		<!--<DirectoryRef Id="PTest">
+			<Component Id="Providers_TPT" Guid="83476C54-F946-4395-B62D-31D6FE7190CF">
+				<File Id="TestProviderTemplate" Name="TestProviderTemplate.accdb"
+											Source="..\..\Release\Providers\Test\TestProviderTemplate.accdb"
+											Vital="yes" DiskId="1"/>
+			</Component>
+		</DirectoryRef>
+		<DirectoryRef Id="PTest">
+			<Component Id="Providers_TC" Guid="6E9A57B9-CFC8-46C7-81A4-632F4C178B60">
+				<File Id="TestCommunicator" Name="TestCommunicator.accde"
+											Source="..\..\Release\Providers\Test\TestCommunicator.accde"
+											Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>-->
+
+    <!--Tmp-->
+    <DirectoryRef Id="tmp">
+      <Component Id="TempData" Guid="{A30F96CE-2BFD-4442-B41A-90338837714B}">
+        <File Id="ConstructorTempAppData_accdb" Name="ConstructorAppDataTemplate.accdb"
+											Source="..\..\Release\Constructor\AppData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsConstructor" Guid="{0513CF5B-D63A-430B-8073-E6C221E46C81}">
+        <File Id="InfoTaskUG02Constructorpdf" Name="InfoTask-UG.02-Constructor.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.02-Constructor.pdf" Vital="yes" DiskId="1"/>
+        <File Id="InfoTaskUG03Tablikpdf" Name="InfoTask-UG.03-Tablik.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.03-Tablik.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+    
+		<DirectoryRef Id="ProgramMenuUTEDir">
+			<Component Id="CProgramMenuCsSC" Guid="{7DF73D9B-B711-42C7-B13B-A88B950027DD}">
+				<Shortcut Id="ProgramMenuCsSC" Name="Конструктор расчетов" Description="Конструктор расчетов" Target="[Constructor]Constructor.accde" Icon="ITicon" />
+				<RemoveFolder Id="rmvCs" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="CDesktopCsSC" Guid="{3FD67A66-8085-420A-A2A2-BB6001C0C47C}">
+				<Shortcut Id="DesktopCsSC" Name="Конструктор расчетов" Description="Конструктор расчетов" Target="[Constructor]Constructor.accde" Icon="ITicon32" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+		<Feature Id='ConstructorFeature' Title="Конструктор" Description='Конструктор' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+			<!--<Condition Level="0">
+					<![CDATA[ISCONSTRUCTOR = "0"]]>
+				</Condition>-->
+			<ComponentRef Id="ConstructorPart1"/>
+			<ComponentRef Id="ConstructorPart2"/>
+			<!--<ComponentRef Id="Providers_TC"/>
+			<ComponentRef Id="Providers_TPT"/>-->
+			<ComponentRef Id="CProgramMenuCsSC"/>
+			<ComponentRef Id="CDesktopCsSC"/>
+      <ComponentRef Id="TempData"/>
+      <ComponentRef Id="DocsConstructor"/>
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+    
+		<UI Id='MyWixUI'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<Icon Id ="ITicon" SourceFile="..\..\Release\Constructor\ITicon.C.ico"/>
+		<Icon Id ="ITicon32" SourceFile="..\..\Release\Constructor\ITicon32.C.ico"/>
+
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillConstructor"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillConstructorU"
+			Return="check" />
+
+    <CustomAction Id="SynchActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConstructorVersionSynch"
+			Return="check" />
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+		<InstallExecuteSequence>
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+      <Custom Action="SynchActionId" After="InstallFinalize">NOT Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+	</Product>
+</Wix>

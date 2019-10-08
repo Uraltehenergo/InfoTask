@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!--Объявляются некоторые переменные, чтобы потом в самом коде не править.
+  Единственное, что нужно менять дополнительно с новой версией, это GUID патча 2007
+  в custom action rmv2007Pack и свойстве PCK2007STLLD. Еще в IT2007PackRegClean-->
+  <!--С каждой новой версией необходимо менять GUID ProductCode,
+  при этом UpgradeCode всегда должен оставаться старым!-->
+  <!--Четвертая цифра версии ни на что не влияет-->
+	<?define ProductName="InfoTask" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{34031207-CABE-461A-ADD2-9B51DDA9D10B}"?>
+	<?define UpgradeCode="{80D0E462-EA1B-4C88-9568-BDC1F4364593}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="InfoTask kernel" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="infoTask.cab" EmbedCab="yes" />
+
+		<Property Id="ROOTDRIVE">C:\</Property>
+
+    <!--Строим дерево папок. Для заведомо пустых папок создаем отдельные компоненты-->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!--Program files-->
+			<!--<Directory Id="ProgramFilesFolder">
+				<Directory Id="COMMONFOLDER" Name="$(var.Manufacturer)">-->
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Analyzer" Name="Analyzer"/>
+				<Directory Id="Constructor" Name="Constructor"/>
+				<Directory Id="Controller" Name="Controller">
+					<Directory Id="History" Name="History">
+						<Component Id="CreateHistoryFolder"
+								 Guid="{762D5A70-FCC8-4CC0-A7F2-3DA07A77CEBD}">
+							<CreateFolder />
+						</Component>
+					</Directory>
+					<Directory Id="Result" Name="Result">
+						<Component Id="CreateResultFolder"
+								 Guid="{EE7A991F-93D6-4774-9D98-7E8DA3FC27D5}">
+							<CreateFolder />
+						</Component>
+					</Directory>
+				</Directory>
+        <Directory Id="CalcArchiveViewer" Name="CalcArchiveViewer">
+          <Directory Id="AccReports" Name="AccReports">
+            <Component Id="CreateAccReportsFolder"
+								 Guid="3D251710-8E15-4C0C-88B9-1A968D2C1006">
+              <CreateFolder />
+            </Component>
+          </Directory>
+        </Directory>
+        <Directory Id="General" Name="General"/>
+        <Directory Id="Docs" Name="Docs"/>
+        <Directory Id="Graphics" Name="Graphics"/>
+				<Directory Id="Projects" Name="Projects">
+					<Component Id="CreateProjectsFolder"
+								 Guid="78E22868-B750-47EB-9E4C-C19CCA939394">
+						<CreateFolder />
+					</Component>
+				</Directory>
+				<Directory Id="Providers" Name="Providers">
+					<Directory Id="PArchives" Name="Archives"/>
+					<Directory Id="PClone" Name="Clone"/>
+				</Directory>
+				<Directory Id="RAS" Name="RAS"/>
+				<Directory Id="Reporter" Name="Reporter"/>
+				<Directory Id="Reports" Name="Reports">
+					<Component Id="CreateReportsFolder"
+								 Guid="6F115682-65BF-4B94-8308-03B90D3A73C7">
+						<CreateFolder />
+					</Component>
+				</Directory>
+				<Directory Id="Tablik" Name="Tablik"/>
+				<Directory Id="tmp" Name="Tmp">
+					<Component Id="CreateTmpFolder" Guid="{937EBE05-9FEA-456C-98C2-D61835292DA4}">
+						<CreateFolder />
+						<RemoveFile Id="ClearTmp" Name="*.*" On="uninstall" />
+					</Component>
+				</Directory>
+			</Directory>
+
+			<!--Пуск_Программы-->
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+							<Directory Id="ProgramMenuITDir" Name="$(var.ProductName)" />
+						</Directory>
+
+			<!--Рабочий стол-->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+
+			<!--System folder-->
+			<Directory Id="SystemFolder" Name="SystemFolder" />
+			
+		</Directory>
+
+		<!--Описание устанавливаемых файлов-->
+		<DirectoryRef Id="Constructor">
+			<Component Id="CalcArchive" Guid="{AB90066A-0D8B-4AF4-B4B8-85A790696C9E}" Permanent="yes">
+				<File Id="CalcArchiveaccdb_Cons" Name="CalcArchive.accdb"	
+              Source="..\..\Release\Constructor\CalcArchive.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+    
+    <DirectoryRef Id="CalcArchiveViewer">
+      <Component Id="CalcArchiveViewerPart1" Guid="{A7AFC21E-D246-4ED1-9167-FC680842BDF9}" Permanent="no">
+        <File Id="CalcArchiveVieweraccde" Name="CalcArchiveViewer.accde"
+              Source="..\..\Release\CalcArchiveViewer\CalcArchiveViewer.accde"	Vital="yes" DiskId="1" />
+      </Component>
+      <Component Id="CalcArchiveViewerPart2" Guid="{41987DC5-4D18-4C38-8E8F-86E869A78348}" Permanent="yes">
+        <File Id="CalcArchiveViewerDataaccdb" Name="CalcArchiveViewerData.accdb"
+              Source="..\..\Release\CalcArchiveViewer\CalcArchiveViewerData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Controller">
+			<Component Id="ControllerPart1" Guid="E6A9CCAE-2F1E-4F08-AC13-30153F1345C4">
+				<File Id="ResultTemplateaccdb_Cont" Name="ResultTemplate.accdb"
+											Source="..\..\Release\Controller\ResultTemplate.accdb"	Vital="yes" DiskId="1" />
+				<File Id="ControllerClientdll_Cont" Name="ControllerClient.dll"
+								Source="..\..\Release\Controller\ControllerClient.dll"	Vital="yes" DiskId="1" />
+				<File Id="ControllerClientpdb_Cont" Name="ControllerClient.pdb"
+								Source="..\..\Release\Controller\ControllerClient.pdb"	Vital="yes" DiskId="1" />
+				<File Id="Calculation_Cont" Name="Calculation.dll"
+								Source="..\..\Release\Controller\Calculation.dll"	Vital="yes" DiskId="1" />
+				<File Id="Calculationpdb_Cont" Name="Calculation.pdb"
+								Source="..\..\Release\Controller\Calculation.pdb"	Vital="yes" DiskId="1" />
+	
+				<File Id="BaseLibrarydll_Cont" Name="BaseLibrary.dll"
+								Source="..\..\Release\Controller\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+				<File Id="BaseLibrarypdb_Cont" Name="BaseLibrary.pdb"
+								Source="..\..\Release\Controller\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+				<File Id="CommonTypesdll_Cont" Name="CommonTypes.dll"
+								Source="..\..\Release\Controller\CommonTypes.dll"	Vital="yes" DiskId="1" />
+				<File Id="CommonTypespdb_Cont" Name="CommonTypes.pdb"
+								Source="..\..\Release\Controller\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+
+        <File Id="ControllerMonitorexe_Cont" Name="ControllerMonitor.exe"
+								Source="..\..\Release\Controller\ControllerMonitor.exe"	Vital="yes" DiskId="1" />
+        <File Id="ControllerMonitorpdb_Cont" Name="ControllerMonitor.pdb"
+                Source="..\..\Release\Controller\ControllerMonitor.pdb"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="ControllerPart2" Guid="10ABC25A-AB5C-4600-B789-F992AB87088A" Permanent="yes">
+				<File Id="ControllerDataaccdb_Cont" Name="ControllerData.accdb"
+											Source="..\..\Release\Controller\ControllerData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="ControllerPart3" Guid="{1C3131EB-F1C9-481D-8087-8F6FC2814D37}">
+				<File Id="Controllerexe_Cont" Name="Controller.exe"
+								Source="..\..\Release\Controller\Controller.exe"	Vital="yes" DiskId="1" />
+				<File Id="Controllerexeconfig_Cont" Name="Controller.exe.config"
+								Source="..\..\Release\Controller\Controller.exe.config"	Vital="yes" DiskId="1" />
+				<File Id="Controllerpdb_Cont" Name="Controller.pdb"
+								Source="..\..\Release\Controller\Controller.pdb"	Vital="yes" DiskId="1" />
+			</Component>
+      <Component Id="TuneServicePart" Guid="{EE8AA7E6-A617-480D-BBFF-F0CD1A196724}">
+        <File Id="TuneServiceexe_Cont" Name="TuneService.exe"
+								Source="..\..\Release\Controller\TuneService.exe"	Vital="yes" DiskId="1" />
+        <File Id="TuneServiceexeconfig_Cont" Name="TuneService.exe.config"
+								Source="..\..\Release\Controller\TuneService.exe.config"	Vital="yes" DiskId="1" />
+        <File Id="TuneServicepdb_Cont" Name="TuneService.pdb"
+								Source="..\..\Release\Controller\TuneService.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+      <Component Id="SynchFiles" Guid="{CD3EB216-9DC5-4D08-9AC2-3CA8CB1782A1}">
+        <File Id="VersionSynchdll_V" Name="VersionSynch.dll"
+								Source="..\..\Release\Controller\VersionSynch.dll"	Vital="yes" DiskId="1" />
+        <File Id="VersionSynchpdb_V" Name="VersionSynch.pdb"
+								Source="..\..\Release\Controller\VersionSynch.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="SystemFolder">
+			<Component Id="ControllerPart4" Guid="{E8A93D48-8826-4C84-AFEF-B032C55CA39C}">
+				<File Id="okawsp6dll_Cont" Name="okawsp6.dll"
+								Source="..\..\Release\Controller\okawsp6.dll"	Vital="yes" DiskId="1" />
+			</Component>
+				<Component Id="ControllerPart5" Guid="{73D7D8DC-7F59-46E0-A05C-F1BD9F6AE171}">
+				<File Id="zaoecutewpf_Cont" Name="zaoecute.wpf"
+								Source="..\..\Release\Controller\zaoecute.wpf"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+		<!--General-->
+		<DirectoryRef Id="General">
+			<Component Id="GeneralPart1" Guid="B76987F9-5E81-4D21-A5B9-1A3E55A97B8E">
+				<File Id="ConfigTemplateaccdb_G" Name="ConfigTemplate.accdb"
+											Source="..\..\Release\General\ConfigTemplate.accdb"	Vital="yes" DiskId="1" />
+				<File Id="General_G" Name="General.accdb"
+											Source="..\..\Release\General\General.accdb"	Vital="yes" DiskId="1" />
+        <File Id="HistoryTemplateaccdb_G" Name="HistoryTemplate.accdb"
+											Source="..\..\Release\General\HistoryTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="ProjectTemplateaccdb_G" Name="ProjectTemplate.accdb"
+											Source="..\..\Release\General\ProjectTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="CloneTemplateaccdb_G" Name="CloneTemplate.accdb"
+              Source="..\..\Release\General\CloneTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="HandInputTemplatebak_G" Name="HandInputTemplate.bak"
+              Source="..\..\Release\General\HandInputTemplate.bak"	Vital="yes" DiskId="1" />
+        <File Id="ImitDataTemplateaccdb_G" Name="ImitDataTemplate.accdb"
+											Source="..\..\Release\General\ImitDataTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="MonitorHistoryTemplatebak_G" Name="MonitorHistoryTemplate.bak"
+              Source="..\..\Release\General\MonitorHistoryTemplate.bak"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="GeneralPart2" Guid="{73DB7F96-7078-4B7D-B3AF-5936D208DC04}" Permanent="yes">
+				<File Id="Configaccdb_G" Name="Config.accdb"
+											Source="..\..\Release\General\Config.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="PathKeyForRegistry" Guid="2E350BEE-924C-4D08-AAFA-BE275B53BCF5" Permanent="yes">
+				<RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											 Value="[INSTALLLOCATION]" Type="string"/>
+			</Component>
+			<Component Id="KernelExistence" Guid="{B8332539-FD0B-47AB-A410-536F7D0F348B}">
+				<RegistryValue Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											 Value="1" Type="string"/>
+			</Component>
+			<Component Id="VBAWar" Guid="{6A133BA3-248C-4EED-8839-2DA8CDB68B82}" Permanent="yes">
+				<RegistryValue Root="HKCU"
+											 Key="Software\Microsoft\Office\[OfficeVersion].0\Access\Security"
+											 Name="VBAWarnings" Value="1" Type="integer"/>
+			</Component>
+		</DirectoryRef>
+
+		<!--Graphics-->
+		<DirectoryRef Id="Graphics">
+			<Component Id="GrapfhicLibrary_D" Guid="FDBF2BEC-5A5F-416F-941B-5011BF4868F0">
+				<File Id="GrapfhicLibraryDll" Name="GraphicLibrary.dll"
+							Source="..\..\Release\Graphics\GraphicLibrary.dll"
+							Vital="yes" DiskId="1" KeyPath="yes"/>
+			</Component>
+			<Component Id="GrapfhicLibrary_P" Guid="FC4600DF-48DA-47F8-8C75-3E90476AD2BF">
+				<File Id="GrapfhicLibraryPBD" Name="GraphicLibrary.pdb"
+							Source="..\..\Release\Graphics\GraphicLibrary.pdb"
+							Vital="yes" DiskId="1"/>
+			</Component>
+      <Component Id="ConsGraphLibrary_D" Guid="{D96ACEFB-0F0F-4290-875D-E8B40E18A534}">
+        <File Id="ConsGraphLibraryDLL" Name="ConsGraphLibrary.dll"
+							Source="..\..\Release\Graphics\ConsGraphLibrary.dll"
+							Vital="yes" DiskId="1" KeyPath="yes"/>
+      </Component>
+      <Component Id="ConsGraphLibrary_P" Guid="{F49C7D11-0E4D-40E2-8A19-CEA2698C5196}">
+        <File Id="ConsGraphLibraryPDB" Name="ConsGraphLibrary.pdb"
+							Source="..\..\Release\Graphics\ConsGraphLibrary.pdb"
+							Vital="yes" DiskId="1"/>
+      </Component>
+			<Component Id="GrapfhicLibrary_BaseLibrary_D" Guid="D06E9008-4DE1-413D-98B1-9893E4B7D98A">
+				<File Id="BaseLibraryDll" Name="BaseLibrary.dll"
+							Source="..\..\Release\Graphics\BaseLibrary.dll"
+							Vital="yes" DiskId="1"/>
+			</Component>
+			<Component Id="GrapfhicLibrary_BaseLibrary_P" Guid="C408DA4C-1D35-4C0C-85DD-1C76CC96FD3E">
+				<File Id="BaseLibraryPBD" Name="BaseLibrary.pdb"
+							Source="..\..\Release\Graphics\BaseLibrary.pdb"
+							Vital="yes" DiskId="1"/>
+			</Component>
+		</DirectoryRef>
+
+		<!--Providers\Archives-->
+		<DirectoryRef Id="PArchives">
+			<Component Id="Providers_A" Guid="D4F2A397-BE47-4927-B62A-EC650F76A33B">
+				<File Id="CalcArchiveTemplate" Name="CalcArchiveTemplate.accdb"
+							Source="..\..\Release\Providers\Archives\CalcArchiveTemplate.accdb"
+							Vital="yes" DiskId="1">
+				</File>
+				<File Id="CalcArchiveBak" Name="CalcArchiveTemplate.bak"
+							Source="..\..\Release\Providers\Archives\CalcArchiveTemplate.bak"
+							Vital="yes" DiskId="1">
+				</File>
+        <File Id="ArchiveProjectComm" Name="ArchiveProjectComm.accde"
+							Source="..\..\Release\Providers\Archives\ArchiveProjectComm.accde"
+							Vital="yes" DiskId="1">
+        </File>
+      </Component>
+		</DirectoryRef>
+
+    <!--Providers\Clone-->
+    <DirectoryRef Id="PClone">
+      <Component Id="Providers_C" Guid="FD016BAF-A858-4546-A1B4-55D538ABB7C3">
+        <File Id="CloneComm" Name="CloneComm.accde"
+							Source="..\..\Release\Providers\Clone\CloneComm.accde"
+							Vital="yes" DiskId="1">
+        </File>
+      </Component>  
+    </DirectoryRef>
+    
+		<!--Tablik-->
+		<DirectoryRef Id="Tablik">
+			<Component Id="TablikPart1" Guid="D8132906-59EE-4EEC-8125-FA30B79418BE">
+				<!--<File Id="TablikHistoryTemplateaccdb_T" Name="TablikHistoryTemplate.accdb"
+											Source="..\..\Release\Tablik\TablikHistoryTemplate.accdb"	Vital="yes" DiskId="1" />-->
+				<File Id="Tablikdll_T" Name="Tablik.dll"
+											Source="..\..\Release\Tablik\Tablik.dll"	Vital="yes" DiskId="1"  />
+				<File Id="Tablikpdb_T" Name="Tablik.pdb"
+											Source="..\..\Release\Tablik\Tablik.pdb"	Vital="yes" DiskId="1" />
+
+				<File Id="BaseLibrarydll_T" Name="BaseLibrary.dll"
+								Source="..\..\Release\Tablik\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+				<File Id="BaseLibrarypdb_T" Name="BaseLibrary.pdb"
+								Source="..\..\Release\Tablik\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+				<File Id="CommonTypesdll_T" Name="CommonTypes.dll"
+								Source="..\..\Release\Tablik\CommonTypes.dll"	Vital="yes" DiskId="1" />
+				<File Id="CommonTypespdb_T" Name="CommonTypes.pdb"
+								Source="..\..\Release\Tablik\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+				<File Id="Compillerdll_T" Name="Compiller.dll"
+								Source="..\..\Release\Tablik\Compiller.dll"	Vital="yes" DiskId="1" />
+				<File Id="Compillerpdb_T" Name="Compiller.pdb"
+								Source="..\..\Release\Tablik\Compiller.pdb"	Vital="yes" DiskId="1" />
+        <File Id="Antlr4_Runtime_dll" Name="Antlr4.Runtime.dll"
+								Source="..\..\Release\Tablik\Antlr4.Runtime.dll"	Vital="yes" DiskId="1" />
+        <File Id="Antlr4_Runtime_xml" Name="Antlr4.Runtime.xml"
+                Source="..\..\Release\Tablik\Antlr4.Runtime.xml"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+    <!--Tmp-->
+    <DirectoryRef Id="tmp">
+      <Component Id="TempData" Guid="{E6E99359-7AD6-4362-B642-9C761D2BAE84}">
+        <File Id="ControllerTempData_accdb" Name="ControllerDataTemplate.accdb"
+											Source="..\..\Release\Controller\ControllerData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsKernel" Guid="{E7F4DA97-DE98-4BCB-8FC4-31A26E5042C1}">
+        <File Id="InfoTaskUG01Basepdf" Name="InfoTask-UG.01-Base.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.01-Base.pdf" Vital="yes" DiskId="1"/>
+        <File Id="InfoTaskUG04Controllerpdf" Name="InfoTask-UG.04-Controller.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.04-Controller.pdf" Vital="yes" DiskId="1"/>
+        <File Id="InfoTaskUG07Providerspdf" Name="InfoTask-UG.07-Providers.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.07-Providers.pdf" Vital="yes" DiskId="1"/>
+        <File Id="InfoTaskUG08CalcArchiveViewerpdf" Name="InfoTask-UG.08-CalcArchiveViewer.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.08-CalcArchiveViewer.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <!--Каждый ярлык обязательно регистрируется в реестре-->
+		<DirectoryRef Id="ProgramMenuITDir">
+			<Component Id="CProgramMenuCoSC" Guid="{5B90C2ED-752B-433A-8D20-B9AD9B8EFAEC}">
+				<Shortcut Id="ProgramMenuCoSC" Name="Монитор расчета" Description="Монитор расчета" Target="[Controller]Controller.exe" Icon="ITicon" />
+        <RemoveFolder Id="rmvCo" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[ProductName]\Controller" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="ProgramMenuITDir">
+      <Component Id="CProgramMenuViSC" Guid="{0F542FC5-B053-4A91-A49C-8B63E4DD7940}">
+        <Shortcut Id="ProgramMenuViSC" Name="Архив и ручной ввод" Description="Архив и ручной ввод" Target="[CalcArchiveViewer]CalcArchiveViewer.accde" Icon="ITiconAV" />
+        <RemoveFolder Id="rmvVi" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\[ProductName]\CalcArchiveViewer" Type="string" Value=""/>
+      </Component>
+    </DirectoryRef>
+    
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="CDesktopCoSC" Guid="{7E3DBF7E-7623-4971-A5E1-900B95630B01}">
+				<Shortcut Id="DesktopCoSC" Name="Монитор расчета" Description="Монитор расчета" Target="[Controller]Controller.exe" Icon="ITicon32" />
+        <RegistryValue Root="HKCU" Key="Software\[ProductName]\Controller" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="CDesktopViSC" Guid="{F98E369E-117A-42B1-B834-8ACE3887CB55}">
+        <Shortcut Id="DesktopViSC" Name="Архив и ручной ввод" Description="Архив и ручной ввод" Target="[CalcArchiveViewer]CalcArchiveViewer.accde" Icon="ITicon32AV" />
+        <RegistryValue Root="HKCU" Key="Software\[ProductName]\CalcArchiveViewer" Type="string" Value=""/>
+      </Component>
+    </DirectoryRef>
+    
+		<!--Features-->
+    <!--В каждой фиче должно быть хотя бы по одному компоненту, иначе появятся лишние варианты установки. Баг.-->
+		<Feature Id='Complete' Title="$(var.ProductName)" Description='Установка компонентов $(var.ProductName)'
+						 Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+			<ComponentRef Id="PathKeyForRegistry"/>
+			<ComponentRef Id="KernelExistence"/>
+			<ComponentRef Id="VBAWar"/>
+
+			<Feature Id='KernelFeature' Title="Ядро" Description='Дополнительные компоненты ядра' Display='expand' Level="1"
+					 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+				<ComponentRef Id="CreateProjectsFolder"/>
+				<ComponentRef Id="CreateReportsFolder"/>
+        <ComponentRef Id="CreateHistoryFolder"/>
+				<ComponentRef Id="CreateResultFolder"/>
+				<ComponentRef Id="CreateTmpFolder"/>
+				<ComponentRef Id="CalcArchive"/>
+
+				<Feature Id='KernelMainFeature' Title="Базовые компоненты ядра" Description='Базовые компоненты ядра'
+								 Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+					<ComponentRef Id="Providers_A"/>
+          <ComponentRef Id="Providers_C"/>
+					<ComponentRef Id="ControllerPart1"/>
+					<ComponentRef Id="ControllerPart2"/>
+					<ComponentRef Id="ControllerPart4"/>
+					<ComponentRef Id="ControllerPart5"/>
+          <ComponentRef Id="GeneralPart1"/>
+					<ComponentRef Id="GeneralPart2"/>
+					<ComponentRef Id="TablikPart1"/>
+					<ComponentRef Id='GrapfhicLibrary_D'/>
+					<ComponentRef Id='GrapfhicLibrary_P'/>
+          <ComponentRef Id='ConsGraphLibrary_D'/>
+          <ComponentRef Id='ConsGraphLibrary_P'/>
+					<ComponentRef Id='GrapfhicLibrary_BaseLibrary_D'/>
+					<ComponentRef Id='GrapfhicLibrary_BaseLibrary_P'/>
+          <ComponentRef Id="TempData"/>
+          <ComponentRef Id="SynchFiles"/>
+          <ComponentRef Id="DocsKernel"/>
+          <ComponentRef Id="TuneServicePart"/>
+				</Feature>
+			</Feature>
+
+			<Feature Id="ControllerMonitorFeature" Title="Монитор расчета"  AllowAdvertise='no'
+							 Description="Монитор расчета" Display="expand" Level="1">
+				<ComponentRef Id="ControllerPart3"/>
+				<ComponentRef Id="CProgramMenuCoSC"/>
+				<ComponentRef Id="CDesktopCoSC"/>
+			</Feature>
+
+      <Feature Id="CalcArchiveViewerFeature" Title="Архив и ручной ввод"  AllowAdvertise='no'
+							 Description="Архив и ручной ввод" Display="expand" Level="1">
+        <ComponentRef Id="CalcArchiveViewerPart1"/>
+        <ComponentRef Id="CalcArchiveViewerPart2"/>
+        <ComponentRef Id="CProgramMenuViSC"/>
+        <ComponentRef Id="CDesktopViSC"/>
+        <ComponentRef Id="CreateAccReportsFolder"/>
+      </Feature>
+		</Feature>
+
+    <!--Иконки, оформление диалоговых окон, лицензионное соглашение-->
+		<Icon Id ="ITicon" SourceFile="..\..\Release\Controller\ITicon.M.ico"/>
+		<Icon Id ="ITicon32" SourceFile="..\..\Release\Controller\ITicon32.M.ico"/>
+    <Icon Id ="ITiconAV" SourceFile="..\..\Release\CalcArchiveViewer\ITicon.AV.ico"/>
+    <Icon Id ="ITicon32AV" SourceFile="..\..\Release\CalcArchiveViewer\ITicon32.AV.ico"/>
+    <!--WixVariable Id="WixUIBannerBmp" Value="Banner.bmp"/>
+		<WixVariable Id="WixUIDialogBmp" Value="Dialog.bmp"/-->
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <!--Последовательность диалоговых окон во время установки-->
+		<UI Id='MyWixUI_Mondo'>
+			<!--<UIRef Id='WixUI_Mondo'/>-->
+			<UIRef Id='WixUI_FeatureTree'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+
+			<!--<Dialog Id="UserRegistrationDlg" Width="370" Height="270" Title="[ProductName] Setup" NoMinimize="yes">
+				<Control Id="NameLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;User Name:" />
+				<Control Id="NameEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="USERNAME" Text="{80}" />
+				<Control Id="OrganizationLabel" Type="Text" X="45" Y="110" Width="100" Height="15" TabSkip="no" Text="&amp;Organization:" />
+				<Control Id="OrganizationEdit" Type="Edit" X="45" Y="122" Width="220" Height="18" Property="COMPANYNAME" Text="{80}" />
+				<Control Id="CDKeyLabel" Type="Text" X="45" Y="147" Width="50" Height="10" TabSkip="no">
+					<Text>CD &amp;Key:</Text>
+				</Control>
+				<Control Id="CDKeyEdit" Type="MaskedEdit" X="45" Y="159" Width="250" Height="16" Property="PIDKEY" Text="[PIDTemplate]"/>
+				<Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+					<Publish Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+				</Control>
+				<Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+					<Publish Event="DoAction" Value="AnalyzerComplected">1</Publish>
+					<Publish Event="DoAction" Value="ConstructorComplected">1</Publish>
+
+					<Publish Event="ValidateProductID" Value="0">1</Publish>
+					<Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">CostingComplete = 1</Publish>
+					<Publish Event="NewDialog" Value="SetupTypeDlg">1</Publish>
+
+					-->
+			<!--<Publish Event="DoAction" Value="msg"><![CDATA[VersionNT64]]></Publish>-->
+			<!--
+
+					-->
+			<!--<Publish Property="ISANALYZER" Value="0">1</Publish>-->
+			<!--
+
+					-->
+			<!--<Publish Event="Remove" Value="AnalyzerFeature"><![CDATA[ISANALYZER = "1"]]></Publish>-->
+			<!--
+
+				</Control>
+				<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+					<Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+				</Control>
+				<Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+				<Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+					<Text>Please enter your customer information</Text>
+				</Control>
+				<Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+				<Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+					<Text>Customer Information</Text>
+				</Control>
+				<Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+			</Dialog>
+
+			<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="UserRegistrationDlg" Order="3">LicenseAccepted = "1"</Publish>
+			<Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="UserRegistrationDlg">1</Publish>-->
+		</UI>
+
+    <!--Маска ввода пароля-->
+		<Property Id="PIDTemplate"><![CDATA[<?>]]></Property>
+
+    <!--Регистрация и дерегистрация библиотек-->
+		<Property Id="CMD">cmd.exe</Property>
+		<CustomAction Id="RegGraph" Execute="deferred" Return="check" BinaryKey="regasmB"
+									ExeCommand='&quot;[Graphics]GraphicLibrary.dll&quot; /tlb GraphicLibrary.tlb /codebase GraphicLibrary'/>
+    <CustomAction Id="CRegGraph" Execute="deferred" Return="check" BinaryKey="regasmB"
+									ExeCommand='&quot;[Graphics]ConsGraphLibrary.dll&quot; /tlb ConsGraphLibrary.tlb /codebase ConsGraphLibrary'/>
+		<CustomAction Id="RegTablik" Execute="deferred" Return="check" BinaryKey="regasmB"
+									ExeCommand='&quot;[Tablik]Tablik.dll&quot; /tlb Tablik.tlb /codebase Tablik'/>
+		<CustomAction Id="RegController" Execute="deferred" Return="check" BinaryKey="regasmB"
+									ExeCommand='&quot;[Controller]ControllerClient.dll&quot; /tlb ControllerClient.tlb /codebase ControllerClient'/>
+    <CustomAction Id="RegSynch" Execute="deferred" Return="check" BinaryKey="regasmB"
+									ExeCommand='&quot;[Controller]VersionSynch.dll&quot; /tlb VersionSynch.tlb /codebase VersionSynch'/>
+		<!--<CustomAction Id='RegGraph' Directory='Graphics' ExeCommand="cmd.exe /c &quot;[tmp]RegAsm.exe&quot; GraphicLibrary.dll /tlb GraphicLibrary.tlb /codebase GraphicLibrary" Return='asyncNoWait' Execute ='deferred' />
+		<CustomAction Id='RegTablik' Directory='Tablik' ExeCommand="cmd.exe /c &quot;[tmp]RegAsm.exe&quot; Tablik.dll /tlb Tablik.tlb /codebase Tablik" Return='asyncNoWait' Execute ='deferred' />
+		<CustomAction Id='RegController' Directory='Controller' ExeCommand="cmd.exe /c &quot;[tmp]RegAsm.exe&quot; ControllerClient.dll /tlb ControllerClient.tlb /codebase ControllerClient" Return='asyncNoWait' Execute ='deferred' />-->
+
+		<CustomAction Id="DeRegGraph" Execute="immediate" Return="ignore" BinaryKey="regasmB"
+									ExeCommand='&quot;[Graphics]GraphicLibrary.dll&quot; /tlb GraphicLibrary.tlb /codebase GraphicLibrary /u'/>
+    <CustomAction Id="CDeRegGraph" Execute="immediate" Return="ignore" BinaryKey="regasmB"
+									ExeCommand='&quot;[Graphics]ConsGraphLibrary.dll&quot; /tlb ConsGraphLibrary.tlb /codebase ConsGraphLibrary /u'/>
+		<CustomAction Id="DeRegTablik" Execute="immediate" Return="ignore" BinaryKey="regasmB"
+									ExeCommand='&quot;[Tablik]Tablik.dll&quot; /tlb Tablik.tlb /codebase Tablik /u'/>
+		<CustomAction Id="DeRegController" Execute="immediate" Return="ignore" BinaryKey="regasmB"
+									ExeCommand='&quot;[Controller]ControllerClient.dll&quot; /tlb ControllerClient.tlb /codebase ControllerClient /u'/>
+    <CustomAction Id="DeRegSynch" Execute="immediate" Return="ignore" BinaryKey="regasmB"
+									ExeCommand='&quot;[Controller]VersionSynch.dll&quot; /tlb VersionSynch.tlb /codebase VersionSynch /u'/>
+    <!--tlb-файлы создаются во после установки, поэтому и удалять их нужно отдельно при деинсталляции программы-->
+		<CustomAction Id="RemoveGraphicLibrarytlb" Script="vbscript" Return="ignore">
+			<![CDATA[
+			On Error Resume Next
+	dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+		filesys.DeleteFile Session.Property("Graphics") & "\GraphicLibrary.tlb"
+	]]>
+		</CustomAction>
+    <CustomAction Id="RemoveConsGraphLibrarytlb" Script="vbscript" Return="ignore">
+      <![CDATA[
+			On Error Resume Next
+	dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+		filesys.DeleteFile Session.Property("Graphics") & "\ConsGraphLibrary.tlb"
+	]]>
+    </CustomAction>
+    <CustomAction Id="RemoveVersionSynchtlb" Script="vbscript" Return="ignore">
+      <![CDATA[
+			On Error Resume Next
+	dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+		filesys.DeleteFile Session.Property("Controller") & "\VersionSynch.tlb"
+	]]>
+    </CustomAction>
+
+		<CustomAction Id="RemoveTabliktlb" Script="vbscript" Return="ignore">
+			<![CDATA[
+			On Error Resume Next
+	dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+		filesys.DeleteFile Session.Property("Tablik") & "\Tablik.tlb"
+	]]>
+		</CustomAction>
+
+		<CustomAction Id="RemoveControllertlb" Script="vbscript" Return="ignore">
+			<![CDATA[
+			On Error Resume Next
+	dim filesys
+ Set filesys = CreateObject("Scripting.FileSystemObject")
+		filesys.DeleteFile Session.Property("Controller") & "\ControllerClient.tlb"
+	]]>
+		</CustomAction>
+
+    <CustomAction Id="SetDateId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="SetDate"
+			Return="check" />
+
+    <!--Вариации разных паролей для разных типов установки. Теперь не актуально, достаточно одного режима (вместо режимов
+    Анализатор и Конструктор)-->
+		<Property Id="ISANALYZER" Value="1" Secure="yes"/>
+		<Property Id="ISCONSTRUCTOR" Value="1">
+		</Property>
+		<CustomAction Id="AnalyzerComplected" Script="vbscript" Return="ignore" Execute="immediate">
+			<![CDATA[
+			'If Session.Property("PIDKEY") = "1" OR Session.Property("PIDKEY") = "3" Then Session.Property("ISANALYZER") = "1" Else Session.Property("ISANALYZER") = "0" 
+			Session.Property("ISANALYZER") = "1"
+			]]>
+		</CustomAction>
+		<!--<CustomAction Id="ConstructorComplected" Script="vbscript" Return="ignore" Execute="immediate">
+			<![CDATA[
+			'If Session.Property("PIDKEY") = "2" OR Session.Property("PIDKEY") = "3" Then Session.Property("ISCONSTRUCTOR") = "1" Else Session.Property("ISCONSTRUCTOR") = "0"
+			Session.Property("ISCONSTRUCTOR") = "1"
+			]]>
+		</CustomAction>-->
+
+    <!--Запосной метод для вывода сообщений-->
+		<CustomAction Id="msg" Script="vbscript" Return="check">
+			<![CDATA[
+			Msgbox Session.Property("ReporterGUID")
+			]]>
+		</CustomAction>
+
+		<Binary Id="regasmB" SourceFile="..\..\Release\Tmp\RegAsm.exe" />
+
+		<Property Id="ACCESSPATH">
+			<RegistrySearch Id="AccessPathSearch" Root="HKLM"
+											Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\MSACCESS.EXE"
+											Name="Path"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+		<Property Id="OfficeVersion" Value="1"/>
+		<CustomAction Id="OfficeVersionDetecting" Return="check" Script="vbscript">
+			Session.Property("OfficeVersion") = left(right(Session.Property("ACCESSPATH"), 3), 2)
+		</CustomAction>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+		<Binary Id="ConfigFillB" SourceFile="..\..\Installers\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillIT"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillITU"
+			Return="check" />
+
+    <CustomAction Id="SynchActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KernelVersionSynch"
+			Return="check" />
+
+    <!--<CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />-->
+
+		<!--<CustomAction Id='rmvAnalyzer' Directory='Analyzer' Return='asyncNoWait' Execute="immediate"
+									ExeCommand="msiexec.exe /x {23F00E03-966B-41B9-8936-0FD27AFC9CBE}" />-->
+		<!--<CustomAction Id='rmvConstructor' Directory='Constructor' Return='asyncWait' Execute="immediate"
+									ExeCommand="msiexec.exe /x {D24864D4-5EEE-47FD-A83E-AA03E74731E6}" />
+		<CustomAction Id='rmvOvation' Directory='POvation' Return="asyncWait" Execute="immediate"
+									ExeCommand="msiexec.exe /x {E8EC010B-46EA-4AA2-BDB0-4670320AADC8}" />
+		<CustomAction Id='rmvKosmotronika' Directory='PKosmotronika' Return="asyncNoWait" Execute="immediate"
+									ExeCommand="msiexec.exe /x {6F60D6B2-0222-4BE6-9A82-95E0C13390BE}" />
+		<CustomAction Id='rmvRAS' Directory='RAS' Return="asyncWait" Execute="immediate"
+									ExeCommand="msiexec.exe /x {5F6FD0AB-7729-4F94-B097-032A2C6B1050}" />-->
+		<!--<CustomAction Id='rmvReporter' Directory='Reporter' Return="asyncNoWait" Execute="immediate"
+									ExeCommand="msiexec.exe /x [ReporterGUID]" />-->
+		<CustomAction Id='rmv2007Pack' Directory='INSTALLLOCATION' Return='asyncNoWait' Execute="immediate"
+									ExeCommand="msiexec.exe /x {A2AA4EA5-0C66-444C-AC2D-5EB023DEC1E5} /qn" />
+		<!--<CustomAction Id="rmv2007Reg" BinaryKey="ConfigFillB" DllEntry="IT2007PackRegClean" Execute="immediate"/>-->
+		<Property Id="PCK2007STLLD">
+			<RegistrySearch Id="Pack2007Search" Root="HKLM"
+											Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A2AA4EA5-0C66-444C-AC2D-5EB023DEC1E5}"
+                      Name="DisplayName"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="EditionType" Value="1"></Property>
+
+		<!--<CustomAction Id='SetRootDrive' Property='ROOTDRIVE' Value='[%SystemDrive]\'/>-->
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+		<InstallExecuteSequence>
+			<!--<Custom Action="msg" After="OfficeVersionDetecting" />-->
+			<Custom Action="OfficeVersionDetecting" Before="CostInitialize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallInitialize">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+			<Custom Action="FillActionId" After="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="SynchActionId" After="InstallFinalize">NOT Installed</Custom>
+
+			<!--<Custom Action="RegGraph" After="InstallFiles"><![CDATA[&GraphicFeature=3]]></Custom>-->
+			<Custom Action="RegGraph" After="InstallFiles">Not Installed</Custom>
+      <Custom Action="CRegGraph" After="InstallFiles">Not Installed</Custom>
+			<Custom Action="RegTablik" After="InstallFiles">Not Installed</Custom>
+			<Custom Action="RegController" After="InstallFiles">Not Installed</Custom>
+      <Custom Action="RegSynch" After="InstallFiles">Not Installed</Custom>
+
+			<!--<Custom Action="rmvAnalyzer" After="InstallFinalize">REMOVE = "ALL"</Custom>-->
+			<!--<Custom Action="rmv2007Reg" After="InstallFinalize">PCK2007STLLD and Installed</Custom>
+			<Custom Action="rmv2007Pack" After="rmv2007Reg">PCK2007STLLD and Installed</Custom>-->
+      <Custom Action="rmv2007Pack" After="InstallFinalize">PCK2007STLLD and Installed</Custom>
+			
+			<!--<Custom Action="DeRegGraph" Before="RemoveFiles"><![CDATA[&GraphicFeature=2]]></Custom>-->
+			<Custom Action="DeRegGraph" Before="RemoveFiles">Installed</Custom>
+      <Custom Action="CDeRegGraph" Before="RemoveFiles">Installed</Custom>
+			<Custom Action="DeRegTablik" Before="RemoveFiles">Installed</Custom>
+			<Custom Action="DeRegController" Before="RemoveFiles">Installed</Custom>
+      <Custom Action="DeRegSynch" Before="RemoveFiles">Installed</Custom>
+
+			<!--<Custom Action="RemoveGraphicLibrarytlb" Before="RemoveFiles"><![CDATA[&GraphicFeature=2]]></Custom>-->
+			<Custom Action="RemoveGraphicLibrarytlb" Before="RemoveFiles">Installed</Custom>
+      <Custom Action="RemoveConsGraphLibrarytlb" Before="RemoveFiles">Installed</Custom>
+      <Custom Action="RemoveVersionSynchtlb" Before="RemoveFiles">Installed</Custom>
+			<Custom Action="RemoveTabliktlb" Before="RemoveFiles">Installed</Custom>
+			<Custom Action="RemoveControllertlb" Before="RemoveFiles">Installed</Custom>
+
+      <Custom Action="SetDateId" After="InstallFinalize">NOT Installed</Custom>
+			
+			<!--<AppSearch After="FindRelatedProducts"/>
+			<Custom Action="SetRootDrive" Before="CostInitialize"></Custom>-->
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+	</Product>
+</Wix>

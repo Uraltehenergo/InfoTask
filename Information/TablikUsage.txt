@@ -1,0 +1,25 @@
+﻿Скопировать RegAsm.exe
+Зарегистрировать билиотеку:
+RegAsm.exe Tablik.dll /tlb Tablik.tlb /codebase Tablik
+
+Пример использования:
+Dim t As Object
+  Set t = CreateObject("Tablik.TablikCompiller")
+  t.ShowIndicator = true
+  MsgBox t.SetHistoryFile("d:\InfoTask\Debug\Constructor\HistoryTablik\HistoryTablik.accdb")
+  MsgBox t.SetCompiledDir("d:\InfoTask\Debug\Compiled\")
+  MsgBox t.LoadProject("d:\InfoTask\Debug\Projects\Pr1.accdb")
+  MsgBox t.ErrorMessage
+  MsgBox t.ProjectFile
+  MsgBox t.ProjectCode
+  MsgBox t.ProjectName
+  MsgBox t.LoadSignals
+  MsgBox t.SignalsCount
+  MsgBox t.CompileProject
+  MsgBox t.SignalsInUseCount
+  MsgBox t.CalcParamsCount
+  MsgBox t.ArchiveParamsCount	
+  MsgBox t.ErrorsCount
+  MsgBox t.MakeWorkFile
+  MsgBox t.WorkFile
+  MsgBox t.Close

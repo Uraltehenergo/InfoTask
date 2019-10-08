@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ProductName="InfoTask2007Pack" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{E2ECBBCE-143F-4B74-ABE8-4A166FC0FA0A}"?>
+	<?define UpgradeCode="{2AFBE82B-3EEB-49C0-98D6-5814D2FE60C1}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" SummaryCodepage="1251"/>
+
+		<Media Id="1" Cabinet="InfoTask2007Pack.cab" EmbedCab="yes" />
+
+		<!--<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />-->
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence" Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="ANALYZER_INSTALLED" Value="0">
+			<DirectorySearch Id="CheckAnalyzer" Path="[Analyzer]" AssignToProperty="yes">
+				<FileSearch Id="ArhAnalyzeraccde_AOld" Name="ArhAnalyzer.accde"/>
+			</DirectorySearch>
+		</Property>
+
+		<Property Id="CONSTRUCTOR_INSTALLED" Value="0">
+			<DirectorySearch Id="CheckConstructor" Path="[Constructor]" AssignToProperty="yes">
+				<FileSearch Id="Constructoraccde_ConsOld" Name="Constructor.accde"/>
+			</DirectorySearch>
+		</Property>
+
+    <Property Id="CALCARCHIVEVIEWER_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckCalcArchiveViewer" Path="[CalcArchiveViewer]" AssignToProperty="yes">
+        <FileSearch Id="CalcArchiveVieweraccdeOld" Name="CalcArchiveViewer.accde"/>
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="ARCHIVEPROJECT_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckArchiveProject" Path="[PArchives]" AssignToProperty="yes">
+        <FileSearch Id="ArchiveProjectCommaccdeOld" Name="ArchiveProjectComm.accde"/>
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="CLONE_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckClone" Path="[PClone]" AssignToProperty="yes">
+        <FileSearch Id="CloneCommaccdeOld" Name="CloneComm.accde"/>
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="OVATION_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckOvation" Path="[POvation]" AssignToProperty="yes">
+        <FileSearch Id="OvationCommaccdeOld" Name="OvationComm.accde"/>
+      </DirectorySearch>
+    </Property>
+    
+		<Property Id="OVATIONHISTORIAN_INSTALLED" Value="0">
+			<DirectorySearch Id="CheckOvationHistorian" Path="[POvation]" AssignToProperty="yes">
+				<FileSearch Id="OvationHistorianCommaccdeOld" Name="OvationHistorianComm.accde"/>
+			</DirectorySearch>
+		</Property>
+
+		<Property Id="KOSMOTRONIKADBF_INSTALLED" Value="0">
+			<DirectorySearch Id="CheckKosmotronikaDbf" Path="[PKosmotronika]" AssignToProperty="yes">
+				<FileSearch Id="KosmotronikaDbfCommaccdeOld" Name="KosmotronikaDbfComm.accde"/>
+			</DirectorySearch>
+		</Property>
+
+		<Property Id="KOSMOTRONIKASQL_INSTALLED" Value="0">
+			<DirectorySearch Id="CheckKosmotronikaSql" Path="[PKosmotronika]" AssignToProperty="yes">
+				<FileSearch Id="KosmotronikaSqlCommaccdeOld" Name="KosmotronikaSqlComm.accde"/>
+			</DirectorySearch>
+		</Property>
+
+    <Property Id="WONDERWARE_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckWonderware" Path="[PWonderware]" AssignToProperty="yes">
+        <FileSearch Id="WonderwareCommaccdeOld" Name="WonderwareComm.accde"/>
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="SIEMENS_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckSiemens" Path="[PSiemens]" AssignToProperty="yes">
+        <FileSearch Id="SimaticCommaccdeOld" Name="SimaticComm.accde"/>
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="MIR_INSTALLED" Value="0">
+      <DirectorySearch Id="CheckMir" Path="[PMir]" AssignToProperty="yes">
+        <FileSearch Id="MirCommaccdeOld" Name="MirComm.accde"/>
+      </DirectorySearch>
+    </Property>
+
+		<!--<Property Id="ARPNOREMOVE" Value="0"/>-->
+    <!--<Property Id="ARPNOREPAIR" Value="no"/>-->
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        
+				<Directory Id="Analyzer" Name="Analyzer">
+					<Component Id="AnalyzerPart1" Guid="3C4016E3-99CE-45CC-BE8D-C7F187263A4E" Shared="yes">
+						<File Id="ArhAnalyzeraccdb_A" Name="ArhAnalyzer.accde"
+													Source="..\..\..\Release\InfoTask2007Pack\ArhAnalyzer.accde"	Vital="yes"/>
+						<Condition>ANALYZER_INSTALLED</Condition>
+					</Component>
+				</Directory>
+        
+				<Directory Id="Constructor" Name="Constructor">
+					<Component Id="ConstructorPart1" Guid="5C83DDD5-6D54-42AD-B6E6-C3D1C8BEC72D" Shared="yes">
+						<File Id="Constructoraccdb_Cons" Name="Constructor.accde"
+													Source="..\..\..\Release\InfoTask2007Pack\Constructor.accde"	Vital="yes"/>
+						<Condition>CONSTRUCTOR_INSTALLED</Condition>
+					</Component>
+				</Directory>
+
+        <Directory Id="CalcArchiveViewer" Name="CalcArchiveViewer">
+          <Component Id="CalcArchiveViewerPart1" Guid="A7AFC21E-D246-4ED1-9167-FC680842BDF9" Shared="yes">
+            <File Id="CalcArchiveVieweraccde" Name="CalcArchiveViewer.accde"
+													Source="..\..\..\Release\InfoTask2007Pack\CalcArchiveViewer.accde"	Vital="yes"/>
+            <Condition>CALCARCHIVEVIEWER_INSTALLED</Condition>
+          </Component>
+        </Directory>
+
+        <Directory Id="Providers" Name="Providers">
+          
+          <Directory Id="PArchives" Name="Archives">
+            <Component Id="ArchiveProjectPart1" Guid="{31DE7E3D-D629-4230-A939-24FCAA29F2A0}" Shared="yes">
+              <File Id="ArchiveProjectCommaccde" Name="ArchiveProjectComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\ArchiveProjectComm.accde"	Vital="yes" />
+              <Condition>ARCHIVEPROJECT_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="PClone" Name="Clone">
+            <Component Id="ClonePart1" Guid="{5797EF23-C514-4E8C-9DA2-BAFC58B6EE5A}" Shared="yes">
+              <File Id="CloneCommaccde" Name="CloneComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\CloneComm.accde"	Vital="yes" />
+              <Condition>CLONE_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="POvation" Name="Ovation">
+            <Component Id="OvationPart1" Guid="{DCC18AF4-9AE3-41F3-857A-2BDCD3D21716}" Shared="yes">
+              <File Id="OvationCommaccde" Name="OvationComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\OvationComm.accde"	Vital="yes" />
+              <Condition>OVATION_INSTALLED</Condition>
+            </Component>
+            <Component Id="OvationPart2" Guid="{BBF9705D-DFAA-4428-B501-342E68C1A170}" Shared="yes">
+              <File Id="OvationHistorianCommaccde" Name="OvationHistorianComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\OvationHistorianComm.accde"	Vital="yes" />
+              <Condition>OVATIONHISTORIAN_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="PKosmotronika" Name="Kosmotronika">
+            <Component Id="KosmotronikaPart1" Guid="{F5634559-CCEE-4B9E-B325-D589DF2C11E2}" Shared="yes">
+              <File Id="KosmotronikaSQLCommaccde" Name="KosmotronikaSQLComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\KosmotronikaSQLComm.accde"	Vital="yes" />
+              <Condition>KOSMOTRONIKASQL_INSTALLED</Condition>
+            </Component>
+            <Component Id="KosmotronikaPart2" Guid="{DBB1AEA1-FFFB-47BD-A8AC-4D793E212E98}" Shared="yes">
+              <File Id="KosmotronikaDbfCommaccde" Name="KosmotronikaDbfComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\KosmotronikaDbfComm.accde"	Vital="yes" />
+              <Condition>KOSMOTRONIKADBF_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="PWonderware" Name="Wonderware">
+            <Component Id="WonderwarePart1" Guid="{46535ADE-6092-4802-B008-74273F428E17}" Shared="yes">
+              <File Id="WonderwareCommaccde" Name="WonderwareComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\WonderwareComm.accde"	Vital="yes" />
+              <Condition>WONDERWARE_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="PSiemens" Name="Siemens">
+            <Component Id="SiemensPart1" Guid="{AD7BD454-DB10-445C-B79C-ED6ED28F280C}" Shared="yes">
+              <File Id="SimaticCommaccde" Name="SimaticComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\SimaticComm.accde"	Vital="yes" />
+              <Condition>SIEMENS_INSTALLED</Condition>
+            </Component>
+          </Directory>
+
+          <Directory Id="PMir" Name="Mir">
+            <Component Id="MirPart1" Guid="{BE73F07E-4085-431E-A321-10BB37A4D0EA}" Shared="yes">
+              <File Id="MirCommaccde" Name="MirComm.accde"
+                            Source="..\..\..\Release\InfoTask2007Pack\MirComm.accde"	Vital="yes" />
+              <Condition>SIEMENS_INSTALLED</Condition>
+            </Component>
+          </Directory>
+          
+				</Directory>
+			</Directory>
+		</Directory>
+
+		<Feature Id="ProductFeature" Title="InfoTask2007Pack" Level="1">
+			<ComponentRef Id="AnalyzerPart1"/>
+			<ComponentRef Id="ConstructorPart1"/>
+      <ComponentRef Id="CalcArchiveViewerPart1"/>
+      <ComponentRef Id="ArchiveProjectPart1"/>
+      <ComponentRef Id="ClonePart1"/>
+			<ComponentRef Id="OvationPart1"/>
+      <ComponentRef Id="OvationPart2"/>
+			<ComponentRef Id="KosmotronikaPart1"/>
+      <ComponentRef Id="KosmotronikaPart2"/>
+      <ComponentRef Id="WonderwarePart1"/>
+      <ComponentRef Id="SiemensPart1"/>
+      <ComponentRef Id="MirPart1"/>
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\..\Release\Docs\License.rtf"/>
+    
+		<UI Id='MyWixUI'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<CustomAction Id="ErrorCAI" Error="Сначала установите InfoTask"></CustomAction>
+		<CustomAction Id="ErrorOfficeVersion" Error="$(var.ProductName) совместим только с Microsoft Office 2007"></CustomAction>
+
+		<Property Id="ACCESSPATH">
+			<RegistrySearch Id="AccessPathSearch" Root="HKLM"
+											Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\MSACCESS.EXE"
+											Name="Path"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+		<Property Id="OfficeVersion" Value="1"/>
+		<CustomAction Id="OfficeVersionDetecting" Return="check" Script="vbscript">
+			Session.Property("OfficeVersion") = left(right(Session.Property("ACCESSPATH"), 3), 2)
+		</CustomAction>
+
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion
+				Property="OLDFOUND"
+				Minimum="1.0.0"
+				IncludeMinimum="yes"
+				Maximum="$(var.ProductVersion)"
+				IncludeMaximum="no"
+				IgnoreRemoveFailure="yes"
+				MigrateFeatures="yes"
+							/>
+		</Upgrade>
+		
+		<InstallUISequence>
+			<Custom Action="ErrorCAI" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+      <Custom Action="OfficeVersionDetecting" Before="ErrorOfficeVersion">Not Installed</Custom>
+			<Custom Action="ErrorOfficeVersion" Before="CostInitialize">	<![CDATA[OfficeVersion <> "12" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallFinalize"></RemoveExistingProducts>
+			<!--<Custom Action="OfficeVersionDetecting" After="CostInitialize">Not Installed</Custom>-->
+		</InstallExecuteSequence>
+	</Product>
+</Wix>

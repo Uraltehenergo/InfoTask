@@ -1,0 +1,133 @@
+﻿{
+module Lexer
+open System
+open Parser
+open Ast
+open Microsoft.FSharp.Text.Lexing
+
+let lexeme lexbuf =
+    LexBuffer<char>.LexemeString lexbuf
+}
+
+// These are some regular expression definitions
+let digit = ['0'-'9']
+let symbol =['_' 'a'-'z' 'A'-'Z' 'а'-'я' 'А'-'Я']
+let whitespace = [' ' '\t' ]
+let newline = ('\n' | '\r' '\n')
+
+rule tokenize = parse
+| whitespace	{ tokenize lexbuf }
+| newline       { lexbuf.EndPos <- lexbuf.EndPos.NextLine; tokenize lexbuf }
+
+// Операции
+| "исклили" |  "xor"					{ OPER1 (new Token("xor", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "или"	 | "or"							{ OPER1 (new Token("or", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "и"  | "and"							{ OPER1 (new Token("and", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "=="										{ OPER2 (new Token("==", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "<>"										{ OPER2 (new Token("<>", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "<="										{ OPER2 (new Token("<=", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "<"											{ OPER2 (new Token("<", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ">="										{ OPER2 (new Token(">=", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ">"											{ OPER2 (new Token(">", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "подобно" | "like"					{ OPER2 (new Token("like", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "+"											{ OPER4 (new Token("+", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "mod" 									{ OPER5 (new Token("mod", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "div"										{ OPER5 (new Token("div", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "/"											{ OPER5 (new Token("/", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "*"											{ OPER5 (new Token("*", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "^"											{ OPER6 (new Token("^", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+// Операции особенные
+| "не" | "not"							{ NOT (new Token("not", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "-"											{ MINUS (new Token("-", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "="											{ ASSIGN (new Token("=", TokenType.Operation, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+// Скобки
+| "("			{ LPAREN (new Token("(", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ")"			{ RPAREN (new Token(")", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "."			{ DOT (new Token(".", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ";"			{ COMMA (new Token(";", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ":"			{ COLON (new Token("colon", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "["			{ LFIGURE (new Token("[", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "]"			{ RFIGURE (new Token("]", TokenType.Symbol, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| eof			{ EOF }
+// $1 - в начале выражения, $2 - в начале списка параметров
+| "$1"		{ BEGINEXPR (new Token("$1", TokenType.System, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "$2"		{ BEGINPARAM (new Token("$2", TokenType.System, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+//Ключевые слова
+| "если" | "if"									{ IF (new Token("if", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "еслиточки" | "ifpoints"					{ IF (new Token("ifp", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "пока" | "while"								{ WHILE (new Token("while", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "покаточки" | "whilepoints"			{ WHILE (new Token("whilep", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "для" | "for"								{ FOR (new Token("for", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+//Стандартные функции и методы
+| "пустой" | "void"								{ VOID (new Token("void", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "расчет" | "calc"								{ IDENT (new Token("calc", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "ручной" | "hand"								{ OP (new Token("hand", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "владелец" | "owner"							{ OP (new Token("owner", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "вызывающий" | "caller"					{ OP (new Token("caller", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предабс" | "prevabs"							{ PREV (new Token("prevabs", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "пред" | "prev" 									{ PREV (new Token("prev", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предчас" | "prevhour"							{ PREV (new Token("prevhour", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предсут" | "prevday"							{ PREV (new Token("prevday", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предпериод" | "prevperiod"				{ PREV (new Token("prevperiod", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предчаспериод" | "prevhourperiod"	{ PREV (new Token("prevhourperiod", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предсутпериод" | "prevdayperiod"	{ PREV (new Token("prevdayperiod", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "предмгн" | "prevmom"						{ PREV (new Token("prevmom", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "задача" | "task"								{ TASK (new Token("task", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сигнал" | "signal"								{ GETSIGNAL (new Token("signal", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сигналлогич" | "signalbool"				{ OP (new Token("signalbool", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сигналцелое" | "signalint"				{ OP (new Token("signalint", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сигналдейств" | "signalreal"				{ OP (new Token("signalreal", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сигналстрока" | "signalstring"			{ OP (new Token("signalstring", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитькод" | "takecode"				{ OP (new Token("takecode", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитьимя" | "takename"				{ OP (new Token("takename", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитьединицы" | "takeunits"		{ OP (new Token("takeunits", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитьзадачу" | "taketask"			{ OP (new Token("taketask", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитькомментарий" | "takecomment"		{ OP (new Token("takecomment", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитькодсигнала" | "takecodesignal"		{ OP (new Token("takecodesignal", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "получитьимясигнала" | "takenamesignal"		{ OP (new Token("takenamesignal", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+
+//Типы данных
+| "величина" | "value"					{ DATATYPE (new Token("value", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "логич" | "bool"							{ DATATYPE (new Token("bool", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "целое" | "int"						   	{ DATATYPE (new Token("int", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "время" | "time"							{ DATATYPE (new Token("time", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "действ" | "real"					   	{ DATATYPE (new Token("real", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "строка" | "string"						{ DATATYPE (new Token("string", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| "сегменты" | "segments"			    { DATATYPE (new Token("segments", TokenType.KeyWord, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+// Константы
+| digit+													{ INT (new Token((lexeme lexbuf), TokenType.Int, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| digit+('.'digit+)?(['e']['-']?digit+)?			{ REAL (new Token((lexeme lexbuf), TokenType.Real, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| digit+(','digit+)?(['e']['-']?digit+)?			{ REAL (new Token((lexeme lexbuf).Replace(",", "."), TokenType.Real, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| ['#']digit+['.']digit+['.']digit+[' ']digit+[':']digit+[':']digit+['#']	{ TIME (new Token((lexeme lexbuf), TokenType.Time, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+| (symbol | digit )* symbol (symbol | digit )*	{ IDENT (new Token((lexeme lexbuf).ToLower(), TokenType.Ident, lexbuf.StartPos.AbsoluteOffset-3, lexbuf.StartPos.Line, lexbuf.StartPos.Column+1)) }
+
+//Комментарии, строки, сигналы
+| "/*" { comment lexbuf; tokenize lexbuf }
+| "\'" { string (lexbuf.StartPos.AbsoluteOffset-3) (lexbuf.StartPos.Line) (lexbuf.StartPos.Column+1) ""  lexbuf }
+| "{" { signal (lexbuf.StartPos.AbsoluteOffset-3) (lexbuf.StartPos.Line) (lexbuf.StartPos.Column+1) "" lexbuf }
+
+and string pos lin col s = parse
+| "\'\'" { string pos lin col (s + (lexeme lexbuf)) lexbuf }
+| "\'" { STRING (new Token(s, TokenType.String, pos, lin, col)) }
+| eof { failwithf "end of file in string started at or near %A" lexbuf.StartPos }
+| newline { lexbuf.EndPos <- lexbuf.EndPos.NextLine; string pos lin col (s + (lexeme lexbuf)) lexbuf }
+| _ { string pos lin col (s + (lexeme lexbuf)) lexbuf }
+
+and signal pos lin col s = parse
+| "}" { SIGNAL (new Token(s, TokenType.Signal, pos, lin, col)) }
+| eof { failwithf "end of file in sygnal started at or near %A" lexbuf.StartPos }
+| newline { lexbuf.EndPos <- lexbuf.EndPos.NextLine; signal pos lin col (s + (lexeme lexbuf)) lexbuf }
+| _ { signal pos lin col (s + (lexeme lexbuf)) lexbuf }
+
+and comment = parse
+| "*/" | eof { () }
+| newline { lexbuf.EndPos <- lexbuf.EndPos.NextLine; comment lexbuf }
+| _ { comment lexbuf }
+
+
+

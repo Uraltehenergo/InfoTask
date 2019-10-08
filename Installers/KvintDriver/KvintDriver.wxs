@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="InfoTask. Kvint" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{7B8EA494-EE47-4B01-B28F-13B62C071798}"?>
+  <?define UpgradeCode="{613A250A-FE83-4152-8D6A-3DA102BA3DCF}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+           Language="1049" Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Kvint providers"  InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="Kvint.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+                      Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+                      Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!--Program files-->
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Providers" Name="Providers">
+          <Directory Id="PKvint" Name="Kvint"/>
+        </Directory>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+
+      <!--System folder-->
+      <Directory Id="SystemFolder" Name="SystemFolder" />
+    </Directory>
+
+    <DirectoryRef Id="PKvint">
+      <Component Id="KvintPart1" Guid="{87216BB2-80FF-47CE-ADA7-54876CEEA1E6}">
+        <File Id="KvintCommaccde" Name="KvintComm.accde"
+                      Source="..\..\Release\Providers\Kvint\KvintComm.accde"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="KvintPart2" Guid="{192DDC9E-79CE-46F7-AFE6-F056579E5708}">
+        <File Id="KvintCommDataaccdb" Name="KvintCommData.accdb"
+                     Source="..\..\Release\Providers\Kvint\KvintCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="KvintPart3" Guid="{D99AFE10-D25C-4AA4-B992-D480F31E0CE2}">
+        <File Id="ProvidersKvintdll" Name="ProvidersKvint.dll"
+                      Source="..\..\Release\Providers\Kvint\ProvidersKvint.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersLogikapdb" Name="ProvidersLogika.pdb"
+                      Source="..\..\Release\Providers\Kvint\ProvidersKvint.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Kvint\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Kvint\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Kvint\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Kvint\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <!--<DirectoryRef Id="Docs">
+      <Component Id="DocsKvint" Guid="{222222FA-8A91-494D-AC09-F5611516FC5A}">
+        <File Id="InfoTaskPR08Kvintpdf" Name="InfoTask-PR.08-Kvint.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.08-Kvint.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>-->
+
+    <Feature Id="ProductFeature" Title="InstallKvintDriver" Level="1">
+      <Feature Id='KvintFeature' Title="KvintFeature" Description='Драйвер' Display='expand' Level="1"
+             ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+        <ComponentRef Id="KvintPart1"/>
+        <ComponentRef Id="KvintPart2"/>
+        <ComponentRef Id="KvintPart3"/>
+        <!--<ComponentRef Id="DocsKvint"/>-->
+      </Feature>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillKvint"
+      Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+     BinaryKey="ConfigFillB"
+      DllEntry="ConfigFillKvintU"
+      Return="check" />
+
+    <CustomAction Id="KillProcessId"
+     BinaryKey="ConfigFillB"
+      DllEntry="KillProcess"
+      Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+              />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+  </Product>
+</Wix>

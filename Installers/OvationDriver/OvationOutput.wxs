@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<DirectoryRef Id="INSTALLLOCATION">
+				<Directory Id="Providers" Name="Providers">
+					<Directory Id="POvation" Name="Ovation" ComponentGuidGenerationSeed="{5639EFFF-6561-440F-AE8C-B31D068BBB87}">
+						<Directory Id="OvationOutput"/>
+					</Directory>
+				</Directory>
+		</DirectoryRef>
+		<ComponentGroup Id="OutputGroup">
+		</ComponentGroup>
+	</Fragment>
+</Wix>

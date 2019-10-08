@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{86FB9A37-6E4B-49F5-8B73-42A84CBDF623}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ReporterCommon</RootNamespace>
+    <AssemblyName>ReporterCommon</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Debug\Reporter\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Release\Reporter\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net40-client\Antlr4.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.Excel, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FormsLinks\FormFiltersParams.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormFiltersParams.Designer.cs">
+      <DependentUpon>FormFiltersParams.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksList.Designer.cs">
+      <DependentUpon>FormLinksList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksProperties.Designer.cs">
+      <DependentUpon>FormLinksProperties.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormPutLinks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormPutLinks.Designer.cs">
+      <DependentUpon>FormPutLinks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormShapeLibrary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormShapeLibrary.Designer.cs">
+      <DependentUpon>FormShapeLibrary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormFiltersIntervals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormFiltersIntervals.Designer.cs">
+      <DependentUpon>FormFiltersIntervals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormLiveReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormLiveReport.Designer.cs">
+      <DependentUpon>FormLiveReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormSaveReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormSaveReport.Designer.cs">
+      <DependentUpon>FormSaveReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormVideo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormVideo.Designer.cs">
+      <DependentUpon>FormVideo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="General\EnumsReport.cs" />
+    <Compile Include="FormsReport\FormAbsoluteEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormAbsoluteEdit.Designer.cs">
+      <DependentUpon>FormAbsoluteEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsSetup\FormAppInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsSetup\FormAppInfo.Designer.cs">
+      <DependentUpon>FormAppInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\ControlLinkProps.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\ControlLinkProps.Designer.cs">
+      <DependentUpon>ControlLinkProps.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormArchivesRanges.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormArchivesRanges.Designer.cs">
+      <DependentUpon>FormArchivesRanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsSetup\FormCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsSetup\FormCreate.Designer.cs">
+      <DependentUpon>FormCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormFindLinks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormFindLinks.Designer.cs">
+      <DependentUpon>FormFindLinks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsGroupReports\FormGroupReportEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsGroupReports\FormGroupReportEdit.Designer.cs">
+      <DependentUpon>FormGroupReportEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsGroupReports\FormGroupReports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsGroupReports\FormGroupReports.Designer.cs">
+      <DependentUpon>FormGroupReports.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormIntervals.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormIntervals.Designer.cs">
+      <DependentUpon>FormIntervals.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsLinks\FormLinksTemplate.Designer.cs">
+      <DependentUpon>FormLinksTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsReport\FormReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsReport\FormReport.Designer.cs">
+      <DependentUpon>FormReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormsSetup\FormSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormsSetup\FormSetup.Designer.cs">
+      <DependentUpon>FormSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="General\GeneralRep.cs" />
+    <Compile Include="Grammar\ErrorListener.cs" />
+    <Compile Include="Grammar\GrammarsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Grammar\GrammarsForm.Designer.cs">
+      <DependentUpon>GrammarsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Grammar\ConstNodes.cs" />
+    <Compile Include="Grammar\ICalcNode.cs" />
+    <Compile Include="Grammar\OperNodes.cs" />
+    <Compile Include="Grammar\ShapeViewParsing.cs" />
+    <Compile Include="Grammar\ShapeViewVisitor.cs" />
+    <Compile Include="Grammar\StatementNode.cs" />
+    <Compile Include="Objects\ReportHandParam.cs" />
+    <Compile Include="Objects\ReportObject.cs" />
+    <Compile Include="Objects\ReportShape.cs" />
+    <Compile Include="Objects\Transaction.cs" />
+    <Compile Include="Objects\TransactionObject.cs" />
+    <Compile Include="Objects\TransactionShape.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Objects\IntervalRange.cs" />
+    <Compile Include="Objects\TransactionCell.cs" />
+    <Compile Include="ReportBook\ReportBookLinks.cs" />
+    <Compile Include="ReportBook\ReportBookCommon.cs" />
+    <Compile Include="ReportBook\ReportBookForming.cs" />
+    <Compile Include="Objects\ReportCell.cs" />
+    <Compile Include="Projects\ReportProject.cs" />
+    <Compile Include="General\SysPage.cs" />
+    <Compile Include="Objects\ReportParam.cs" />
+    <Compile Include="Projects\ReportProjectBase.cs" />
+    <Compile Include="Projects\ReportProjectForData.cs" />
+    <Compile Include="Projects\ReportProjectForLinks.cs" />
+    <Compile Include="Projects\ReportProjectSetup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FormsLinks\FormFiltersParams.resx">
+      <DependentUpon>FormFiltersParams.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormLinksList.resx">
+      <DependentUpon>FormLinksList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormLinksProperties.resx">
+      <DependentUpon>FormLinksProperties.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormShapeLibrary.resx">
+      <DependentUpon>FormShapeLibrary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormAbsoluteEdit.resx">
+      <DependentUpon>FormAbsoluteEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormFiltersIntervals.resx">
+      <DependentUpon>FormFiltersIntervals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormLiveReport.resx">
+      <DependentUpon>FormLiveReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormSaveReport.resx">
+      <DependentUpon>FormSaveReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormVideo.resx">
+      <DependentUpon>FormVideo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsSetup\FormAppInfo.resx">
+      <DependentUpon>FormAppInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\ControlLinkProps.resx">
+      <DependentUpon>ControlLinkProps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormArchivesRanges.resx">
+      <DependentUpon>FormArchivesRanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsSetup\FormCreate.resx">
+      <DependentUpon>FormCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormFindLinks.resx">
+      <DependentUpon>FormFindLinks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsGroupReports\FormGroupReportEdit.resx">
+      <DependentUpon>FormGroupReportEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsGroupReports\FormGroupReports.resx">
+      <DependentUpon>FormGroupReports.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormIntervals.resx">
+      <DependentUpon>FormIntervals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormLinksTemplate.resx">
+      <DependentUpon>FormLinksTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsLinks\FormPutLinks.resx">
+      <DependentUpon>FormPutLinks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsReport\FormReport.resx">
+      <DependentUpon>FormReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormsSetup\FormSetup.resx">
+      <DependentUpon>FormSetup.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Grammar\GrammarsForm.resx">
+      <DependentUpon>GrammarsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Installers\VersionSynch\VersionSynch.csproj">
+      <Project>{CDBC4235-B0B3-4352-B4E5-4799C593B713}</Project>
+      <Name>VersionSynch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
+      <Project>{B277DA88-A145-4E65-B2EA-7EDCDD57D04A}</Project>
+      <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{97E6B21E-53C7-4AD8-A126-EAFE539F1DF0}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{F29BCB26-783E-46A5-8609-AC160C5C4809}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControllerClient\ControllerClient.csproj">
+      <Project>{9379CE46-F778-44FB-A98A-0CDEE328E3A5}</Project>
+      <Name>ControllerClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\help.png" />
+    <Antlr4 Include="Grammar\ShapeView.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>ReporterCommon</CustomToolNamespace>
+      <Listener>False</Listener>
+    </Antlr4>
+    <None Include="packages.config" />
+    <None Include="Resources\ITicon32.R.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>5</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\Debug\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.5.3\build\Antlr4.targets'))" />
+  </Target>
+  <Import Project="..\packages\Antlr4.4.5.3\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.5.3\build\Antlr4.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

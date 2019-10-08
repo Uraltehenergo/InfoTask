@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<?define ProductName="InfoTask. Analyzer" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{19BA7D58-F6DB-4265-8020-9EE9936D411F}"?>
+	<?define UpgradeCode="{481ED052-6E09-477B-BCDE-50C2F9E5CC79}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Analyzer package" InstallScope="perMachine"/>
+    <!-- <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Analyzer package" InstallPrivileges="limited" InstallScope="perMachine"/> -->
+
+		<Media Id="1" Cabinet="Analyzer.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<!--<Property Id="ARPNOREPAIR" Value="1"/>-->
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Analyzer" Name="Analyzer"/>
+				<Directory Id="tmp" Name="Tmp"/>
+				<Directory Id="Docs" Name="Docs"/>
+			</Directory>
+
+			<!--Пуск_Программы-->
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+				</Directory>
+			</Directory>
+
+			<!--Рабочий стол-->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+
+		<!--Analyzer-->
+		<DirectoryRef Id="Analyzer">
+			<Component Id="AnalyzerPart1" Guid="3C4016E3-99CE-45CC-BE8D-C7F187263A4E">
+				<File Id="ArhAnalyzeraccde_A" Name="ArhAnalyzer.accde"
+											Source="..\..\Release\Analyzer\ArhAnalyzer.accde"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="AnalyzerPart2" Guid="96FB6CB1-9D93-4B22-916C-45B46475EA90" Permanent="yes">
+				<File Id="AppDataaccdb_A" Name="AppData.accdb"
+											Source="..\..\Release\Analyzer\AppData.accdb"	Vital="yes" DiskId="1" />
+				<File Id="AnalyzerProjectaccdb_A" Name="ArhAnalyzerProject.accdb"
+											Source="..\..\Release\Analyzer\ArhAnalyzerProject.accdb"	Vital="yes" DiskId="1" />
+				<File Id="AnalyzerTemplatesaccdb_A" Name="ArhAnalyzerTemplates.accdb"
+											Source="..\..\Release\Analyzer\ArhAnalyzerTemplates.accdb"	Vital="yes" DiskId="1"/>
+				<File Id="AnalyzerArchiveaccdb_A" Name="ArhAnalyzerArchive.accdb"
+											Source="..\..\Release\Analyzer\ArhAnalyzerArchive.accdb"	Vital="yes" DiskId="1" />
+				<File Id="VedDataaccdb_A" Name="VedData.accdb"
+											Source="..\..\Release\Analyzer\VedData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+		<!--Tmp-->
+		<DirectoryRef Id="tmp">
+			<Component Id="TempData" Guid="{08362CCD-438E-4F60-B45F-33716DA9BC5A}">
+				<File Id="AnalyzerTempAppData_accdb" Name="AnalyzerAppDataTemplate.accdb"
+											Source="..\..\Release\Analyzer\AppData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsAnalyzer" Guid="{1417B4C4-BA78-47C5-9683-C71DB7651707}">
+        <File Id="InfoTaskUG06Analyzerpdf" Name="InfoTask-UG.06-Analyzer.pdf"
+							Source="..\..\Release\Docs\InfoTask-UG.06-Analyzer.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+    
+		<DirectoryRef Id="ProgramMenuUTEDir">
+			<Component Id="CProgramMenuAnSC" Guid="{A9280226-424D-4194-946A-E214C19296E3}">
+				<Shortcut Id="ProgramMenuAnSC" Name="Анализатор архива" Description="Анализатор архива" Target="[Analyzer]ArhAnalyzer.accde" Icon="ITicon" />
+				<RemoveFolder Id="rmvA" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="CDesktopAnSC" Guid="{FE4C62BF-05BB-4E14-9A6F-1D2C8EA89CAD}">
+				<Shortcut Id="DesktopAnSC" Name="Анализатор архива" Description="Анализатор архива" Target="[Analyzer]ArhAnalyzer.accde" Icon="ITicon32" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+		<Feature Id='AnalyzerFeature' Title="Анализатор архива" Description='Анализатор архива' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+			<!--<Condition Level="0">
+					<![CDATA[ISANALYZER = "0"]]>
+				</Condition>-->
+			<ComponentRef Id="AnalyzerPart1"/>
+			<ComponentRef Id="AnalyzerPart2"/>
+			<ComponentRef Id="CProgramMenuAnSC"/>
+			<ComponentRef Id="CDesktopAnSC"/>
+			<ComponentRef Id="TempData"/>
+			<ComponentRef Id="DocsAnalyzer"/>
+		</Feature>
+
+		<WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+		
+		<UI Id='MyWixUI'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<Icon Id ="ITicon" SourceFile="..\..\Release\Analyzer\ITicon.A.ico"/>
+		<Icon Id ="ITicon32" SourceFile="..\..\Release\Analyzer\ITicon32.A.ico"/>
+		
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+			<Custom Action="KillProcessId" Before="CostInitialize">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+		<Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillAnalyzer"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillAnalyzerU"
+			Return="check" />
+
+		<CustomAction Id="SynchActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="AnalyzerVersionSynch"
+			Return="check" />
+
+		<CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion
+				Property="OLDFOUND"
+				Minimum="1.0.0"
+				IncludeMinimum="yes"
+				Maximum="$(var.ProductVersion)"
+				IncludeMaximum="no"
+				IgnoreRemoveFailure="yes"
+				MigrateFeatures="yes"
+							/>
+		</Upgrade>
+
+		<InstallExecuteSequence>
+			<!--<Custom Action="WixCloseApplications" Before="InstallValidate">Installed</Custom>-->
+
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+			<Custom Action="SynchActionId" After="InstallFinalize">NOT Installed</Custom>
+
+			<RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+
+		<!--<util:CloseApplication Id="CloseAnalyzer" Target="Monitor.exe" CloseMessage="yes" RebootPrompt="no">
+			Installed
+		</util:CloseApplication>-->
+	</Product>
+</Wix>

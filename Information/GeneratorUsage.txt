@@ -1,0 +1,8 @@
+Пример использования:
+Dim t As Object
+  Set t = CreateObject("Tablik.TablikGenerator")
+  'templateFile - Файл шаблона генерации
+  'tablsFile - Файл с таблицами данных
+  'projectFile - Генерируемый файл проекта
+  MsgBox t.Generate(templateFile, tablsFile, projectFile)
+  MsgBox t.Close

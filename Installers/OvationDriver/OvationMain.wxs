@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ProductName="InfoTask. Ovation" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{0D92EE6F-224F-459F-B12A-730ACE555BF4}"?>
+	<?define UpgradeCode="{E615A6CE-8C68-44EA-B3E8-254FE0C75D40}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Ovation providers" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="Ovation.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!--Program files-->
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Providers" Name="Providers">
+					<Directory Id="POvation" Name="Ovation"/>
+				</Directory>
+        <Directory Id="Docs" Name="Docs"/>
+			</Directory>
+
+			<!--System folder-->
+			<Directory Id="SystemFolder" Name="SystemFolder" />
+		</Directory>
+
+		<DirectoryRef Id="POvation">
+			<Component Id="OvationPart1" Guid="{AF5B65AA-9C47-4AE9-B126-6F3022BE25C7}">
+        <File Id="OvationCommaccde" Name="OvationComm.accde"
+											Source="..\..\Release\Providers\Ovation\OvationComm.accde"	Vital="yes" DiskId="1" />
+        <File Id="OvationHistorianCommaccde" Name="OvationHistorianComm.accde"
+											Source="..\..\Release\Providers\Ovation\OvationHistorianComm.accde"	Vital="yes" DiskId="1" />
+        <File Id="CloneConvertaccdb" Name="CloneConvert.accdb"
+											Source="..\..\Release\Providers\Ovation\CloneConvert.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+
+      <Component Id="OvationPart2" Guid="{77BBBBEC-DBEB-465D-9C3C-94B056AB5D35}">
+        <File Id="OvationCommDataaccdb" Name="OvationCommData.accdb"
+											Source="..\..\Release\Providers\Ovation\OvationCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+
+      <Component Id="OvationPart3" Guid="{5AC0A2F3-03D1-42B8-88F5-69B01AE87221}">
+        <File Id="ProvidersOvationdll" Name="ProvidersOvation.dll"
+                      Source="..\..\Release\Providers\Ovation\ProvidersOvation.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersOvationpdb" Name="ProvidersOvation.pdb"
+                      Source="..\..\Release\Providers\Ovation\ProvidersOvation.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+                      Source="..\..\Release\Providers\Ovation\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+                      Source="..\..\Release\Providers\Ovation\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+                      Source="..\..\Release\Providers\Ovation\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+                      Source="..\..\Release\Providers\Ovation\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="SystemFolder">
+			<Component Id="OPCDAAuto" Guid="{878207B8-20D7-47D0-848F-DD9EA65AFDBD}" Permanent="yes">
+				<File Id="OPCDAAutodll" Name="OPCDAAuto.dll"  SelfRegCost="0"
+								Source="..\..\Release\Providers\Ovation\OPCDAAuto.dll"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsOvation" Guid="{AC51958B-519E-4565-B401-760CDD5BD044}">
+        <File Id="InfoTaskPR01Ovationpdf" Name="InfoTask-PR.01-Ovation.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.01-Ovation.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+		<Feature Id="ProductFeature" Title="InstallOvationDriver" Level="1">
+			<Feature Id='OvationFeature' Title="Овация" Description='Драйвер' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+				<ComponentRef Id="OvationPart1"/>
+        <ComponentRef Id="OvationPart2"/>
+        <ComponentRef Id="OvationPart3"/>
+				<ComponentRef Id="OPCDAAuto"/>
+        <ComponentRef Id="DocsOvation"/>
+			</Feature>
+			<!--<Condition Level="0">
+				<![CDATA[INSTALLLOCATION = ""]]>
+			</Condition>-->
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillO"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillOU"
+			Return="check" />
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+		<InstallExecuteSequence>
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+      
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+	</Product>
+</Wix>

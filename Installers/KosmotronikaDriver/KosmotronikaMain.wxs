@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!--С каждой новой версией необходимо менять GUID ProductCode,
+  при этом UpgradeCode всегда должен оставаться старым!-->
+  <!--Четвертая цифра версии ни на что не влияет-->
+	<?define ProductName="InfoTask. KosmotronikaSQL" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{21F1A16C-7CBD-4B67-9993-21092EB3F657}"?>
+	<?define UpgradeCode="{583C205A-1F68-4F03-BBBE-8669FD8BEB43}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="Kosmotronika providers" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="Kosmotronika.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!--Program files-->
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Providers" Name="Providers">
+					<Directory Id="PKosmotronika" Name="Kosmotronika"/>
+				</Directory>
+        <Directory Id="Docs" Name="Docs"/>
+			</Directory>
+
+			<!--System folder-->
+			<Directory Id="SystemFolder" Name="SystemFolder" />
+		</Directory>
+
+		<DirectoryRef Id="PKosmotronika">
+			<Component Id="KosmotronikaPart1" Guid="{3D42A809-0A57-4A1E-BA99-CD08C9B37F87}">
+				<File Id="KosmotronikaSQLCommaccde" Name="KosmotronikaSQLComm.accde"
+											Source="..\..\Release\Providers\Kosmotronika\KosmotronikaSQLComm.accde"	Vital="yes" DiskId="1" />
+				<File Id="KosmotronikaDbfCommaccde" Name="KosmotronikaDbfComm.accde"
+											Source="..\..\Release\Providers\Kosmotronika\KosmotronikaDbfComm.accde"	Vital="yes" DiskId="1" />
+				<!--<File Id="RetroDBdll" Name="RetroDB.dll"
+											Source="RetroDB.dll"	Vital="yes" DiskId="1" />-->
+			</Component>
+      <Component Id="KosmotronikaPart2" Guid="{CAE9019C-5962-40E8-A11B-174B0506927F}">
+        <File Id="KosmotronikaSQLCommDataaccdb" Name="KosmotronikaSQLCommData.accdb"
+											Source="..\..\Release\Providers\Kosmotronika\KosmotronikaSQLCommData.accdb"	Vital="yes" DiskId="1" />
+        <File Id="KosmotronikaDbfCommDataaccdb" Name="KosmotronikaDbfCommData.accdb"
+											Source="..\..\Release\Providers\Kosmotronika\KosmotronikaDbfCommData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+      
+      <Component Id="KosmotronikaPart3" Guid="{79D3F7FE-23C3-4806-91C2-FBDFC26963B0}">
+        <File Id="ProvidersKosmotronikadll" Name="ProvidersKosmotronika.dll"
+											Source="..\..\Release\Providers\Kosmotronika\ProvidersKosmotronika.dll"	Vital="yes" DiskId="1" />
+        <File Id="ProvidersKosmotronikapdb" Name="ProvidersKosmotronika.pdb"
+											Source="..\..\Release\Providers\Kosmotronika\ProvidersKosmotronika.pdb"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarydll" Name="BaseLibrary.dll"
+											Source="..\..\Release\Providers\Kosmotronika\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+        <File Id="BaseLibrarypdb" Name="BaseLibrary.pdb"
+											Source="..\..\Release\Providers\Kosmotronika\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypesdll" Name="CommonTypes.dll"
+											Source="..\..\Release\Providers\Kosmotronika\CommonTypes.dll"	Vital="yes" DiskId="1" />
+        <File Id="CommonTypespdb" Name="CommonTypes.pdb"
+											Source="..\..\Release\Providers\Kosmotronika\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+      </Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="SystemFolder">
+			<Component Id="OPCDAAuto" Guid="{878207B8-20D7-47D0-848F-DD9EA65AFDBD}" Permanent="yes">
+				<File Id="OPCDAAutodll" Name="OPCDAAuto.dll" SelfRegCost="0"
+								Source="..\..\Release\Providers\Kosmotronika\OPCDAAuto.dll"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsKosmo" Guid="{88F7AEFD-4C76-49B5-B3E1-0A0A0502A532}">
+        <File Id="InfoTaskPR02KosmotronikaSQLpdf" Name="InfoTask-PR.02-KosmotronikaSQL.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.02-KosmotronikaSQL.pdf" Vital="yes" DiskId="1"/>
+        <File Id="InfoTaskPR03KosmotronikaDBFpdf" Name="InfoTask-PR.03-KosmotronikaDBF.pdf"
+              Source="..\..\Release\Docs\InfoTask-PR.03-KosmotronikaDBF.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+		<Feature Id="ProductFeature" Title="InstallKosmotronikaDriver" Level="1">
+			<Feature Id='KosmotronikaFeature' Title="Космотроника" Description='Драйвер' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+				<ComponentRef Id="KosmotronikaPart1"/>
+				<ComponentRef Id="KosmotronikaPart2"/>
+				<ComponentRef Id="KosmotronikaPart3"/>
+				<ComponentRef Id="OPCDAAuto"/>
+        <ComponentRef Id="DocsKosmo"/>
+			</Feature>
+			<!--<Condition Level="0">
+				<![CDATA[INSTALLLOCATION = ""]]>
+			</Condition>-->
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+    
+		<UI Id='MyWixUI_Mondo'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<!--<CustomAction Id='RegRetro' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s RetroDB.dll"
+									Return='asyncNoWait' Execute ='deferred' />
+		<CustomAction Id='DeRegRetro' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s RetroDB.dll /u" Return="ignore" Execute="immediate"/>
+		<CustomAction Id='RegOPCDAAuto' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s ROPCDAAuto.dll"
+									Return='asyncNoWait' Execute ='deferred' />
+		<CustomAction Id='DeRegOPCDAAuto' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s OPCDAAuto.dll /u" Return="ignore" Execute="immediate"/>
+		<CustomAction Id='RegArchDB' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s ArchDB.dll"
+									Return='asyncNoWait' Execute ='deferred' />
+		<CustomAction Id='DeRegArchDB' Directory='PKosmotronika'
+									ExeCommand="cmd.exe /c regsvr32 /s ArchDB.dll /u" Return="ignore" Execute="immediate"/>-->
+
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillK"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillKU"
+			Return="check" />
+
+		<!--<CustomAction Id="msg" Script="vbscript" Return="ignore">
+			<![CDATA[
+			Msgbox "После завершения установки рекомендуется перезагрузить компьютер."
+			]]>
+		</CustomAction>-->
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+		
+		<InstallExecuteSequence>
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+			<!--<Custom Action="msg" After="FillActionId">Not Installed</Custom>-->
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+	</Product>
+</Wix>

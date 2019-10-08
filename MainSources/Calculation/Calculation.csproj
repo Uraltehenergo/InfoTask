@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{97E6B21E-53C7-4AD8-A126-EAFE539F1DF0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Calculation</RootNamespace>
+    <AssemblyName>Calculation</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Office.interop.access.dao, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchivesObjects\ArchiveInterval.cs" />
+    <Compile Include="ArchivesObjects\ArchiveParam.cs" />
+    <Compile Include="ArchivesObjects\ArchiveProject.cs" />
+    <Compile Include="ArchivesObjects\ArchiveQueryValues.cs" />
+    <Compile Include="ArchivesObjects\ArchiveReport.cs" />
+    <Compile Include="ArchivesObjects\ArchiveReportParam.cs" />
+    <Compile Include="ArchivesObjects\CalcParamBase.cs" />
+    <Compile Include="ArchivesObjects\HandInputParam.cs" />
+    <Compile Include="ArchivesObjects\InnerArchiveProject.cs" />
+    <Compile Include="ArchivesProviders\AccessArchive.cs" />
+    <Compile Include="ArchivesProviders\ArchiveBase.cs" />
+    <Compile Include="ArchivesProviders\ArchiveAccessSource.cs" />
+    <Compile Include="ArchivesProviders\ArchiveSourceBase.cs" />
+    <Compile Include="ArchivesProviders\IArchive.cs" />
+    <Compile Include="ArchivesProviders\SQLServerArchive.cs" />
+    <Compile Include="ArchivesProviders\ArchiveSQLServerSource.cs" />
+    <Compile Include="Calculation\CalcParamRun.cs" />
+    <Compile Include="Calculation\FilterIf.cs" />
+    <Compile Include="Calculation\VarRun.cs" />
+    <Compile Include="Calculation\CalcValue.cs" />
+    <Compile Include="CommonProviders\CloneSource.cs" />
+    <Compile Include="CommonProviders\HandInputSqlSource.cs" />
+    <Compile Include="CommonProviders\Imitator.cs" />
+    <Compile Include="CommonProviders\ImitSignal.cs" />
+    <Compile Include="General\General.cs" />
+    <Compile Include="General\ProviderConfig.cs" />
+    <Compile Include="Savers\VedColumn.cs" />
+    <Compile Include="Savers\VedParam.cs" />
+    <Compile Include="Threads\Enums.cs" />
+    <Compile Include="Functions\Fun.cs" />
+    <Compile Include="Functions\Funs.cs" />
+    <Compile Include="Functions\FunsList.cs" />
+    <Compile Include="Functions\FunsScalar.cs" />
+    <Compile Include="Functions\FunsWSP.cs" />
+    <Compile Include="Functions\Oka.cs" />
+    <Compile Include="Projects\CalcParam.cs" />
+    <Compile Include="Projects\CalcParamArchive.cs" />
+    <Compile Include="Projects\Expr.cs" />
+    <Compile Include="Projects\Grafic.cs" />
+    <Compile Include="Projects\Prev.cs" />
+    <Compile Include="Projects\Project.cs" />
+    <Compile Include="Projects\CalcUnit.cs" />
+    <Compile Include="Projects\TablParam.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threads\IndicatorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Threads\IndicatorForm.Designer.cs">
+      <DependentUpon>IndicatorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Threads\Provider.cs" />
+    <Compile Include="Savers\ResultSaver.cs" />
+    <Compile Include="Threads\ThreadApp.cs" />
+    <Compile Include="Threads\ThreadCalc.cs" />
+    <Compile Include="Threads\ThreadCloner.cs" />
+    <Compile Include="Savers\VedSaver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Installers\VersionSynch\VersionSynch.csproj">
+      <Project>{CDBC4235-B0B3-4352-B4E5-4799C593B713}</Project>
+      <Name>VersionSynch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BaseLibrary\BaseLibrary.csproj">
+      <Project>{B277DA88-A145-4E65-B2EA-7EDCDD57D04A}</Project>
+      <Name>BaseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
+      <Project>{F29BCB26-783E-46A5-8609-AC160C5C4809}</Project>
+      <Name>CommonTypes</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Threads\IndicatorForm.resx">
+      <DependentUpon>IndicatorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

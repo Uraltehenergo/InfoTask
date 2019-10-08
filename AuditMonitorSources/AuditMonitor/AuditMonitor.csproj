@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7A9C4ACB-8545-45A7-B11F-2FD77AB3DE0B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AuditMonitor</RootNamespace>
+    <AssemblyName>AuditMonitor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Debug\AuditMonitor\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Release\AuditMonitor\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommonTypes, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\GraphicLibrary\GraphicLibrary\bin\Debug\CommonTypes.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphicLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\GraphicLibrary\GraphicLibrary\bin\Debug\GraphicLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbstractAdam.cs" />
+    <Compile Include="Adam4019Plus.cs" />
+    <Compile Include="ChannelValue.cs" />
+    <Compile Include="AsyncDialog.cs" />
+    <Compile Include="FormErrorList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormErrorList.Designer.cs">
+      <DependentUpon>FormErrorList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGraphics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGraphics.Designer.cs">
+      <DependentUpon>FormGraphics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormVirtualNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormVirtualNet.Designer.cs">
+      <DependentUpon>FormVirtualNet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormModule4019P.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormModule4019P.Designer.cs">
+      <DependentUpon>FormModule4019P.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormModuleInit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormModuleInit.Designer.cs">
+      <DependentUpon>FormModuleInit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormYesNoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormYesNoDialog.Designer.cs">
+      <DependentUpon>FormYesNoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HyperTerminal.cs" />
+    <Compile Include="Logs.cs" />
+    <Compile Include="AdamNet.cs" />
+    <Compile Include="NewAdam4019Plus.cs" />
+    <Compile Include="NewChannelAbstract.cs" />
+    <Compile Include="NewAdam.cs" />
+    <Compile Include="NewModuleAbstract.cs" />
+    <Compile Include="NewNet.cs" />
+    <Compile Include="NewValue.cs" />
+    <Compile Include="VirtualNet.cs" />
+    <Compile Include="Archive.cs" />
+    <Compile Include="Params.cs" />
+    <Compile Include="VirtualAdamModule4019Plus.cs" />
+    <Compile Include="FormMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMonitor.Designer.cs">
+      <DependentUpon>FormMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormScanNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormScanNet.Designer.cs">
+      <DependentUpon>FormScanNet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommand.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommand.Designer.cs">
+      <DependentUpon>FormCommand.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FormSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSetup.Designer.cs">
+      <DependentUpon>FormSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TagList.cs" />
+    <Compile Include="FormGraphicsNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGraphicsNew.Designer.cs">
+      <DependentUpon>FormGraphicsNew.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="FormErrorList.resx">
+      <DependentUpon>FormErrorList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormGraphics.resx">
+      <DependentUpon>FormGraphics.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormVirtualNet.resx">
+      <DependentUpon>FormVirtualNet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormModule4019P.resx">
+      <DependentUpon>FormModule4019P.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormModuleInit.resx">
+      <DependentUpon>FormModuleInit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormYesNoDialog.resx">
+      <DependentUpon>FormYesNoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMonitor.resx">
+      <DependentUpon>FormMonitor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormScanNet.resx">
+      <DependentUpon>FormScanNet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommand.resx">
+      <DependentUpon>FormCommand.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSetup.resx">
+      <DependentUpon>FormSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="FormGraphicsNew.resx">
+      <DependentUpon>FormGraphicsNew.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TagList.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxMSCommLib">
+      <Guid>{648A5603-2C6E-101B-82B6-000000000014}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="MSCommLib">
+      <Guid>{648A5603-2C6E-101B-82B6-000000000014}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Клиентский профиль Microsoft .NET Framework 4 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>Клиентский профиль .NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Установщик Windows 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MainSources\BaseLibrary\BaseLibrary.csproj">
+      <Project>{B277DA88-A145-4E65-B2EA-7EDCDD57D04A}</Project>
+      <Name>BaseLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

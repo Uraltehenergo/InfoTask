@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\VSTO Runtime Setup\v4R" Value="Version" Variable="VSTORVersion" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Wow6432Node\Microsoft\VSTO Runtime Setup\v4R" Value="Version" Variable="VSTOR64Version" />
+		<!--<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\14.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2010" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\12.0\Excel\InstallRoot" Value="Path" Result="exists" Variable="IsExcel2007" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{5012000-1105-000-000-0000000FF1CE}" Value="InstallDate" Variable="O2007PIAExists" />-->
+
+		<PackageGroup Id="VstoR">
+			<ExePackage Id="VSTOR32"
+				Cache="no"
+				Compressed="yes"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="vstor40_x86.exe"
+				SourceFile="vstor40_x86.exe"
+				InstallCommand="/q /norestart /lang:ENU"
+				RepairCommand="/q /norestart /lang:ENU"
+				UninstallCommand="/q /norestart /lang:ENU"									
+				InstallCondition="NOT VersionNT64"
+				DetectCondition="VSTORVersion">
+				<!--<ExitCode Behavior="forceReboot" />-->
+			</ExePackage>
+			<ExePackage Id="VSTOR64"
+				Cache="no"
+				Compressed="yes"
+				PerMachine="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="vstor40_x64.exe"
+				SourceFile="vstor40_x64.exe"
+				InstallCommand="/q /norestart /lang:ENU"
+				RepairCommand="/q /norestart /lang:ENU"
+				UninstallCommand="/q /norestart /lang:ENU"
+				InstallCondition="VersionNT64"
+				DetectCondition="VSTOR64Version">
+				<!--<ExitCode Value ="3015" Behavior="forceReboot" />-->
+			</ExePackage>
+			<!--<MsiPackage Id="o2007pia"
+				Cache="no"
+				Compressed="yes"
+				Permanent="yes"
+				Vital="yes"
+				Name="o2007pia.msi"
+				SourceFile="o2007pia.msi"
+				InstallCondition="NOT O2007PIAExists AND IsExcel2007"
+				ForcePerMachine="yes"
+				Visible="yes">
+			</MsiPackage>-->
+		</PackageGroup>
+	</Fragment>
+</Wix>

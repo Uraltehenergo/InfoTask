@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ProductName="Reporter" ?>
+	<?define ProductVersion="1.3.5.0" ?>
+	<?define ProductCode="{1D304F95-B612-4342-9035-8142428B096A}"?>
+	<?define UpgradeCode="{B99375CB-7131-4821-A275-2CE4FC154029}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="First one" InstallScope="perMachine"/>
+
+		<Media Id="1" Cabinet="Reporter.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="Reporter" Name="Reporter"/>
+        <Directory Id="tmp" Name="Tmp"/>
+        <Directory Id="Docs" Name="Docs"/>
+			</Directory>
+		</Directory>
+
+		<!--Reporter-->
+		<DirectoryRef Id="Reporter">
+			<Component Id="ReporterPart1" Guid="95D5467C-8EF0-4608-AC1C-623210265B08">
+				<File Id="ReportTemplateaccdb_Rep" Name="ReportTemplate.accdb"
+											Source="..\..\Release\Reporter\ReportTemplate.accdb"	Vital="yes" DiskId="1" />
+				<File Id="ReportTemplatexlsx_Rep" Name="ReportTemplate.xlsx"
+											Source="..\..\Release\Reporter\ReportTemplate.xlsx"	Vital="yes" DiskId="1" />
+        <File Id="ClearTemplatexlsx_Rep" Name="ClearTemplate.xlsx"
+											Source="..\..\Release\Reporter\ClearTemplate.xlsx"	Vital="yes" DiskId="1" />
+        
+				<File Id="BaseLibrarydll_Rep" Name="BaseLibrary.dll"
+											Source="..\..\Release\Reporter\BaseLibrary.dll"	Vital="yes" DiskId="1" />
+				<File Id="BaseLibrarypdb_Rep" Name="BaseLibrary.pdb"
+											Source="..\..\Release\Reporter\BaseLibrary.pdb"	Vital="yes" DiskId="1" />
+        <File Id="VersionSynchdll_V" Name="VersionSynch.dll" 
+                      Source="..\..\Release\Reporter\VersionSynch.dll"	Vital="yes" DiskId="1" />
+        <File Id="VersionSynchpdb_V" Name="VersionSynch.pdb"
+                      Source="..\..\Release\Reporter\VersionSynch.pdb"	Vital="yes" DiskId="1" />
+        
+				<File Id="CommonTypesdll_Rep" Name="CommonTypes.dll"
+											Source="..\..\Release\Reporter\CommonTypes.dll"	Vital="yes" DiskId="1" />
+				<File Id="CommonTypesBaseLibrarypdb_Rep" Name="CommonTypes.pdb"
+											Source="..\..\Release\Reporter\CommonTypes.pdb"	Vital="yes" DiskId="1" />
+				<File Id="Utilitiesdll_Rep" Name="Microsoft.Office.Tools.Common.v4.0.Utilities.dll"
+											Source="..\..\Release\Reporter\Microsoft.Office.Tools.Common.v4.0.Utilities.dll"	Vital="yes" DiskId="1" />
+				<File Id="Utilitiesxml_Rep" Name="Microsoft.Office.Tools.Common.v4.0.Utilities.xml"
+											Source="..\..\Release\Reporter\Microsoft.Office.Tools.Common.v4.0.Utilities.xml"	Vital="yes" DiskId="1" />
+				<File Id="ReporterCommondll_Rep" Name="ReporterCommon.dll"
+											Source="..\..\Release\Reporter\ReporterCommon.dll"	Vital="yes" DiskId="1" />
+				<File Id="ReporterCommonpdb_Rep" Name="ReporterCommon.pdb"
+											Source="..\..\Release\Reporter\ReporterCommon.pdb"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2007dll_Rep" Name="ReporterExcel2007.dll"
+											Source="..\..\Release\Reporter\ReporterExcel2007.dll"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2007manifest_Rep" Name="ReporterExcel2007.dll.manifest"
+											Source="..\..\Release\Reporter\ReporterExcel2007.dll.manifest"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2007vsto_Rep" Name="ReporterExcel2007.vsto"
+											Source="..\..\Release\Reporter\ReporterExcel2007.vsto"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2010dll_Rep" Name="ReporterExcel2010.dll"
+											Source="..\..\Release\Reporter\ReporterExcel2010.dll"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2010manifest_Rep" Name="ReporterExcel2010.dll.manifest"
+											Source="..\..\Release\Reporter\ReporterExcel2010.dll.manifest"	Vital="yes" DiskId="1" />
+				<File Id="ReporterExcel2010vsto_Rep" Name="ReporterExcel2010.vsto"
+											Source="..\..\Release\Reporter\ReporterExcel2010.vsto"	Vital="yes" DiskId="1" />
+        <File Id="Antlr4_Runtime_dll" Name="Antlr4.Runtime.dll"
+								Source="..\..\Release\Reporter\Antlr4.Runtime.dll"	Vital="yes" DiskId="1" />
+        <File Id="Antlr4_Runtime_xml" Name="Antlr4.Runtime.xml"
+                Source="..\..\Release\Reporter\Antlr4.Runtime.xml"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="ReporterPart2" Guid="F9F890F0-5ABE-49BE-9A5D-FBFD41A4AFA3" Permanent="yes">
+				<File Id="ReporterDataaccdb_Rep" Name="ReporterData.accdb"
+											Source="..\..\Release\Reporter\ReporterData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="ReporterPart3" Guid="A20CC9D8-BC7A-41B8-8462-4FC04A417426">
+				<File Id="ControllerClientdll_Rep" Name="ControllerClient.dll"
+											Source="..\..\Release\Reporter\ControllerClient.dll"	Vital="yes" DiskId="1" />
+				<File Id="ControllerClientpdb_Rep" Name="ControllerClient.pdb"
+											Source="..\..\Release\Reporter\ControllerClient.pdb"	Vital="yes" DiskId="1" />
+				<File Id="Calculationdll_Rep" Name="Calculation.dll"
+											Source="..\..\Release\Reporter\Calculation.dll"	Vital="yes" DiskId="1" />
+				<File Id="Calculationpdb_Rep" Name="Calculation.pdb"
+											Source="..\..\Release\Reporter\Calculation.pdb"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="ReporterPart2010AddIn" Guid="{2ECD4135-78C5-4A03-AA7D-427B223A1C62}">
+				<Condition><![CDATA[OfficeVersion = 14 OR OfficeVersion = 15 OR OfficeVersion = 16]]></Condition>
+        <RegistryValue Id="RegKey_FriendlyName10" Root="HKLM"
+										 Key="Software\Microsoft\Office\Excel\AddIns\ReporterExcel2010"
+										 Name="FriendlyName"
+										 Value="ReporterExcel2010 Add-In"
+										 Type="string"/>
+        <RegistryValue Id="RegKey_Description10" Root="HKLM"
+														 Key="Software\Microsoft\Office\Excel\AddIns\ReporterExcel2010"
+														 Name="Description"
+														 Value="ReporterExcel2010 Add-In"
+														 Type="string"/>
+				<RegistryValue Id="RegKey_Manifest10" Root="HKLM"
+														 Key="Software\Microsoft\Office\Excel\AddIns\ReporterExcel2010"
+														 Name="Manifest" Value="[Reporter]ReporterExcel2010.vsto|vstolocal"
+														 Type="string"/>
+				<RegistryValue Id="RegKey_LoadBehavior10" Root="HKLM"
+														 Key="Software\Microsoft\Office\Excel\AddIns\ReporterExcel2010"
+														 Name="LoadBehavior" Value="3"
+														 Type="integer"/>
+        <!--Эта запись должна решать проблему с установкой надстройки на 2013 оффис-->
+        <RegistryValue Id="RegKey_CommandLineSafe10" Root="HKLM"
+														 Key="Software\Microsoft\Office\Excel\AddIns\ReporterExcel2010"
+														 Name="CommandLineSafe" Value="0"
+														 Type="integer"/>
+			</Component>
+		</DirectoryRef>
+
+    <!--Tmp-->
+    <DirectoryRef Id="tmp">
+      <Component Id="TempData" Guid="{6D08D2A0-BE41-41E1-A487-04D7EF612CEE}">
+        <File Id="ReporterTempData_accdb" Name="ReporterDataTemplate.accdb"
+											Source="..\..\Release\Reporter\ReporterData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsRep" Guid="{01D0B7F0-988B-4DBA-8759-8C82C3C09F65}">
+        <File Id="InfoTaskUG05Reporterpdf" Name="InfoTask-UG.05-Reporter.pdf"
+              Source="..\..\Release\Docs\InfoTask-UG.05-Reporter.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id='ReporterFeature' Title="Репортер" Description='Репортер' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+			<!--<Condition Level='0'>NOT EXCELPATH</Condition>-->
+			<ComponentRef Id="ReporterPart1"/>
+			<ComponentRef Id="ReporterPart2"/>
+			<ComponentRef Id="ReporterPart3"/>
+			<ComponentRef Id="ReporterPart2010AddIn"/>
+			<!--<ComponentRef Id="ReporterPart2007AddIn"/>-->
+      <ComponentRef Id="TempData"/>
+      <ComponentRef Id="DocsRep"/>
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+    <Binary Id="mageB" SourceFile="..\..\Release\Tmp\mage.exe" />
+
+		<Property Id="EXCELPATH">
+			<RegistrySearch Id="ExcelPathSearch" Root="HKLM"
+											Key="SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\excel.EXE"
+											Name="Path"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+		<Property Id="OfficeVersion" Value="1"/>
+		<CustomAction Id="OfficeVersionDetecting" Return="check" Script="vbscript">
+			Session.Property("OfficeVersion") = left(right(Session.Property("EXCELPATH"), 3), 2)
+		</CustomAction>
+
+		<!--<Property Id="REPEXC2010FILE">
+			<RegistrySearch Id="RepExcSearch10" Root="HKCU"
+											Key="Software\Microsoft\Office\Excel\Addins\ReporterExcel2010"
+											Name="Manifest"
+											Type="raw">
+			</RegistrySearch>
+		</Property>-->
+		<Property Id="REPEXC2007FILE">
+			<RegistrySearch Id="RepExcSearch07" Root="HKCU"
+											Key="Software\Microsoft\Office\Excel\Addins\ReporterExcel2007"
+											Name="Manifest"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+		<CustomAction Id="mageClear07" BinaryKey="mageB" ExeCommand="-cc" Execute="deferred" Return="check"/>
+		<!--<CustomAction Id="mageClear10" BinaryKey="mageB" ExeCommand="-cc" Execute="deferred" Return="check"/>
+		<CustomAction Id='Exc2010Manifest' Directory='Reporter' ExeCommand="cmd.exe /c ReporterExcel2010.vsto" Return="check" Execute="deferred" />-->
+		<CustomAction Id='Exc2007Manifest' Directory='Reporter' ExeCommand="cmd.exe /c ReporterExcel2007.vsto" Return="check" Execute="deferred" />
+		<!--<CustomAction Id='Exc2010ManifestU' Directory='Reporter' Return="ignore" Execute="deferred" 
+									ExeCommand="cmd.exe /c &quot;C:\Program Files\Common Files\Microsoft Shared\VSTO\10.0\VSTOInstaller.exe&quot; /Uninstall [REPEXC2010FILE] /s" />-->
+		<CustomAction Id='Exc2007ManifestU' Directory='Reporter' Return="ignore" Execute="deferred"
+									ExeCommand="cmd.exe /c &quot;C:\Program Files\Common Files\Microsoft Shared\VSTO\10.0\VSTOInstaller.exe&quot; /Uninstall [REPEXC2007FILE] /s" />
+		
+		<CustomAction Id="ErrorIT" Error="Сначала установите InfoTask"></CustomAction>
+		<CustomAction Id="ErrorOf" Error="Сначала установите Microsoft Office"></CustomAction>
+
+		<InstallUISequence>
+			<Custom Action="ErrorIT" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+			<Custom Action="ErrorOf" Before="CostInitialize">	<![CDATA[NOT EXCELPATH AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<!--<Binary Id="ConfigFillB" SourceFile="..\..\Release\Tmp\ConfigFill.CA.dll"/>-->
+		<Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillReporter"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillReporterU"
+			Return="check" />
+    
+    <CustomAction Id="SynchActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ReporterVersionSynch"
+			Return="check" />
+
+    <!--<CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />-->
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+		<InstallExecuteSequence>
+			<Custom Action="OfficeVersionDetecting" Before="CostInitialize">Not Installed</Custom>
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+      <Custom Action="SynchActionId" After="InstallFinalize">NOT Installed</Custom>
+			<!--<Custom Action="Exc2010ManifestU" After="RemoveFiles">REPEXC2010FILE</Custom>-->
+			<Custom Action="Exc2007ManifestU" After="RemoveFiles">REPEXC2007FILE</Custom>
+			<!--<Custom Action="mageClear10" After="InstallFiles">Not Installed and OfficeVersion = 14</Custom>-->
+			<Custom Action="mageClear07" After="InstallFiles">Not Installed and OfficeVersion = 12</Custom>
+			<!--<Custom Action="Exc2010Manifest" After="mageClear10">Not Installed and OfficeVersion = 14</Custom>-->
+			<Custom Action="Exc2007Manifest" After="mageClear07">Not Installed and OfficeVersion = 12</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+	</Product>
+</Wix>

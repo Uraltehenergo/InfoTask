@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define ProductName="InfoTask. RAS" ?>
+	<?define ProductVersion="1.2.0.0" ?>
+	<?define ProductCode="{11DAD89B-C113-46F7-B011-009BD58F8CBA}"?>
+	<?define UpgradeCode="{4AFAD044-9BE0-4D8E-B233-0D039BC9A4BD}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+					 Language="1049" Version="$(var.ProductVersion)"
+					 Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="RAS package" InstallScope="perMachine" />
+
+		<Media Id="1" Cabinet="RAS.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!--Program files-->
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="RAS" Name="RAS" />
+			</Directory>
+
+			<!--Пуск_Программы-->
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+					<Directory Id="ProgramMenuITDir" Name="$(var.ProductName)" />
+				</Directory>
+			</Directory>
+
+			<!--Рабочий стол-->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+
+		<DirectoryRef Id="RAS">
+			<Component Id="RASPart1" Guid="{16C19D0A-B58E-411F-9343-D82517D2C26E}">
+				<File Id="Rasaccde_R" Name="Ras.accde"
+											Source="..\..\Release\RAS\Ras.accde"	Vital="yes" DiskId="1" />
+			</Component>
+      <Component Id="RASPart2" Guid="{3980CE58-D03E-4314-A45E-118083D7D616}" Permanent="yes">
+        <File Id="RasAnalyzerProjectaccdb_R" Name="RasAnalyzerProject.accdb"
+											Source="..\..\Release\RAS\RasAnalyzerProject.accdb"	Vital="yes" DiskId="1" />
+        <File Id="RasProjectaccdb_R" Name="RasProject.accdb"
+											Source="..\..\Release\RAS\RasProject.accdb"	Vital="yes" DiskId="1" />
+        <File Id="RasTemplatesaccdb_R" Name="RasTemplates.accdb"
+											Source="..\..\Release\RAS\RasTemplates.accdb"	Vital="yes" DiskId="1" />
+        <File Id="RASArchiveaccdb_R" Name="RASArchive.accdb"
+											Source="..\..\Release\RAS\RASArchive.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="ProgramMenuITDir">
+			<Component Id="CProgramMenuRAS" Guid="{A17BD621-2890-4B55-B8A1-C8AD51459E57}">
+				<Shortcut Id="ProgramMenuRAS" Name="RAS" Description="RAS" Target="[RAS]Ras.accde" Icon="ITicon" />
+				<RemoveFolder Id="rmvRs" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" Name="sc0"/>
+			</Component>
+			<Component Id="CProgramMenuUnRAS" Guid="{569055CE-67BE-4DE5-9344-31519E409549}">
+				<Shortcut Id="UninstallRAS" Name="Удалить RAS" Target="[System32Folder]msiexec.exe"
+									Arguments="/x [ProductCode]" />
+				<RemoveFolder Id="rmvfl" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" Name="sc1" />
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id ="ProgramMenuUTEDir">
+			<Component Id="CProgramMenuRASFl" Guid="{8F885530-3536-45B8-BF86-4330CB2A4B36}">
+				<RemoveFolder Id="rmv" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" Name="sc2" />
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="CDesktopRAS" Guid="{C8E6769A-2BCD-415C-9289-B9E0F34A62E3}">
+				<Shortcut Id="DesktopRAS" Name="RAS" Description="RAS" Target="[RAS]Ras.accde" Icon="ITicon32" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" Name="sc3" />
+			</Component>
+		</DirectoryRef>
+
+		<Feature Id="ProductFeature" Title="InstallRASDriver" Level="1">
+			<Feature Id='RASFeature' Title="RAS" Description='Драйвер' Display='expand' Level="1"
+						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
+				<ComponentRef Id="RASPart1"/>
+        <ComponentRef Id="RASPart2"/>
+				<ComponentRef Id="CProgramMenuRAS"/>
+				<ComponentRef Id="CProgramMenuUnRAS"/>
+				<ComponentRef Id="CProgramMenuRASFl"/>
+				<ComponentRef Id="CDesktopRAS"/>
+			</Feature>
+			<!--<Condition Level="0">
+				<![CDATA[INSTALLLOCATION = ""]]>
+			</Condition>-->
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI_Mondo'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<Icon Id ="ITicon" SourceFile="..\..\Release\RAS\ITicon.RAS.ico"/>
+		<Icon Id ="ITicon32" SourceFile="..\..\Release\RAS\ITicon32.RAS.ico"/>
+
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<Binary Id="ConfigFillB" SourceFile="..\..\Installers\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillRAS"
+			Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillRASU"
+			Return="check" />
+
+    <CustomAction Id="SynchActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="RASVersionSynch"
+			Return="check" />
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+        Property="OLDFOUND"
+        Minimum="1.0.0"
+        IncludeMinimum="yes"
+        Maximum="$(var.ProductVersion)"
+        IncludeMaximum="no"
+        IgnoreRemoveFailure="yes"
+        MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+		<InstallExecuteSequence>
+			<Custom Action="FillActionId" After="InstallFinalize">NOT Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+      <Custom Action="SynchActionId" After="InstallFinalize">NOT Installed</Custom>
+
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+		
+	</Product>
+</Wix>

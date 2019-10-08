@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <?define ProductName="InfoTask. RASKosmotronika" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{0EAD4195-B5F3-449C-9661-AD4E2CD74B79}"?>
+  <?define UpgradeCode="{E8D24E98-855F-4BD0-AC9A-9D4B3481D83D}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+         Language="1049" Version="$(var.ProductVersion)"
+         Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="RASKosmotronika package" InstallScope="perMachine"/>
+
+    <Media Id="1" Cabinet="RASKosmotronika.cab" EmbedCab="yes" />
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+											Type="directory">
+      </RegistrySearch>
+    </Property>
+
+    <Property Id="AAA">
+      <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+											Type="raw">
+      </RegistrySearch>
+    </Property>
+
+    <!-- InfoTask-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="RAS" Name="RAS">
+          <Directory Id="RASKosmotronika" Name="RASKosmotronika"/>
+        </Directory>
+        <Directory Id="General" Name="General">
+          <Directory Id="Templates" Name="Templates"/>
+        </Directory>
+        <Directory Id="tmp" Name="Tmp"/>
+        <Directory Id="Docs" Name="Docs"/>
+      </Directory>
+      
+      <!--Пуск_Программы-->
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+        </Directory>
+      </Directory>
+
+      <!--Рабочий стол-->
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+
+    <!--RASKosmotronika-->
+    <DirectoryRef Id="RASKosmotronika">
+      <Component Id="RASKosmotronikaPart1" Guid="39276BAD-0281-49BB-ABE1-FC7A29A7583C">
+        <File Id="RASKosmotronikaaccde_A" Name="RASKosmotronika.accde"
+											Source="..\..\Release\RAS\RASKosmotronika\RASKosmotronika.accde"	Vital="yes" DiskId="1" />
+      </Component>
+      <Component Id="RASKosmotronikaPart2" Guid="21C39F2E-BD89-43EB-82DC-AEC2EC46E19C">
+        <File Id="RASKosmotronikaDataaccdb_A" Name="RASKosmotronikaData.accdb"
+											Source="..\..\Release\RAS\RASKosmotronika\RASKosmotronikaData.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+
+    <!--General\Templates -->
+    <DirectoryRef Id="Templates">
+      <Component Id="TemplatesPart1" Guid="AE583D10-03B5-4B59-ACD9-BFB25B05BEF0">
+        <File Id="ProjectGenTemplateaccdb" Name="ProjectGenTemplate.accdb"
+											Source="..\..\Release\General\Templates\ProjectGenTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="ProjectGenDataTemplateaccdb" Name="ProjectGenDataTemplate.accdb"
+											Source="..\..\Release\General\Templates\ProjectGenDataTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="AnalyzerVedTemplateaccdb" Name="AnalyzerVedTemplate.accdb"
+											Source="..\..\Release\General\Templates\AnalyzerVedTemplate.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsRASKosmotronika" Guid="{57107B37-4838-4605-A12C-D6E4DC07E976}">
+        <File Id="InfoTaskSP01RASKosmotronikapdf" Name="InfoTask-SP.01-RASKosmotronika.pdf"
+				  Source="..\..\Release\Docs\InfoTask-SP.01-RASKosmotronika.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="ProgramMenuUTEDir">
+      <Component Id="CProgramMenuAnSC" Guid="{AD27D326-D281-4C39-B267-5828B4BB7EDB}">
+        <Shortcut Id="ProgramMenuAnSC" Name="РАС Космотроника" Description="Программа РАС и АДЗ для ПТК Космотроника-Венец" Target="[RASKosmotronika]RASKosmotronika.accde" Icon="ITicon" />
+        <RemoveFolder Id="rmvA" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="CDesktopAnSC" Guid="{6B44312B-638B-4CC8-A04C-D18FEA536BFC}">
+        <Shortcut Id="DesktopAnSC" Name="РАС" Description="Программа РАС и АДЗ для ПТК Космотроника-Венец" Target="[RASKosmotronika]RASKosmotronika.accde" Icon="ITicon32" />
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id='RASKosmotronikaFeature' Title="РАС Космотроника" Description='Программа РАС и АДЗ для ПТК Космотроника-Венец' Display='expand' Level="1"
+         ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+      <ComponentRef Id="RASKosmotronikaPart1"/>
+      <ComponentRef Id="RASKosmotronikaPart2"/>
+      <ComponentRef Id="TemplatesPart1"/>
+      <ComponentRef Id="DocsRASKosmotronika"/>
+      <ComponentRef Id="CProgramMenuAnSC"/>
+      <ComponentRef Id="CDesktopAnSC"/>
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+    <UI Id='MyWixUI'>
+      <UIRef Id='WixUI_Minimal'/>
+      <UIRef Id='WixUI_ErrorProgressText'/>
+    </UI>
+
+    <Icon Id ="ITicon" SourceFile="..\..\Release\RAS\ITicon.RAS.ico"/>
+    <Icon Id ="ITicon32" SourceFile="..\..\Release\RAS\ITicon32.RAS.ico"/>
+
+    <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="KillProcessId" Before="CostInitialize">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+    </InstallUISequence>
+
+    <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+    <CustomAction Id="FillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillRASKosmotronika"
+			Return="check" />
+
+    <CustomAction Id="UnFillActionId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="ConfigFillRASKosmotronikaU"
+			Return="check" />
+
+    <CustomAction Id="KillProcessId"
+		 BinaryKey="ConfigFillB"
+			DllEntry="KillProcess"
+			Return="check" />
+
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion
+				Property="OLDFOUND"
+				Minimum="1.0.0"
+				IncludeMinimum="yes"
+				Maximum="$(var.ProductVersion)"
+				IncludeMaximum="no"
+				IgnoreRemoveFailure="yes"
+				MigrateFeatures="yes"
+							/>
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+      <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+      <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

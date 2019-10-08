@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define Version = "1.3.5.0" ?>
+<?define ProductName="InfoTask" ?>
+<?define Manufacturer="InfoTask"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)"
+					UpgradeCode="{7C391F0C-3627-45BC-90A4-030F5A4B2840}">
+		
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+			<bal:WixStandardBootstrapperApplication SuppressOptionsUI="yes" LicenseFile="License.rtf" LocalizationFile="RtfThemeRu.wxl"/>
+			<!--<Payload SourceFile="D:\RtfThemeRu.wxl" Id="thm-ru-RU" Compressed="yes"/>-->
+		</BootstrapperApplicationRef>
+		<WixVariable Id="WixStdbaLicenseUrl" Value="" />
+
+		<!--<util:RegistrySearch Root="HKLM" Key="Software\$(var.Manufacturer)" Value="InfoTaskPath" Variable="ITInstalled" />-->
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v3.5" Value="Version" Variable="Netfx35Version" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Net Framework Setup\NDP\v4\FULL" Value="Version" Variable="Netfx40Version" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\14.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2010" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2010_64" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\15.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2013" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2013_64" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\16.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2016" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2016_64" />
+		<util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\Office\12.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2007" />
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Wow6432Node\Microsoft\Office\12.0\Access\InstallRoot" Value="Path" Result="exists" Variable="IsAccess2007_64" />
+
+    <bal:Condition Message="Необходимо установить .Net Framework">Netfx35Version AND Netfx40Version</bal:Condition>
+		<bal:Condition Message="Необходимо установить Microsoft Office Proffessional или Microsoft Access Runtime">IsAccess2010 OR IsAccess2007 OR IsAccess2013 OR IsAccess2016 OR IsAccess2010_64 OR IsAccess2007_64 OR IsAccess2013_64 OR IsAccess2016_64</bal:Condition>
+		
+		<Chain>
+			<PackageGroupRef Id="FSharp" />
+
+			<RollbackBoundary />
+
+			<MsiPackage
+				Id="Setup"
+				DisplayInternalUI="yes"
+				Compressed="yes"
+				SourceFile="InfoTaskKernelSetup.msi"
+				Vital="yes">
+			</MsiPackage>
+		</Chain>
+	</Bundle>
+</Wix>
