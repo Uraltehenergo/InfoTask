@@ -66,6 +66,10 @@
       <Project>{B277DA88-A145-4E65-B2EA-7EDCDD57D04A}</Project>
       <Name>BaseLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Calculation\Calculation.csproj">
+      <Project>{97E6B21E-53C7-4AD8-A126-EAFE539F1DF0}</Project>
+      <Name>Calculation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CommonTypes\CommonTypes.csproj">
       <Project>{F29BCB26-783E-46A5-8609-AC160C5C4809}</Project>
       <Name>CommonTypes</Name>

@@ -124,6 +124,21 @@ namespace CommonTypes
             return 0;
         }
 
+        //ab
+        //Добавляет значение среза на начало периода в список или клон, возвращает 1, если срез был получен, иначе 0
+        //если cloneOnly = true, то начальная точка = beginTime (а не последнему значению до beginTime) только для клона
+        public int AddBegin(DateTime beginTime, bool cloneOnly = true) //Установка среза
+        {
+            if (BeginMoment == null) return 0;
+            var rec = ((SourceBase)Provider).CloneRec;
+            if (rec == null)
+                if (cloneOnly) return MomentToList(BeginMoment.Clone());//Установка среза
+                else return MomentToList(BeginMoment.Clone(beginTime));
+            if (_isReal) return MomentToClone(rec, beginTime, BeginMoment.Real, BeginMoment.Nd);
+            return 0;
+        }
+        //\ab
+
         //Формирует значение на конец периода и дополняет значения в клоне до конца периода
         public int MakeEnd(DateTime endTime)
         {

@@ -127,6 +127,12 @@ namespace ConfigFill
                             cFlag = true;
                             warnM += "\n  - Analyzer";
                         }
+                        cfg.FindFirst("ParamName='AnalyzerInfoTask'");
+                        if (!cfg.NoMatch())
+                        {
+                            cFlag = true;
+                            warnM += "\n  - AnalyzerInfoTask";
+                        }
                         cfg.FindFirst("ParamName='Constructor'");
                         if (!cfg.NoMatch())
                         {
@@ -187,6 +193,13 @@ namespace ConfigFill
                             cFlag = true;
                             warnM += "\n  - RasKosmotronika";
                         }
+                        cfg.FindFirst("ParamName='RasInfoTask'");
+                        if (!cfg.NoMatch())
+                        {
+                            cFlag = true;
+                            warnM += "\n  - RasInfoTask";
+                        }
+                                                
                     }
                     if (cFlag)
                     {
@@ -256,6 +269,50 @@ namespace ConfigFill
                 exception.MessageError();
             }
             session.Log("End ConfigFillAnalyzerU");
+
+            return ActionResult.Success;
+        }
+
+        //Установка анализатора ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillAnalyzerInfoTask(Session session)
+        {
+            session.Log("Begin ConfigFillAnalyzerInfoTask");
+            try
+            {
+                using (var cfgTemplate = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\ConfigTemplate.accdb", "SELECT * FROM SysTabl"))
+                using (var cfg = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb", "SELECT * FROM SysTabl"))
+                    if (session.Features["AnalyzerInfoTaskFeature"].RequestState == InstallState.Local)
+                    {
+                        CopyConfigProp("AnalyzerInfoTask", cfgTemplate, cfg);
+                    }
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillAnalyzerInfoTask");
+
+            return ActionResult.Success;
+        }
+
+        //Удаление анализатора ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillAnalyzerInfoTaskU(Session session)
+        {
+            session.Log("Begin ConfigFillAnalyzerInfoTaskU");
+            try
+            {
+                var instlocPath = new FileInfo(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb");
+                if (instlocPath.Exists)
+                    DaoDb.Execute(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb",
+                                  "DELETE * FROM SysTabl WHERE ParamName='AnalyzerInfoTask'");
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillAnalyzerInfoTaskU");
 
             return ActionResult.Success;
         }
@@ -691,7 +748,7 @@ namespace ConfigFill
             session.Log("End ConfigFillRAS");
             return ActionResult.Success;
         }
-
+        
         //Удаление РАС
         [CustomAction]
         public static ActionResult ConfigFillRASU(Session session)
@@ -753,6 +810,88 @@ namespace ConfigFill
         }
 
 
+
+        //Установка РАС ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillRASInfoTask(Session session)
+        {
+            session.Log("Begin ConfigFillRasInfoTask");
+            try
+            {
+                using (var cfgTemplate = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\ConfigTemplate.accdb", "SELECT * FROM SysTabl"))
+                using (var cfg = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb", "SELECT * FROM SysTabl"))
+                    if (session.Features["RasInfoTaskFeature"].RequestState == InstallState.Local)
+                        CopyConfigProp("RasInfoTask", cfgTemplate, cfg);
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillRasInfoTask");
+            return ActionResult.Success;
+        }
+
+        //Удаление РАС ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillRASInfoTaskU(Session session)
+        {
+            session.Log("Begin ConfigFillRasInfoTaskU");
+            try
+            {
+                var instlocPath = new FileInfo(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb");
+                if (instlocPath.Exists)
+                    DaoDb.Execute(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb",
+                        "DELETE * FROM SysTabl WHERE ParamName='RasInfoTask'");
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillRasInfoTaskU");
+            return ActionResult.Success;
+        }
+
+        //Установка ProjectManager ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillProjectManager(Session session)
+        {
+            session.Log("Begin ConfigFillProjectManager");
+            try
+            {
+                using (var cfgTemplate = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\ConfigTemplate.accdb", "SELECT * FROM SysTabl"))
+                using (var cfg = new RecDao(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb", "SELECT * FROM SysTabl"))
+                    if (session.Features["ProjectManagerFeature"].RequestState == InstallState.Local)
+                        CopyConfigProp("ProjectManager", cfgTemplate, cfg);
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillProjectManager");
+            return ActionResult.Success;
+        }
+
+        //Удаление Проджект Менеджер ИнфоТаск
+        [CustomAction]
+        public static ActionResult ConfigFillProjectManagerU(Session session)
+        {
+            session.Log("Begin ConfigFillProjectManagerU");
+            try
+            {
+                var instlocPath = new FileInfo(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb");
+                if (instlocPath.Exists)
+                    DaoDb.Execute(session.GetTargetPath("INSTALLLOCATION") + "General\\Config.accdb",
+                        "DELETE * FROM SysTabl WHERE ParamName='ProjectManager'");
+            }
+            catch (Exception exception)
+            {
+                exception.MessageError();
+            }
+            session.Log("End ConfigFillProjectManagerU");
+            return ActionResult.Success;
+        }
+
+
         //Предполагается возможность удалять патч 2007 вместе с ядром. Для этого в реестре снимается запрет с ручного удаления
         //На данный момент запрета нет, и патч удаляется аналогично компонентам.
         //Если делать все по-нормальному, то надо следить за GUID, иначе этот патч просто не удалить с компа без ручной правки реестра
@@ -796,6 +935,25 @@ namespace ConfigFill
             return ActionResult.Success;
         }
 
+        //[CustomAction]
+        //public static ActionResult AnalyzerInfoTaskVersionSynch(Session session)
+        //{
+        //    session.Log("Begin AnalyzerInfoTaskVersionSynch");
+        //    try
+        //    {
+        //        var vW = new DbVersion();
+        //        var analyzerITDir = session.GetTargetPath("INSTALLLOCATION") + @"Analyzer\";
+        //        string er = vW.UpdateProjectVersion(analyzerITDir + "AnalyzerInfoTaskData.accdb", true);
+        //        er += vW.UpdateArchiveVersion(analyzerITDir + "ObjSetTemplate.accdb", true);
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        exception.MessageError();
+        //    }
+        //    session.Log("End AnalyzerInfoTaskVersionSynch");
+        //    return ActionResult.Success;
+        //}
+
         [CustomAction]
         public static ActionResult RASVersionSynch(Session session)
         {
@@ -835,7 +993,7 @@ namespace ConfigFill
             session.Log("End ConstructorVersionSynch");
             return ActionResult.Success;
         }
-
+        
         [CustomAction]
         public static ActionResult KernelVersionSynch(Session session)
         {

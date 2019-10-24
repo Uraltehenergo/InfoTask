@@ -36,9 +36,9 @@
             this.splitContainerH = new System.Windows.Forms.SplitContainer();
             this.splitContainerV = new System.Windows.Forms.SplitContainer();
             this.panelChart = new System.Windows.Forms.Panel();
+            this.labRightPanel = new System.Windows.Forms.Label();
             this.chartMain = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.labBottomPanel = new System.Windows.Forms.Label();
-            this.labRightPanel = new System.Windows.Forms.Label();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.labCur = new System.Windows.Forms.Label();
             this.labCurTxt = new System.Windows.Forms.Label();
@@ -78,6 +78,7 @@
             this.butPositionCascade = new System.Windows.Forms.Button();
             this.butPositionOverlap = new System.Windows.Forms.Button();
             this.gbCtrl = new System.Windows.Forms.GroupBox();
+            this.butMergeSameAxes = new System.Windows.Forms.Button();
             this.butCtrlDel = new System.Windows.Forms.Button();
             this.butCtrlHide = new System.Windows.Forms.Button();
             this.gbAll = new System.Windows.Forms.GroupBox();
@@ -96,6 +97,8 @@
             this.labCurMax = new System.Windows.Forms.Label();
             this.labCurMin = new System.Windows.Forms.Label();
             this.tabPageCtrl = new System.Windows.Forms.TabPage();
+            this.gbSaveState = new System.Windows.Forms.GroupBox();
+            this.butSaveState = new System.Windows.Forms.Button();
             this.gbUndoRedo = new System.Windows.Forms.GroupBox();
             this.butRedo = new System.Windows.Forms.Button();
             this.butUndo = new System.Windows.Forms.Button();
@@ -139,6 +142,7 @@
             this.gbAll.SuspendLayout();
             this.gbCur.SuspendLayout();
             this.tabPageCtrl.SuspendLayout();
+            this.gbSaveState.SuspendLayout();
             this.gbUndoRedo.SuspendLayout();
             this.gbLineWidth.SuspendLayout();
             this.gbPrint.SuspendLayout();
@@ -147,6 +151,7 @@
             // 
             // splitContainerH
             // 
+            this.splitContainerH.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.splitContainerH.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -166,7 +171,7 @@
             this.splitContainerH.Panel2.Controls.Add(this.labCurTxt);
             this.splitContainerH.Panel2.Controls.Add(this.tabControl);
             this.splitContainerH.Panel2MinSize = 170;
-            this.splitContainerH.Size = new System.Drawing.Size(970, 434);
+            this.splitContainerH.Size = new System.Drawing.Size(970, 510);
             this.splitContainerH.SplitterDistance = 796;
             this.splitContainerH.SplitterWidth = 3;
             this.splitContainerH.TabIndex = 12;
@@ -183,28 +188,46 @@
             // 
             this.splitContainerV.Panel1.BackColor = System.Drawing.Color.White;
             this.splitContainerV.Panel1.Controls.Add(this.panelChart);
-            this.splitContainerV.Panel1.Controls.Add(this.labBottomPanel);
-            this.splitContainerV.Panel1.Controls.Add(this.labRightPanel);
             this.splitContainerV.Panel1MinSize = 180;
             // 
             // splitContainerV.Panel2
             // 
+            this.splitContainerV.Panel2.Controls.Add(this.labBottomPanel);
             this.splitContainerV.Panel2.Controls.Add(this.dataGridView);
             this.splitContainerV.Panel2MinSize = 50;
-            this.splitContainerV.Size = new System.Drawing.Size(796, 434);
-            this.splitContainerV.SplitterDistance = 340;
+            this.splitContainerV.Size = new System.Drawing.Size(796, 510);
+            this.splitContainerV.SplitterDistance = 330;
             this.splitContainerV.SplitterWidth = 6;
             this.splitContainerV.TabIndex = 10;
             this.splitContainerV.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainerV_SplitterMoved);
             // 
             // panelChart
             // 
+            this.panelChart.Controls.Add(this.labRightPanel);
             this.panelChart.Controls.Add(this.chartMain);
             this.panelChart.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelChart.Location = new System.Drawing.Point(0, 0);
             this.panelChart.Name = "panelChart";
-            this.panelChart.Size = new System.Drawing.Size(796, 332);
+            this.panelChart.Size = new System.Drawing.Size(796, 310);
             this.panelChart.TabIndex = 8;
+            // 
+            // labRightPanel
+            // 
+            this.labRightPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labRightPanel.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.labRightPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labRightPanel.Location = new System.Drawing.Point(792, 70);
+            this.labRightPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.labRightPanel.MaximumSize = new System.Drawing.Size(10, 0);
+            this.labRightPanel.MinimumSize = new System.Drawing.Size(10, 74);
+            this.labRightPanel.Name = "labRightPanel";
+            this.labRightPanel.Size = new System.Drawing.Size(10, 74);
+            this.labRightPanel.TabIndex = 6;
+            this.labRightPanel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labRightPanel.Click += new System.EventHandler(this.labRightPanel_Click);
+            this.labRightPanel.MouseEnter += new System.EventHandler(this.labPanel_MouseEnter);
+            this.labRightPanel.MouseLeave += new System.EventHandler(this.labPanel_MouseLeave);
+            this.labRightPanel.Move += new System.EventHandler(this.labRightPanel_Move);
             // 
             // chartMain
             // 
@@ -214,7 +237,7 @@
             this.chartMain.Location = new System.Drawing.Point(0, 0);
             this.chartMain.Name = "chartMain";
             this.chartMain.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Fire;
-            this.chartMain.Size = new System.Drawing.Size(796, 332);
+            this.chartMain.Size = new System.Drawing.Size(796, 310);
             this.chartMain.TabIndex = 0;
             this.chartMain.SelectionRangeChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.chartMain_SelectionRangeChanging);
             this.chartMain.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chartMain_AxisViewChanged);
@@ -229,7 +252,7 @@
             this.labBottomPanel.AutoSize = true;
             this.labBottomPanel.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.labBottomPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labBottomPanel.Location = new System.Drawing.Point(358, 352);
+            this.labBottomPanel.Location = new System.Drawing.Point(395, -5);
             this.labBottomPanel.MaximumSize = new System.Drawing.Size(0, 10);
             this.labBottomPanel.MinimumSize = new System.Drawing.Size(74, 0);
             this.labBottomPanel.Name = "labBottomPanel";
@@ -239,24 +262,6 @@
             this.labBottomPanel.MouseEnter += new System.EventHandler(this.labPanel_MouseEnter);
             this.labBottomPanel.MouseLeave += new System.EventHandler(this.labPanel_MouseLeave);
             this.labBottomPanel.Move += new System.EventHandler(this.labBottomPanel_Move);
-            // 
-            // labRightPanel
-            // 
-            this.labRightPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.labRightPanel.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.labRightPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labRightPanel.Location = new System.Drawing.Point(804, 127);
-            this.labRightPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.labRightPanel.MaximumSize = new System.Drawing.Size(10, 0);
-            this.labRightPanel.MinimumSize = new System.Drawing.Size(10, 74);
-            this.labRightPanel.Name = "labRightPanel";
-            this.labRightPanel.Size = new System.Drawing.Size(10, 74);
-            this.labRightPanel.TabIndex = 6;
-            this.labRightPanel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.labRightPanel.Click += new System.EventHandler(this.labRightPanel_Click);
-            this.labRightPanel.MouseEnter += new System.EventHandler(this.labPanel_MouseEnter);
-            this.labRightPanel.MouseLeave += new System.EventHandler(this.labPanel_MouseLeave);
-            this.labRightPanel.Move += new System.EventHandler(this.labRightPanel_Move);
             // 
             // dataGridView
             // 
@@ -293,7 +298,7 @@
             this.dataGridView.RowTemplate.Height = 20;
             this.dataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView.Size = new System.Drawing.Size(796, 88);
+            this.dataGridView.Size = new System.Drawing.Size(796, 174);
             this.dataGridView.TabIndex = 0;
             // 
             // labCur
@@ -324,7 +329,7 @@
             this.tabControl.Multiline = true;
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(164, 406);
+            this.tabControl.Size = new System.Drawing.Size(164, 442);
             this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl.TabIndex = 5;
             // 
@@ -336,7 +341,7 @@
             this.tabPageTime.Location = new System.Drawing.Point(4, 22);
             this.tabPageTime.Name = "tabPageTime";
             this.tabPageTime.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabPageTime.Size = new System.Drawing.Size(156, 380);
+            this.tabPageTime.Size = new System.Drawing.Size(156, 416);
             this.tabPageTime.TabIndex = 0;
             this.tabPageTime.Text = "Время";
             // 
@@ -668,7 +673,7 @@
             this.tabPageValue.Controls.Add(this.gbCur);
             this.tabPageValue.Location = new System.Drawing.Point(4, 22);
             this.tabPageValue.Name = "tabPageValue";
-            this.tabPageValue.Size = new System.Drawing.Size(156, 380);
+            this.tabPageValue.Size = new System.Drawing.Size(156, 416);
             this.tabPageValue.TabIndex = 4;
             this.tabPageValue.Text = "Значение";
             // 
@@ -705,14 +710,25 @@
             // 
             // gbCtrl
             // 
+            this.gbCtrl.Controls.Add(this.butMergeSameAxes);
             this.gbCtrl.Controls.Add(this.butCtrlDel);
             this.gbCtrl.Controls.Add(this.butCtrlHide);
             this.gbCtrl.Location = new System.Drawing.Point(2, 317);
             this.gbCtrl.Name = "gbCtrl";
-            this.gbCtrl.Size = new System.Drawing.Size(149, 64);
+            this.gbCtrl.Size = new System.Drawing.Size(149, 94);
             this.gbCtrl.TabIndex = 36;
             this.gbCtrl.TabStop = false;
             this.gbCtrl.Text = "Управление";
+            // 
+            // butMergeSameAxes
+            // 
+            this.butMergeSameAxes.Location = new System.Drawing.Point(6, 66);
+            this.butMergeSameAxes.Name = "butMergeSameAxes";
+            this.butMergeSameAxes.Size = new System.Drawing.Size(136, 23);
+            this.butMergeSameAxes.TabIndex = 38;
+            this.butMergeSameAxes.Text = "Слить одинаковые оси";
+            this.butMergeSameAxes.UseVisualStyleBackColor = true;
+            this.butMergeSameAxes.Click += new System.EventHandler(this.butMergeSameAxes_Click);
             // 
             // butCtrlDel
             // 
@@ -895,20 +911,42 @@
             // tabPageCtrl
             // 
             this.tabPageCtrl.BackColor = System.Drawing.Color.White;
+            this.tabPageCtrl.Controls.Add(this.gbSaveState);
             this.tabPageCtrl.Controls.Add(this.gbUndoRedo);
             this.tabPageCtrl.Controls.Add(this.gbLineWidth);
             this.tabPageCtrl.Controls.Add(this.gbPrint);
             this.tabPageCtrl.Location = new System.Drawing.Point(4, 22);
             this.tabPageCtrl.Name = "tabPageCtrl";
-            this.tabPageCtrl.Size = new System.Drawing.Size(156, 380);
+            this.tabPageCtrl.Size = new System.Drawing.Size(156, 416);
             this.tabPageCtrl.TabIndex = 3;
             this.tabPageCtrl.Text = "Управл.";
+            // 
+            // gbSaveState
+            // 
+            this.gbSaveState.Controls.Add(this.butSaveState);
+            this.gbSaveState.Location = new System.Drawing.Point(3, 318);
+            this.gbSaveState.Name = "gbSaveState";
+            this.gbSaveState.Size = new System.Drawing.Size(149, 64);
+            this.gbSaveState.TabIndex = 50;
+            this.gbSaveState.TabStop = false;
+            this.gbSaveState.Text = "Состояние";
+            // 
+            // butSaveState
+            // 
+            this.butSaveState.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butSaveState.Location = new System.Drawing.Point(8, 19);
+            this.butSaveState.Name = "butSaveState";
+            this.butSaveState.Size = new System.Drawing.Size(134, 39);
+            this.butSaveState.TabIndex = 45;
+            this.butSaveState.Text = "Сохранить";
+            this.butSaveState.UseVisualStyleBackColor = true;
+            this.butSaveState.Click += new System.EventHandler(this.butSaveState_Click);
             // 
             // gbUndoRedo
             // 
             this.gbUndoRedo.Controls.Add(this.butRedo);
             this.gbUndoRedo.Controls.Add(this.butUndo);
-            this.gbUndoRedo.Location = new System.Drawing.Point(3, 254);
+            this.gbUndoRedo.Location = new System.Drawing.Point(3, 250);
             this.gbUndoRedo.Name = "gbUndoRedo";
             this.gbUndoRedo.Size = new System.Drawing.Size(149, 64);
             this.gbUndoRedo.TabIndex = 49;
@@ -944,7 +982,7 @@
             this.gbLineWidth.Controls.Add(this.butLineWidthAll);
             this.gbLineWidth.Controls.Add(this.butLineWidthCur);
             this.gbLineWidth.Controls.Add(this.cbLineWidth);
-            this.gbLineWidth.Location = new System.Drawing.Point(3, 154);
+            this.gbLineWidth.Location = new System.Drawing.Point(3, 152);
             this.gbLineWidth.Name = "gbLineWidth";
             this.gbLineWidth.Size = new System.Drawing.Size(149, 94);
             this.gbLineWidth.TabIndex = 48;
@@ -1078,9 +1116,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 448);
+            this.ClientSize = new System.Drawing.Size(984, 527);
             this.Controls.Add(this.splitContainerH);
-            this.MinimumSize = new System.Drawing.Size(950, 486);
+            this.MinimumSize = new System.Drawing.Size(950, 520);
             this.Name = "FormGraphic";
             this.Text = "Графики";
             this.Resize += new System.EventHandler(this.From_Resize);
@@ -1090,8 +1128,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerH)).EndInit();
             this.splitContainerH.ResumeLayout(false);
             this.splitContainerV.Panel1.ResumeLayout(false);
-            this.splitContainerV.Panel1.PerformLayout();
             this.splitContainerV.Panel2.ResumeLayout(false);
+            this.splitContainerV.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerV)).EndInit();
             this.splitContainerV.ResumeLayout(false);
             this.panelChart.ResumeLayout(false);
@@ -1110,6 +1148,7 @@
             this.gbCur.ResumeLayout(false);
             this.gbCur.PerformLayout();
             this.tabPageCtrl.ResumeLayout(false);
+            this.gbSaveState.ResumeLayout(false);
             this.gbUndoRedo.ResumeLayout(false);
             this.gbLineWidth.ResumeLayout(false);
             this.gbPrint.ResumeLayout(false);
@@ -1128,10 +1167,25 @@
         private System.Windows.Forms.Label labBottomPanel;
         private System.Windows.Forms.Label labRightPanel;
         private System.Windows.Forms.DataGridView dataGridView;
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabPageTime;
         //private System.Windows.Forms.Label labTimeCur;
         //private System.Windows.Forms.Label labTimeCurTxt;
+        //private System.Windows.Forms.Label labCurTxt1;
+        //private System.Windows.Forms.Label labCur1;
+        //private System.Windows.Forms.Label labCtrlCurTxt;
+        //private System.Windows.Forms.Label labCtrlCur;
+        private System.Drawing.Printing.PrintDocument printDocument;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem sample1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sample2ToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Timer timerHold;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label labCur;
+        private System.Windows.Forms.Label labCurTxt;
+        private System.Windows.Forms.PrintDialog printDialog;
+        private System.Windows.Forms.PageSetupDialog pageSetupDialog;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabPageTime;
         private System.Windows.Forms.GroupBox gbVizir;
         private System.Windows.Forms.Label labVizirL;
         private System.Windows.Forms.Label labVizirR;
@@ -1166,9 +1220,9 @@
         private System.Windows.Forms.Button butPositionCascade;
         private System.Windows.Forms.Button butPositionOverlap;
         private System.Windows.Forms.GroupBox gbCtrl;
+        private System.Windows.Forms.Button butMergeSameAxes;
         private System.Windows.Forms.Button butCtrlDel;
         private System.Windows.Forms.Button butCtrlHide;
-        //private System.Windows.Forms.Label labCurTxt1;
         private System.Windows.Forms.GroupBox gbAll;
         private System.Windows.Forms.Button butAllInUnits;
         private System.Windows.Forms.Button butAllInPrc;
@@ -1184,33 +1238,21 @@
         private System.Windows.Forms.TextBox tbCurMin;
         private System.Windows.Forms.Label labCurMax;
         private System.Windows.Forms.Label labCurMin;
-        //private System.Windows.Forms.Label labCur1;
         private System.Windows.Forms.TabPage tabPageCtrl;
-        //private System.Windows.Forms.Label labCtrlCurTxt;
-        //private System.Windows.Forms.Label labCtrlCur;
+        private System.Windows.Forms.GroupBox gbUndoRedo;
+        private System.Windows.Forms.Button butRedo;
+        private System.Windows.Forms.Button butUndo;
         private System.Windows.Forms.GroupBox gbLineWidth;
         private System.Windows.Forms.Button butLineWidthAll;
         private System.Windows.Forms.Button butLineWidthCur;
         private System.Windows.Forms.ComboBox cbLineWidth;
         private System.Windows.Forms.GroupBox gbPrint;
-        private System.Windows.Forms.CheckBox chbPrintLabels;
-        private System.Windows.Forms.Button butPrint;
-        private System.Drawing.Printing.PrintDocument printDocument;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem sample1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sample2ToolStripMenuItem;
-        private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.Timer timerHold;
-        private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label labCur;
-        private System.Windows.Forms.Label labCurTxt;
-        private System.Windows.Forms.GroupBox gbUndoRedo;
-        private System.Windows.Forms.Button butRedo;
-        private System.Windows.Forms.Button butUndo;
-        private System.Windows.Forms.PrintDialog printDialog;
-        private System.Windows.Forms.PageSetupDialog pageSetupDialog;
-        private System.Windows.Forms.ComboBox cbPrinters;
         private System.Windows.Forms.Button butPageSetup;
         private System.Windows.Forms.Button butPrinterSettings;
+        private System.Windows.Forms.ComboBox cbPrinters;
+        private System.Windows.Forms.CheckBox chbPrintLabels;
+        private System.Windows.Forms.Button butPrint;
+        private System.Windows.Forms.GroupBox gbSaveState;
+        private System.Windows.Forms.Button butSaveState;
     }
 }

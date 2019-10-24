@@ -14,18 +14,24 @@ namespace Activator
     {
         private const string Ver = "1.3";
         //Номер генерируется как GUID и берутся первые 8 символов - порядковый номер лицензии, пароль - средние 12 символов из GUID
-        private const string LicenseNumber = "BC94DDD5-0013";
-        private const string Password = "E45D-4BF6-AAFA";
-        private const string Company = "Сургутская ГРЭС Энергоблок 4";
-        //private const string Password = "0000-0000-0000";
-        //private const string LicenseNumber = "00000000-0001";
-        //private const string Company = "ЗАО \"ИЦ \"УралТехЭнерго\"";
+        //private const string LicenseNumber = "721BF783-0015";
+        //private const string Password = "4AC7-4AD3-B79E";
+        //private const string Company = "Казанская ТЭЦ-1";
+        private const string Password = "0000-0000-0000";
+        private const string LicenseNumber = "00000000-0001";
+        private const string Company = "ЗАО \"ИЦ \"УралТехЭнерго\"";
+        //private const string LicenseNumber = "D08855DB-0016";
+        //private const string Password = "213E-42DE-BC3B";
+        //private const string Company = "Тюменская ТЭЦ-2";
         private const bool ActivateAnalyzer = true;
         private const bool ActivateConstructor = true;
         private const bool ActivateReporter = true;
         private const bool ActivateMonitor = true;
         private const bool ActivateViewer = true;
         private const bool ActivateRas = true;
+        private const bool ActivateRasInfoTask = true;
+        private const bool ActivateProjectManager = true;
+        private const bool ActivateAnalyzerInfoTask = true;
         
         public Form1()
         {
@@ -79,10 +85,13 @@ namespace Activator
                             newKey.SetValue("un", Encrypt(LicenseNumber, 11), RegistryValueKind.String);
                             newKey.SetValue("ra", Encrypt(ActivateAnalyzer.ToString(), 12), RegistryValueKind.String);
                             newKey.SetValue("rc", Encrypt(ActivateConstructor.ToString(), 13), RegistryValueKind.String);
-                            newKey.SetValue("sr", Encrypt(ActivateRas.ToString(), 14), RegistryValueKind.String);
+                            newKey.SetValue("ri", Encrypt(ActivateRasInfoTask.ToString(), 14), RegistryValueKind.String);
                             newKey.SetValue("rr", Encrypt(ActivateReporter.ToString(), 15), RegistryValueKind.String);
                             newKey.SetValue("rm", Encrypt(ActivateMonitor.ToString(), 16), RegistryValueKind.String);
-                            newKey.SetValue("rv", Encrypt(ActivateViewer.ToString(), 16), RegistryValueKind.String);
+                            newKey.SetValue("rv", Encrypt(ActivateViewer.ToString(), 17), RegistryValueKind.String);
+                            newKey.SetValue("sr", Encrypt(ActivateRas.ToString(), 18), RegistryValueKind.String);
+                            newKey.SetValue("pm", Encrypt(ActivateProjectManager.ToString(), 19), RegistryValueKind.String);
+                            newKey.SetValue("ai", Encrypt(ActivateAnalyzerInfoTask.ToString(), 20), RegistryValueKind.String);
                             SetDate();
                             bool flag = MessageBox.Show("InfoTask успешно активирован","Активация InfoTask", MessageBoxButtons.OK) == DialogResult.OK;
                             if (flag) Close();

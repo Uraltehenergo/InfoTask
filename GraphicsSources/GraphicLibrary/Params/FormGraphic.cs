@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -20,7 +21,7 @@ namespace GraphicLibrary.Params
         //Несмотря на то, что в аналоговых графиках есть ссылка на ось,
         //а в осях на все их графики
         //Компонент реализован так, что график не работает со своей осью, а ось с её графиками
-        //Вся работа реализована в формы
+        //Вся работа реализована в форме
         //Возможно, это не правильно, но переделывать на данном этапе было бы себе дороже
 
     #region Const
@@ -194,9 +195,9 @@ namespace GraphicLibrary.Params
             get { return _viewTimeBegin; }
             set
             {
-                DateTime timeE = _viewTimeEnd;
-                if (value > timeE) timeE = timeE.AddSeconds(MinViewTimeInterval);
-                CmdList.SetTimeView(value, timeE, DateTimeIntervalType.NotSet, ViewTimeBegin, ViewTimeEnd, _axisXScaleViewSizeType);
+                DateTime newTimeEnd = _viewTimeEnd;
+                if (value > newTimeEnd) newTimeEnd = value.AddSeconds(MinViewTimeInterval);
+                CmdList.SetTimeView(value, newTimeEnd, DateTimeIntervalType.NotSet, ViewTimeBegin, ViewTimeEnd, _axisXScaleViewSizeType);
             }
         }
 
@@ -206,10 +207,10 @@ namespace GraphicLibrary.Params
             get { return _viewTimeEnd; }
             set
             {
-                DateTime timeB = _viewTimeBegin;
+                DateTime newTimeBegin = _viewTimeBegin;
 
-                if (value < timeB) timeB = timeB.AddSeconds(-MinViewTimeInterval);
-                CmdList.SetTimeView(timeB, value, DateTimeIntervalType.NotSet, ViewTimeBegin, ViewTimeEnd, _axisXScaleViewSizeType);
+                if (value < newTimeBegin) newTimeBegin = value.AddSeconds(-MinViewTimeInterval);
+                CmdList.SetTimeView(newTimeBegin, value, DateTimeIntervalType.NotSet, ViewTimeBegin, ViewTimeEnd, _axisXScaleViewSizeType);
             }
         }
         
@@ -228,7 +229,8 @@ namespace GraphicLibrary.Params
         {
             get { return DiscretGraphics.Count; }
         }
-        
+
+        //Текущий график
         public int CurGraphicNum
         {
             get { return _curGraphicNum; }
@@ -241,13 +243,27 @@ namespace GraphicLibrary.Params
             get
             {
                 var bgr = BackGround;
-                if (bgr != null) return DateTime.FromOADate(bgr.Area.CursorX.Position);
+                if ((bgr != null) && (!Double.IsNaN(bgr.Area.CursorX.Position))) return DateTime.FromOADate(bgr.Area.CursorX.Position);
                 return DateTime.MinValue;
             }
             set
             {
                 CmdList.SetVizir(value, _vizirTime, ViewTimeBegin, ViewTimeEnd, _axisXIntervalType);
             }
+        }
+
+        //Доступность кнопки удаления
+        public bool EnableGraphicDelete
+        {
+            get { return butCtrlDel.Enabled; }
+            set { butCtrlDel.Enabled = value; }
+        }
+            
+        //Видимость кнопки сохранения состояния 
+        public bool VisibleSaveState
+        {
+            get { return gbSaveState.Visible; }
+            set { gbSaveState.Visible = value; }
         }
         
         //Строки, выдаваемые наружу при возникновении ошибки
@@ -273,7 +289,7 @@ namespace GraphicLibrary.Params
                 }
                 catch
                 {
-                    cbLineWidth.Text = @"2";
+                    cbLineWidth.Text = "2";
                     return 2;
                 }
             }
@@ -428,7 +444,7 @@ namespace GraphicLibrary.Params
 
         //Период обновления динамического графика
         public double DynPeriod { get; private set; }
-        //Режим обновления динамического графика: со здвигом (true), со сжатием (false)
+        //Режим обновления динамического графика: со cдвигом (true), со сжатием (false)
         public bool IsDynShift { get; private set; }
     #endregion Dynamic
 
@@ -491,8 +507,10 @@ namespace GraphicLibrary.Params
                 //Кнопки скрывания приделываем
                 Controls.Add(labBottomPanel);
                 labBottomPanel.BringToFront();
+                labBottomPanel_Move(null, null);
                 Controls.Add(labRightPanel);
                 labRightPanel.BringToFront();
+                labRightPanel_Move(null, null);
 
                 //Приделываем полосы прокрутки
                 splitContainerV.Panel1.Controls.Add(_hscrollb);
@@ -688,30 +706,44 @@ namespace GraphicLibrary.Params
                 rbDynShift.Visible = false;
                 dateTimePicker.Visible = false;
                 butDynStorageFromApply.Visible = false;
-                labViewPeriod.Location = new Point(labViewPeriod.Location.X, labViewPeriod.Location.Y - 89);
-                cbViewPeriodType.Location = new Point(cbViewPeriodType.Location.X, cbViewPeriodType.Location.Y - 89);
-                cbViewPeriod.Location = new Point(cbViewPeriod.Location.X, cbViewPeriod.Location.Y - 89);
-                rbDynShift.Location = new Point(rbDynShift.Location.X, rbDynShift.Location.Y - 89);
-                butViewPeriodApply.Top -= 89;
+
+                //labViewPeriod.Location = new Point(labViewPeriod.Location.X, labViewPeriod.Location.Y - 89);
+                //cbViewPeriodType.Location = new Point(cbViewPeriodType.Location.X, cbViewPeriodType.Location.Y - 89);
+                //cbViewPeriod.Location = new Point(cbViewPeriod.Location.X, cbViewPeriod.Location.Y - 89);
+                //rbDynShift.Location = new Point(rbDynShift.Location.X, rbDynShift.Location.Y - 89);
+                //butViewPeriodApply.Top -= 89;
+                //butViewPeriodDec.Top = butViewPeriodApply.Top + 25;
+                //butViewPeriodInc.Top = butViewPeriodApply.Top + 25;
+                //butViewPeriodToMin.Top = butViewPeriodDec.Top + 25;
+                //butViewPeriodToMax.Top = butViewPeriodDec.Top + 25;
+                //cbViewPeriodStep.Top = butViewPeriodApply.Top + 25;
+                //rbDynStorageFrom.Text = "Полное";
+                //rbDynShift.Text = "Частичное";
+                //tabControl.Size = new Size(tabControl.Size.Width, Math.Max(
+                //    gbVizir.Bottom,
+                //    gbCtrl.Bottom) + 29);
+                //gbPeriod.Height = butViewPeriodToMin.Location.Y + 30;
+                //gbVizir.Location = new Point(2, gbPeriod.Height + 2);
+
+                labViewPeriod.Top = 13;
+                cbViewPeriodType.Top = 29;
+                cbViewPeriod.Top = 29;
+                butViewPeriodApply.Top = 28;
                 butViewPeriodDec.Top = butViewPeriodApply.Top + 25;
                 butViewPeriodInc.Top = butViewPeriodApply.Top + 25;
                 butViewPeriodToMin.Top = butViewPeriodDec.Top + 25;
                 butViewPeriodToMax.Top = butViewPeriodDec.Top + 25;
                 cbViewPeriodStep.Top = butViewPeriodApply.Top + 25;
-                rbDynStorageFrom.Text = "Полное";
-                rbDynShift.Text = "Частичное";
-                tabControl.Size = new Size(tabControl.Size.Width, Math.Max(
-                    gbVizir.Bottom,
-                    gbCtrl.Bottom) + 29);
                 gbPeriod.Height = butViewPeriodToMin.Location.Y + 30;
-                gbVizir.Location = new Point(2, gbPeriod.Height + 2);
+                gbVizir.Top = gbPeriod.Height + 2;
+
                 //labTimeCurTxt.Location = new Point(labTimeCurTxt.Location.X,
                 //                                   gbVizir.Location.Y + gbVizir.Height + 5);
                 //labTimeCur.Location = new Point(labTimeCur.Location.X, labTimeCurTxt.Location.Y - 3);
 
                 _fillScaleViewPerCentage = 1;
 
-                dataGridView.Columns.Remove("Последнее");
+                if (dataGridView.Columns.Contains("Последнее")) dataGridView.Columns.Remove("Последнее");
             }
         }
 
@@ -773,7 +805,7 @@ namespace GraphicLibrary.Params
         //    }
         //}
 
-        public void Init(DateTime beginTime, DateTime endTime, bool enableGraphicDelete = true)
+        public void Init(DateTime beginTime, DateTime endTime, bool enableGraphicDelete = true, bool visibleSaveState = true)
         {
             if (beginTime < endTime)
             {
@@ -797,6 +829,7 @@ namespace GraphicLibrary.Params
             SetCbViewPeriodType(_axisXScaleViewSizeType, _axisXScaleViewSize);
 
             butCtrlDel.Enabled = enableGraphicDelete;
+            gbSaveState.Visible = visibleSaveState;
         }
 
         //Добавление графиков 
@@ -807,7 +840,7 @@ namespace GraphicLibrary.Params
             try
             {
                 int fg = GraphicExists(code) ? 1 : 0;
-                if ((fg == 0) && GraphicExists(id)) fg = 2;
+                if ((fg == 0) && (id != 0) && GraphicExists(id)) fg = 2;
 
                 if (fg == 0)
                 {
@@ -826,7 +859,7 @@ namespace GraphicLibrary.Params
                     }
 
                     var dt = dataType.ToDataType();
-                    var par = new Param(id, code, name, subname, dt, units, min, max);
+                    var par = new Param(id, code, name, subname, dt, units, min, max, decPlaces);
                     int num = Graphics.Count == 0 ? 1 : Graphics.Last().Num + 1;
                     var gr = new AnalogGraphic(this, par, num);
                     AnalogGraphics.Add(gr);
@@ -876,7 +909,7 @@ namespace GraphicLibrary.Params
             try
             {
                 int fg = (GraphicExists(code)) ? 1 : 0;
-                if ((fg == 0) && GraphicExists(id)) fg = 2;
+                if ((fg == 0) && (id != 0) && GraphicExists(id)) fg = 2;
 
                 if (fg == 0)
                 {
@@ -927,6 +960,27 @@ namespace GraphicLibrary.Params
                 LastOperationError = "AddDiscretGraphic: Не удалось добавить график: " + exception.Message;
                 return null;
             }
+        }
+
+        public bool AddAnalogValue(string code, DateTime time, double val, int nd = 0)
+        {
+            AnalogGraphic gr = null;
+            foreach (AnalogGraphic grS in AnalogGraphics)
+            {
+                if (grS.Param.Code == code)
+                {
+                    gr = grS;
+                    break;
+                }
+            }
+
+            if (gr != null)
+            {
+                gr.AddValue(time, val, nd);
+                return true;
+            }
+
+            return false;
         }
         
         public bool AddAnalogValue(int id, DateTime time, double val, int nd = 0)
@@ -1212,6 +1266,7 @@ namespace GraphicLibrary.Params
             foreach (var gr in Graphics) RepaintGraphic(gr);
         }
 
+        //Удаление графиков
         public void DeleteGraphic(Graphic graphic)
         {
             try
@@ -1404,7 +1459,7 @@ namespace GraphicLibrary.Params
                         int nd = reader.GetIntNull("Nd").HasValue ? reader.GetIntNull("Nd").Value : 0;
                         var dot = new MomentReal(reader.GetTime("Time"), reader.GetDouble("Val"), nd);
                         int id = reader.GetIntNull("Id").HasValue ? reader.GetIntNull("Id").Value : 0;
-                        string code = reader.GetString("code");
+                        string code = reader.GetString("Code");
 
                         Graphic gr = null;
                         if (!string.IsNullOrEmpty(code))
@@ -1514,6 +1569,69 @@ namespace GraphicLibrary.Params
             }
         }
 
+        public string InitVed(string fileName, bool enableGraphicDelete = true, bool visibleSaveState = true)
+        {
+            try
+            {
+                //string stSql = "SELECT Min(VedLin.TimeValue) AS [TimeBegin], Max(VedLin.TimeValue) AS [TimeEnd] " +
+                //               "FROM Params INNER JOIN VedLin ON Params.IdParam = VedLin.IdParam " +
+                //               "WHERE (Params.OtmParam = True);";
+
+                //using (var reader = new ReaderAdo(fileName, stSql))
+                //{
+                //    var beginTime = reader.GetTime("TimeBegin");
+                //    var endTime = reader.GetTime("TimeEnd");
+                //    Init(beginTime, endTime);
+                //}
+
+                using (var sysTable = new SysTabl(fileName))
+                {
+                    var periodBegin = sysTable.SubValue("VedOptions", "PeriodBegin");
+                    var periodEnd = sysTable.SubValue("VedOptions", "PeriodEnd");
+
+                    DateTime timeBegin;
+                    DateTime timeEnd;
+                    var fParsed = DateTime.TryParse(periodBegin,out timeBegin);
+                    fParsed = DateTime.TryParse(periodEnd, out timeEnd) && fParsed;
+
+                    if (fParsed) Init(timeBegin, timeEnd, enableGraphicDelete, visibleSaveState);
+                    else
+                    {
+                        LastOperationError = "InitVed: Не удалось определить временной интервал графика.";
+                        return LastOperationError;
+                    }
+                }
+            }
+            catch(Exception exc)
+            {
+                LastOperationError = "InitVed: Не удалось определить временной интервал графика. " + exc.Message;
+                return exc.Message;
+            }
+
+            string e = SetDatabase("Access", fileName);
+            if (e == "")
+            {
+                string stSql = "SELECT IdParam AS Id, Code, Name, '' AS SubName, DataType, Min, Max, Units " +
+                               "FROM Params " +
+                               "WHERE (OtmParam = True) " +
+                               "ORDER BY IdParam;";
+
+                e = LoadGraphics(stSql);
+                if (e == "")
+                {
+                    stSql = "SELECT Code, Params.IdParam as [Id], TimeValue as [Time], ValueReal as Val, Nd " +
+                            "FROM Params INNER JOIN VedLin ON Params.IdParam = VedLin.IdParam " +
+                            "WHERE (OtmParam = True) " +
+                            "ORDER BY Params.IdParam, TimeValue;";
+
+                    e = LoadValues(stSql);
+                }
+            }
+
+            foreach (var gr in Graphics) RepaintGraphic(gr);
+            return e;
+        }
+        
         //чистка мусора
         public void Gethering()
         {
@@ -1541,10 +1659,10 @@ namespace GraphicLibrary.Params
             }
 
             if (timeB < TimeBegin) timeB = TimeBegin;
-            if (timeE.Subtract(timeB).TotalSeconds < MinViewTimeInterval) timeE = timeViewBegin.AddSeconds(MinViewTimeInterval);
+            if (timeE.Subtract(timeB).TotalSeconds < MinViewTimeInterval) timeE = timeB.AddSeconds(MinViewTimeInterval);
 
             if (timeE > TimeEnd) timeE = TimeEnd;
-            if (timeE.Subtract(timeB).TotalSeconds < MinViewTimeInterval) timeB = timeViewEnd.AddSeconds(-MinViewTimeInterval);
+            if (timeE.Subtract(timeB).TotalSeconds < MinViewTimeInterval) timeB = timeE.AddSeconds(-MinViewTimeInterval);
 
             _viewTimeBegin = timeB;
             _viewTimeEnd = timeE;
@@ -2418,6 +2536,8 @@ namespace GraphicLibrary.Params
             get
             {
                 int h = ((chartMain.Height - AxisXLabelFontHeight - 2*(Nods - 1) - 11 - AxYHeight*(Nods + 1)));
+                if (Nods == 0) h = chartMain.Height - AxYHeight + AxYLabel - 10;
+                
                 if (splitContainerV.Panel1.HorizontalScroll.Visible) h -= 20;
 
                 if (GroupsY.Count > 0)
@@ -3805,6 +3925,38 @@ namespace GraphicLibrary.Params
             if ((CurGraphicNum > 0) && (yResult == DialogResult.OK))
                 DeleteGraphicByNum(CurGraphicNum);
         }
+
+        private void butMergeSameAxes_Click(object sender, EventArgs e)
+        {
+            var aGrs = new List<AnalogGraphic>();
+            
+            foreach (var aGr1 in AnalogGraphics)
+            {
+                bool f = true;
+
+                foreach (var aGr0 in aGrs)
+                {
+                     if ((aGr1.Param.OutMin == aGr0.Param.OutMin) && (aGr1.Param.OutMax == aGr0.Param.OutMax) && (aGr1.Param.Units == aGr0.Param.Units) && (aGr1.Param.OutMin != null) && (aGr1.Param.OutMax != null))
+                     {
+                         if (aGr1.GroupY.IsOverlayed) ChangeGraphicAxY(aGr1, aGr0.GroupY);
+                         else AxJunction(aGr1.GroupY, aGr0.GroupY);
+                         f = false;
+                     }
+                }
+
+                if(f)
+                {
+                    if (aGr1.GroupY.IsOverlayed) AxSeparation(aGr1);
+                    if ((aGr1.Param.OutMin != null) && (aGr1.Param.OutMax != null))
+                    {
+                        aGr1.GroupY.ViewMin = (double) aGr1.Param.OutMin;
+                        aGr1.GroupY.ViewMax = (double) aGr1.Param.OutMax;
+                    }
+                    //aGr1.GroupY.IsInPercent = false;
+                    aGrs.Add(aGr1);
+                }
+            }
+        }
     #endregion ControlFunction Value
 
     #region ControlFunction Control
@@ -3862,6 +4014,13 @@ namespace GraphicLibrary.Params
         private void butRedo_Click(object sender, EventArgs e)
         {
             CmdList.Redo();
+        }
+
+        private void butSaveState_Click(object sender, EventArgs e)
+        {
+            var res = SaveState();
+            if(res=="") res = "Сохранение выполнено";
+            MessageBox.Show(res);
         }
     #endregion ControlFunction Control
         
@@ -4345,26 +4504,17 @@ namespace GraphicLibrary.Params
                 if (graphic.IsAnalog)
                 {
                     var axY = ((AnalogGraphic) graphic).GroupY;
-
-                    AnalogGraphic visGr = null;
-                    foreach (var axGr in axY.Graphics)
+                    var visAxGr = axY.Graphics.FirstOrDefault(axGr => (axGr.IsVisible && (axGr.Num != graphic.Num)));
+                    if(visAxGr == null)
                     {
-                        if ((axGr.IsVisible) && (axGr.Num != graphic.Num))
-                        {
-                            visGr = axGr;
-                            break;
-                        }
-                    }
-
-                    if (visGr == null)
-                    {
-                        Noas--;
-                        axY.IsVisible = false;
+                        if (axY.IsVisible) HideAxY(axY);
+                        axY.IsHidden = true;
+                        var visGr = Graphics.FirstOrDefault(gr => gr.IsVisible);
+                        if (visGr != null) CurGraphicNum = visGr.Num;
                     }
                     else
                     {
-                        //DataGridGraphicToTop(visGr);
-                        CurGraphicNum = visGr.Num;
+                        CurGraphicNum = visAxGr.Num;
                     }
                 }
                 else
@@ -4387,19 +4537,20 @@ namespace GraphicLibrary.Params
                 if (graphic.IsAnalog)
                 {
                     var axY = ((AnalogGraphic) graphic).GroupY;
+                    axY.IsHidden = false;
                     
-                    if ((!axY.IsHidden) && (!axY.IsVisible))
-                    {
-                        Noas++;
-                        axY.IsVisible = true;
-                    }
+                    //if ((!axY.IsHidden) && (!axY.IsVisible))
+                    //{
+                    //    Noas++;
+                    //    axY.IsVisible = true;
+                    //}
 
-                    foreach (var axGr in axY.Graphics)
-                    {
-                        var row = GetRowByGraphicNum(axGr.Num);
-                        row.Cells[0].Style.BackColor = graphic.Series.Color;
-                        row.Cells[0].Style.SelectionBackColor = graphic.Series.Color;
-                    }
+                    //foreach (var axGr in axY.Graphics)
+                    //{
+                    //    var row = GetRowByGraphicNum(axGr.Num);
+                    //    row.Cells[0].Style.BackColor = graphic.Series.Color;
+                    //    row.Cells[0].Style.SelectionBackColor = graphic.Series.Color;
+                    //}
 
                     DataGridGraphicToTop((AnalogGraphic) graphic);
                 }
@@ -4415,13 +4566,13 @@ namespace GraphicLibrary.Params
 
         private void HideAxY(GroupY axY)
         {
-            if (!axY.IsHidden)
+            if (axY.IsVisible)
             {
-                axY.IsHidden = true;
+                axY.IsVisible = false;
                 Noas--;
                 ReRanking();
 
-                foreach(var gr in axY.Graphics)
+                foreach (var gr in axY.Graphics)
                 {
                     _needToCheckChangeDatagrid = false;
                     GetRowByGraphicNum(gr.Num).Cells[0].Value = false;
@@ -4432,7 +4583,7 @@ namespace GraphicLibrary.Params
 
         private void ShowAxY(GroupY axY)
         {
-            if (axY.IsHidden)
+            if (!axY.IsVisible)
             {
                 axY.IsVisible = true;
                 Noas++;
@@ -4443,6 +4594,8 @@ namespace GraphicLibrary.Params
                     _needToCheckChangeDatagrid = false;
                     GetRowByGraphicNum(gr.Num).Cells[0].Value = true;
                     gr.Area.AxisY.MajorGrid.Enabled = true;
+                    
+                    ShowGraphic(axY.UpperGraphic);
                 }
             }
         }
@@ -4838,17 +4991,23 @@ namespace GraphicLibrary.Params
             if (gr.IsAnalog)
             {
                 MomentReal val = ((AnalogGraphic) gr).DotAt(vizirTime);
-                st = val.Mean.ToString(decPlacesTemplate) + "\n" +
-                     //mm gr.Param.ValueToPercent(val.Mean).ToString(decPlacesTemplate);
-                     gr.ValueToPercent(val.Mean).ToString(decPlacesTemplate);
-                st += "%";
+                if (val != null)
+                {
+                    st = val.Mean.ToString(decPlacesTemplate) + "\n" +
+                        //mm gr.Param.ValueToPercent(val.Mean).ToString(decPlacesTemplate);
+                         gr.ValueToPercent(val.Mean).ToString(decPlacesTemplate);
+                    st += "%";
+                }
+                else st = "";
             }
             else
             {
                 MomentBoolean val = ((DiscretGraphic) gr).DotAt(vizirTime);
                 //st = val.Mean.ToString() + "\n" +
                 //     gr.Param.ValueToPercent(Convert.ToDouble(val.Mean)).ToString(decPlacesTemplate);
-                st = val.Mean.ToString();
+                if (val != null)
+                    st = val.Mean.ToString();
+                else st = "";
             }
 
             string tempStr = string.Format("График №" + CurGraphicNum + "\n" + st +
@@ -5586,6 +5745,387 @@ namespace GraphicLibrary.Params
             _lastError = e != null ? new ErrorCommand("", e) : null;
         }
     #endregion CmdListOperation
+
+    #region SaveState
+        private Dictionary<string, string> GetStateOld()
+        {
+            var state = new Dictionary<string, string>();
+
+            state.Add("TimeBegin", TimeBegin.ToString());
+            state.Add("TimeEnd", TimeEnd.ToString());
+            state.Add("ViewTimeBegin", ViewTimeBegin.ToString());
+            state.Add("ViewTimeEnd", ViewTimeEnd.ToString());
+            state.Add("CurGraphicNum", CurGraphicNum.ToString());
+            state.Add("VizirTime", VizirTime.ToString());
+            state.Add("Caption", Caption);
+
+            PropertyInfo[] paramProps =
+                typeof (Param).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            foreach (var gr in Graphics)
+            {
+                state.Add("Graphic_" + gr.Num + ".Type", gr.DataTypeString);
+
+                foreach (var prop in paramProps)
+                    state.Add("Graphic_" + gr.Num + "." + prop.Name, prop.GetValue(gr.Param, null).ToString());
+
+                state.Add("Graphic_" + gr.Num + ".LineWidth", gr.LineWidth.ToString());
+                state.Add("Graphic_" + gr.Num + ".LineColor", gr.Series.Color.Name);
+                state.Add("Graphic_" + gr.Num + ".IsVisible", gr.IsVisible.ToString());
+            }
+
+            int i = 0;
+            foreach (var ax in GroupsY)
+            {
+                i++;
+
+                var st = "";
+                foreach (var gr in ax.Graphics)
+                {
+                    if (st != "") st += ",";
+                    st += gr.Num;
+                }
+
+                state.Add("Ax_" + i + ".Graphics", st);
+                state.Add("Ax_" + i + ".ViewMin", ax.ViewMin.ToString());
+                state.Add("Ax_" + i + ".ViewMax", ax.ViewMax.ToString());
+                state.Add("Ax_" + i + ".UpperGraphic", ax.UpperGraphic.Num.ToString());
+                state.Add("Ax_" + i + ".IsVisible", ax.IsVisible.ToString());
+                state.Add("Ax_" + i + ".IsHidden", ax.IsHidden.ToString());
+                state.Add("Ax_" + i + ".IsInPercent",ax.IsInPercent.ToString());
+            }
+
+            return state;
+        }
+
+        private Dictionary<string, object> GetState()
+        {
+            var state = new Dictionary<string, object>();
+
+            var propState = new List<Dictionary<string, string>>();
+
+            var subPropState = new Dictionary<string, string>();
+            subPropState.Add("TimeBegin", TimeBegin.ToString());
+            subPropState.Add("TimeEnd", TimeEnd.ToString());
+            subPropState.Add("ViewTimeBegin", ViewTimeBegin.ToString());
+            subPropState.Add("ViewTimeEnd", ViewTimeEnd.ToString());
+            subPropState.Add("CurGraphicNum", CurGraphicNum.ToString());
+            subPropState.Add("VizirTime", VizirTime.ToString());
+            subPropState.Add("EnableGraphicDelete", butCtrlDel.Enabled.ToString());
+            subPropState.Add("Caption", Caption);
+
+            propState.Add(subPropState);
+            state.Add("General", propState);
+
+            PropertyInfo[] paramProps =
+                typeof(Param).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            propState = new List<Dictionary<string, string>>();
+            foreach (var gr in Graphics)
+            {
+                subPropState = new Dictionary<string, string>();
+
+                subPropState.Add("Type", gr.DataTypeString);
+
+                foreach (var prop in paramProps)
+                    subPropState.Add(prop.Name, prop.GetValue(gr.Param, null).ToString());
+
+                subPropState.Add("LineWidth", gr.LineWidth.ToString());
+                subPropState.Add("Color", gr.Series.Color.Name);
+                subPropState.Add("IsVisible", gr.IsVisible.ToString());
+                subPropState.Add("Num", gr.Num.ToString());
+
+                propState.Add(subPropState);
+            }
+            state.Add("Graphic", propState);
+
+            propState = new List<Dictionary<string, string>>();
+            foreach (var ax in GroupsY)
+            {
+                subPropState = new Dictionary<string, string>();
+
+                var st = "";
+                foreach (var gr in ax.Graphics)
+                {
+                    if (st != "") st += ",";
+                    st += gr.Num;
+                }
+
+                subPropState.Add("Graphics", st);
+                subPropState.Add("ViewMin", ax.ViewMin.ToString());
+                subPropState.Add("ViewMax", ax.ViewMax.ToString());
+                subPropState.Add("UpperGraphic", ax.UpperGraphic.Num.ToString());
+                subPropState.Add("IsVisible", ax.IsVisible.ToString());
+                subPropState.Add("IsHidden", ax.IsHidden.ToString());
+                subPropState.Add("IsInPercent", ax.IsInPercent.ToString());
+
+                propState.Add(subPropState);
+            }
+            state.Add("Ax", propState);
+
+            return state;
+        }
+
+        public string SaveState(string fileName = "")
+        {
+            string connString = fileName != "" ? fileName : ConnString;
+            if (string.IsNullOrEmpty(connString)) return "Не задана БД для сохранения состояния";
+
+            try
+            {
+                using (var stateSaver = new StateSaverAccess(connString))
+                {
+                    var state = GetState();
+                    stateSaver.SaveSate(state);
+                }
+
+                return "";
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+        public string LoadState(string fileName = "")
+        {
+            string connString = fileName != "" ? fileName : ConnString;
+            if (string.IsNullOrEmpty(connString)) return "Не задана БД для загрузки состояния";
+
+            try
+            {
+                using (var stateSaver = new StateSaverAccess(connString))
+                {
+                    var state = stateSaver.ReadSate();
+                    if (state.ContainsKey("General"))
+                    {
+                        var general = ((List<Dictionary<string, string>>) state["General"])[0];
+
+                        if ((general.ContainsKey("TimeBegin")) && (general.ContainsKey("TimeEnd")))
+                        {
+                            DateTime timeBegin;
+                            DateTime timeEnd;
+                            if (DateTime.TryParse(general["TimeBegin"], out timeBegin))
+                                if (DateTime.TryParse(general["TimeEnd"], out timeEnd))
+                                    Init(timeBegin, timeEnd);
+                        }
+
+                        if (general.ContainsKey("EnableGraphicDelete"))
+                        {
+                            bool enableGraphicDelete;
+                            bool f = Boolean.TryParse(general["EnableGraphicDelete"], out enableGraphicDelete);
+                            if (f) butCtrlDel.Enabled = enableGraphicDelete;
+                        }
+
+                        if (general.ContainsKey("Caption"))
+                        {
+                            Caption = general["Caption"];
+                        }
+                    }
+
+                    var dictOldNewGraphicNums = new Dictionary<int, int>();
+
+                    if (state.ContainsKey("Graphic"))
+                    {
+                        var graphicsSate = ((List<Dictionary<string, string>>) state["Graphic"]);
+                        foreach (var graphicSate in graphicsSate)
+                        {
+                            string type = "", code = "", name = "", subName = "", units = "", dataType = "";
+                            int id = -1, decPlaces = -1;
+                            double? min = null, max = null;
+                            if (graphicSate.ContainsKey("Type")) type = graphicSate["Type"];
+                            if (graphicSate.ContainsKey("Code")) code = graphicSate["Code"];
+                            if (graphicSate.ContainsKey("Id")) int.TryParse(graphicSate["Id"], out id);
+                            if (graphicSate.ContainsKey("Name")) name = graphicSate["Name"];
+                            if (graphicSate.ContainsKey("SubName")) subName = graphicSate["SubName"];
+                            if (graphicSate.ContainsKey("DataType")) dataType = graphicSate["DataType"];
+                            if (graphicSate.ContainsKey("Units")) units = graphicSate["Units"];
+                            if (graphicSate.ContainsKey("OutMin"))
+                            {
+                                double outMin;
+                                if (Double.TryParse(graphicSate["OutMin"], out outMin))
+                                    min = outMin;
+                            }
+                            if (graphicSate.ContainsKey("OutMax"))
+                            {
+                                double outMax;
+                                if (Double.TryParse(graphicSate["OutMin"], out outMax))
+                                    max = outMax;
+                            }
+                            if (graphicSate.ContainsKey("DecPlaces"))
+                                int.TryParse(graphicSate["DecPlaces"], out decPlaces);
+
+                            Graphic graphic = null;
+                            if (code != "")
+                            {
+                                graphic = GetGraphic(code);
+                                if (graphic == null)
+                                {
+                                    if (type == "Аналоговый")
+                                        graphic = AddAnalogGraphic(code, id, name, subName, dataType, min, max, units,
+                                                                   decPlaces);
+                                    if (type == "Дискретный")
+                                        graphic = AddDiscretGraphic(code, id, name, subName, dataType);
+                                }
+                            }
+
+                            if (graphic != null)
+                            {
+                                if (graphicSate.ContainsKey("Num"))
+                                {
+                                    int num;
+                                    if (int.TryParse(graphicSate["Num"], out num))
+                                        dictOldNewGraphicNums.Add(num, graphic.Num);
+                                }
+
+                                if (graphicSate.ContainsKey("IsVisible"))
+                                {
+                                    bool isVisible;
+                                    if (bool.TryParse(graphicSate["IsVisible"], out isVisible))
+                                        if (isVisible)
+                                            ShowGraphic(graphic);
+                                        else
+                                            HideGraphic(graphic);
+                                }
+
+                                if (graphicSate.ContainsKey("LineWidth"))
+                                {
+                                    int lineWidth;
+                                    if (int.TryParse(graphicSate["LineWidth"], out lineWidth))
+                                        graphic.LineWidth = lineWidth;
+                                }
+
+                                //нет возможности поменять цвет графика.
+                                if (graphicSate.ContainsKey("Color"))
+                                {
+                                    string colorName = graphicSate["Color"];
+                                    Color color = Color.FromName(colorName);
+                                }
+                            }
+                        }
+                    }
+
+                    if (state.ContainsKey("Ax"))
+                    {
+                        var axesState = ((List<Dictionary<string, string>>) state["Ax"]);
+                        foreach (var axState in axesState)
+                        {
+                            GroupY ax = null;
+
+                            if (axState.ContainsKey("Graphics"))
+                            {
+                                var axGraphicNums = axState["Graphics"].Split(',');
+                                int num;
+                                foreach (var axGraphicNum in axGraphicNums)
+                                    if (int.TryParse(axGraphicNum, out num))
+                                    {
+                                        var graphic = GetGraphicByNum(dictOldNewGraphicNums[num]);
+                                        if ((graphic != null) && (graphic.IsAnalog))
+                                        {
+                                            var aGraphic = (AnalogGraphic) graphic;
+                                            if (ax != null)
+                                                AxJunction(ax, aGraphic.GroupY);
+                                            else
+                                                ax = aGraphic.GroupY;
+                                        }
+                                    }
+                            }
+
+                            if (ax != null)
+                            {
+                                //if (axState.ContainsKey("IsHidden"))
+                                //{
+                                //    bool isHidden;
+                                //    if (bool.TryParse(axState["IsHidden"], out isHidden))
+                                //        if (isHidden) HideAxY(ax); else ShowAxY(ax);
+                                //}
+
+                                bool isInPercent = ax.IsInPercent;
+                                if (axState.ContainsKey("IsInPercent"))
+                                {
+                                    if (!bool.TryParse(axState["IsInPercent"], out isInPercent))
+                                        isInPercent = ax.IsInPercent;
+                                }
+                                double viewMin = ax.ViewMin;
+                                if (axState.ContainsKey("ViewMin"))
+                                {
+                                    if (!double.TryParse(axState["ViewMin"], out viewMin))
+                                        viewMin = ax.ViewMin;
+                                }
+                                double viewMax = ax.ViewMax;
+                                if (axState.ContainsKey("ViewMax"))
+                                {
+                                    if (!double.TryParse(axState["ViewMax"], out viewMax))
+                                        viewMax = ax.ViewMax;
+                                }
+                                SetAxYScaleView(ax, viewMin, viewMax, isInPercent);
+
+                                if (axState.ContainsKey("IsVisible"))
+                                {
+                                    bool isVisible;
+                                    if (bool.TryParse(axState["IsVisible"], out isVisible))
+                                        if (isVisible) ShowAxY(ax);
+                                        else HideAxY(ax);
+                                }
+                                
+                                if (axState.ContainsKey("UpperGraphic"))
+                                {
+                                    int upperGraphic;
+                                    if (int.TryParse(axState["UpperGraphic"], out upperGraphic))
+                                    {
+                                        var graphic = GetGraphicByNum(dictOldNewGraphicNums[upperGraphic]);
+                                        if ((graphic != null) && (graphic.IsAnalog))
+                                            ax.UpperGraphic = (AnalogGraphic) graphic;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (state.ContainsKey("General"))
+                    {
+                        var general = ((List<Dictionary<string, string>>) state["General"])[0];
+
+                        if (general.ContainsKey("CurGraphicNum"))
+                        {
+                            int curGraphicNum;
+                            if (int.TryParse(general["CurGraphicNum"], out curGraphicNum))
+                                CurGraphicNum = curGraphicNum;
+                        }
+
+                        if (general.ContainsKey("ViewTimeBegin"))
+                        {
+                            DateTime viewTimeBegin;
+                            if (DateTime.TryParse(general["ViewTimeBegin"], out viewTimeBegin))
+                                ViewTimeBegin = viewTimeBegin;
+                        }
+
+                        if (general.ContainsKey("ViewTimeEnd"))
+                        {
+                            DateTime viewTimeEnd;
+                            if (DateTime.TryParse(general["ViewTimeEnd"], out viewTimeEnd))
+                                ViewTimeEnd = viewTimeEnd;
+                        }
+
+                        if (general.ContainsKey("VizirTime"))
+                        {
+                            DateTime vizirTime;
+                            if (DateTime.TryParse(general["VizirTime"], out vizirTime))
+                                VizirTime = vizirTime;
+                        }
+                    }
+                }
+
+                CmdList.Clear();
+
+                return "";
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+        }
+    #endregion
     }
 
     //comparer сортировки датагрида по цвету

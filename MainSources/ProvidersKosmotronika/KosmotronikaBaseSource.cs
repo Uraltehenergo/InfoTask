@@ -271,14 +271,14 @@ namespace Provider
         private void AddBeginToObject(ObjectKosm ob)
         {
             if (ob.ValueSignal != null && ob.ValueSignal.BeginMoment != null)
-                NumWrite += ob.ValueSignal.AddBegin();
+                NumWrite += ob.ValueSignal.AddBegin(BeginRead); //ab было без параметра
             if (ob.StateSignal != null && ob.StateSignal.BeginMoment != null)
-                NumWrite += ob.StateSignal.AddBegin();
+                NumWrite += ob.StateSignal.AddBegin(BeginRead); //ab было без параметра
             if (ob.PokSignal != null && ob.PokSignal.BeginMoment != null)
-                NumWrite += ob.PokSignal.AddBegin();
+                NumWrite += ob.PokSignal.AddBegin(BeginRead); //ab было без параметра
             foreach (var bsig in ob.BitSignals.Values)
                 if (bsig.BeginMoment != null)
-                    NumWrite += bsig.AddBegin();
+                    NumWrite += bsig.AddBegin(BeginRead); //ab было без параметра
         }
 
         //Формирует список блоков для чтения сигналов из словаря сигналов
@@ -398,14 +398,20 @@ namespace Provider
                         {
                             case KosmCom.OutsBegin:
                                 //res = ProcessOuts(KosmReader, BeginRead); //Установка среза
-                                res = ProcessOuts(KosmReader);
+                                //ab 30.04.2019
+                                //res = ProcessOuts(KosmReader);
+                                res = CloneRec == null ? ProcessOuts(KosmReader) : ProcessOuts(KosmReader, BeginRead);
+                                //\ab
                                 break;
                             case KosmCom.OutsMoments:
                                 res = ProcessOuts(KosmReader);
                                 break;
                             case KosmCom.AnalogBegin:
                                 //res = ProcessAnalog(KosmReader, BeginRead); //Установка среза
-                                res = ProcessAnalog(KosmReader);
+                                //ab 30.04.2019
+                                //res = ProcessAnalog(KosmReader);
+                                res = CloneRec == null ? ProcessAnalog(KosmReader) : ProcessAnalog(KosmReader, BeginRead);
+                                //\ab
                                 break;
                             case KosmCom.AnalogMoments:
                                 res = ProcessAnalog(KosmReader);
@@ -520,7 +526,7 @@ namespace Provider
                         if (ob.StateSignal != null)
                             nwrite += ob.StateSignal.AddMoment(time, ndint);
                         if (ob.PokSignal != null)
-                            nwrite += ob.PokSignal.AddMoment(time, pok, nd);    
+                            nwrite += ob.PokSignal.AddMoment(time, pok, nd);
                     }
                 }
             }

@@ -160,7 +160,8 @@ namespace GraphicLibrary
             }
         }
 
-        //Не является отрицанием IsVisible (Ось может быть не видна и не спрятана)
+        //Скрыты ли графики оси
+        //Не является отрицанием IsVisible (М.б. IsVisible = false и isHidden = false)
         private bool _isHidden;
         internal bool IsHidden
         {

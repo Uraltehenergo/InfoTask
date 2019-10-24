@@ -257,7 +257,7 @@ namespace Provider
                 }
             foreach (var sig in ProviderSignals.Values)
                 if (sig.BeginMoment != null)
-                    NumWrite += sig.AddBegin();
+                    NumWrite += sig.AddBegin(BeginRead); //ab было без параметра
             return new KeyValuePair<int, int>(nread, nwrite);
         }
 

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<?define ProductName="InfoTask. RasInfoTask" ?>
+	<?define ProductVersion="1.1.1.0" ?>
+	<?define ProductCode="{931EC1D9-DB35-41D4-AF92-E41985C1AA5A}"?>
+	<?define UpgradeCode="{7A058362-6ADF-4FAF-947E-0634719BD8F9}"?>
+	<?define Manufacturer="InfoTask"?>
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+		   Language="1049" Version="$(var.ProductVersion)"
+		   Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="RasInfoTask package" InstallScope="perMachine"/>
+
+		<Media Id="1" Cabinet="RasInfoTask.cab" EmbedCab="yes" />
+
+		<Property Id="INSTALLLOCATION">
+			<RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+												  Type="directory">
+			</RegistrySearch>
+		</Property>
+
+		<Property Id="AAA">
+			<RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+												  Type="raw">
+			</RegistrySearch>
+		</Property>
+
+		<!-- InfoTask-->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+				<Directory Id="RasInfoTask" Name="RasInfoTask"/>
+        <Directory Id="Docs" Name="Docs"/>
+			</Directory>
+
+			<!--Пуск_Программы-->
+			<Directory Id="ProgramMenuFolder" Name="Programs">
+				<Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+				</Directory>
+			</Directory>
+
+			<!--Рабочий стол-->
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+
+		<!--RasInfoTask-->
+		<DirectoryRef Id="RasInfoTask">
+			<Component Id="RasInfoTaskPart1" Guid="9AB4FCCA-09B6-4F92-9221-B88FCD34F871">
+				<File Id="RasInfoTaskaccde_A" Name="RasInfoTask.accde"
+													Source="..\..\Release\RasInfoTask\RasInfoTask.accde"	Vital="yes" DiskId="1" />
+			</Component>
+			<Component Id="RasInfoTaskPart2" Guid="FE6FA6A5-2C97-490B-A64D-A30A5F8F88F9">
+				<File Id="RasInfoTaskDataaccdb_A" Name="RasInfoTaskData.accdb"
+													Source="..\..\Release\RasInfoTask\RasInfoTaskData.accdb"	Vital="yes" DiskId="1" />
+			</Component>
+		</DirectoryRef>
+
+		<DirectoryRef Id="ProgramMenuUTEDir">
+			<Component Id="CProgramMenuAnSC" Guid="{7610A159-F547-4125-ACDA-C728B172878C}">
+				<Shortcut Id="ProgramMenuAnSC" Name="РАС и АДЗ" Description="Программа РАС и АДЗ" Target="[RasInfoTask]RasInfoTask.accde" Icon="ITicon" />
+				<RemoveFolder Id="rmvA" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+    <DirectoryRef Id="Docs">
+      <Component Id="DocsRasInfoTask" Guid="{57107B37-4838-4605-A12C-D6E4DC07E976}">
+        <File Id="InfoTaskSP02RASInfoTaskpdf" Name="InfoTask-SP.02-RASInfoTask.pdf"
+				  Source="..\..\Release\Docs\InfoTask-SP.02-RASInfoTask.pdf" Vital="yes" DiskId="1"/>
+      </Component>
+    </DirectoryRef>
+
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="CDesktopAnSC" Guid="{2DE5F25D-9618-402F-88AE-4ED25397C974}">
+				<Shortcut Id="DesktopAnSC" Name="РАС и АДЗ" Description="Программа РАС и АДЗ" Target="[RasInfoTask]RasInfoTask.accde" Icon="ITicon32" />
+				<RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+			</Component>
+		</DirectoryRef>
+
+		<Feature Id='RasInfoTaskFeature' Title="РАС" Description='Программа РАС и АДЗ' Display='expand' Level="1"
+			 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+			<ComponentRef Id="RasInfoTaskPart1"/>
+			<ComponentRef Id="RasInfoTaskPart2"/>			
+			<ComponentRef Id="CProgramMenuAnSC"/>
+			<ComponentRef Id="CDesktopAnSC"/>
+      <ComponentRef Id="DocsRasInfoTask"/>
+		</Feature>
+
+		<WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+		<UI Id='MyWixUI'>
+			<UIRef Id='WixUI_Minimal'/>
+			<UIRef Id='WixUI_ErrorProgressText'/>
+		</UI>
+
+		<Icon Id ="ITicon" SourceFile="..\..\Release\RAS\ITicon.RAS.ico"/>
+		<Icon Id ="ITicon32" SourceFile="..\..\Release\RAS\ITicon32.RAS.ico"/>
+
+		<CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+		<InstallUISequence>
+			<Custom Action="KillProcessId" Before="CostInitialize">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+			<Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+		</InstallUISequence>
+
+		<Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+		<CustomAction Id="FillActionId"
+			 BinaryKey="ConfigFillB"
+				DllEntry="ConfigFillRASInfoTask"
+				Return="check" />
+
+		<CustomAction Id="UnFillActionId"
+			 BinaryKey="ConfigFillB"
+				DllEntry="ConfigFillRASInfoTaskU"
+				Return="check" />
+
+		<CustomAction Id="KillProcessId"
+			 BinaryKey="ConfigFillB"
+				DllEntry="KillProcess"
+				Return="check" />
+
+		<Upgrade Id="$(var.UpgradeCode)">
+			<UpgradeVersion
+					  Property="OLDFOUND"
+					  Minimum="1.0.0"
+					  IncludeMinimum="yes"
+					  Maximum="$(var.ProductVersion)"
+					  IncludeMaximum="no"
+					  IgnoreRemoveFailure="yes"
+					  MigrateFeatures="yes"
+							/>
+		</Upgrade>
+
+		<InstallExecuteSequence>
+			<Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+			<Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+			<RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+		</InstallExecuteSequence>
+
+	</Product>
+</Wix>

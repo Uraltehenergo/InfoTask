@@ -313,7 +313,9 @@ namespace ControllerProba
 
         private void button11_Click(object sender, EventArgs e)
         {
-            Crypted.Text = Crypting.Encrypt("true");
+            //Crypted.Text = Crypting.Encrypt("true");
+           //Crypted.Text = Crypting.Decrypt("t«2WиZоэc");
+            Crypted.Text = Crypting.Encrypt("false");
         }
 
         private void butSubstring_Click(object sender, EventArgs e)
@@ -387,6 +389,11 @@ namespace ControllerProba
             var en = new DBEngine();
             var db = new DaoDb(@"d:\Calc\Projects\Курган\Electro.accdb");
             var rec = new RecDao(db, "CalcParams");
+        }
+
+        private void Crypted_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

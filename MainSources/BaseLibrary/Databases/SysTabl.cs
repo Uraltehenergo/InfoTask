@@ -49,8 +49,14 @@ namespace BaseLibrary
         //Получение значения параметра из SysTabl
         public string Value(string param)
         {
-            _tabl.FindFirst("ParamName", param);
-            return _tabl.GetString("ParamValue");
+            //_tabl.FindFirst("ParamName", param);
+            //return _tabl.GetString("ParamValue");
+
+            //ab
+            bool res = _tabl.FindFirst("ParamName", param);
+            if (res) return _tabl.GetString("ParamValue");
+            return "";
+            //\ab
         }
 
         //Запись значения параметра в SysTabl

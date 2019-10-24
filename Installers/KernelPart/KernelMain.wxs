@@ -26,6 +26,9 @@
 			<!--<Directory Id="ProgramFilesFolder">
 				<Directory Id="COMMONFOLDER" Name="$(var.Manufacturer)">-->
 			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="General" Name="General">
+          <Directory Id="Templates" Name="Templates"/>
+        </Directory>
 				<Directory Id="Analyzer" Name="Analyzer"/>
 				<Directory Id="Constructor" Name="Constructor"/>
 				<Directory Id="Controller" Name="Controller">
@@ -50,7 +53,7 @@
             </Component>
           </Directory>
         </Directory>
-        <Directory Id="General" Name="General"/>
+        <!--<Directory Id="General" Name="General"/>-->
         <Directory Id="Docs" Name="Docs"/>
         <Directory Id="Graphics" Name="Graphics"/>
 				<Directory Id="Projects" Name="Projects">
@@ -64,6 +67,7 @@
 					<Directory Id="PClone" Name="Clone"/>
 				</Directory>
 				<Directory Id="RAS" Name="RAS"/>
+        <Directory Id="RasInfoTask" Name="RasInfoTask"/>
 				<Directory Id="Reporter" Name="Reporter"/>
 				<Directory Id="Reports" Name="Reports">
 					<Component Id="CreateReportsFolder"
@@ -94,6 +98,14 @@
 		</Directory>
 
 		<!--Описание устанавливаемых файлов-->
+    <!--General\Templates -->
+    <DirectoryRef Id="Templates">
+      <Component Id="TemplatesPart1" Guid="AE583D10-03B5-4B59-ACD9-BFB25B05BEF0">
+        <File Id="AnalyzerVedTemplateaccdb" Name="AnalyzerVedTemplate.accdb"
+											Source="..\..\Release\General\AnalyzerVedTemplate.accdb"	Vital="yes" DiskId="1" />
+      </Component>
+    </DirectoryRef>
+    
 		<DirectoryRef Id="Constructor">
 			<Component Id="CalcArchive" Guid="{AB90066A-0D8B-4AF4-B4B8-85A790696C9E}" Permanent="yes">
 				<File Id="CalcArchiveaccdb_Cons" Name="CalcArchive.accdb"	
@@ -183,6 +195,8 @@
 			<Component Id="GeneralPart1" Guid="B76987F9-5E81-4D21-A5B9-1A3E55A97B8E">
 				<File Id="ConfigTemplateaccdb_G" Name="ConfigTemplate.accdb"
 											Source="..\..\Release\General\ConfigTemplate.accdb"	Vital="yes" DiskId="1" />
+        <File Id="ProjectsGroupDataTemplateaccdb" Name="ProjectsGroupDataTemplate.accdb"
+                      Source="..\..\Release\General\ProjectsGroupDataTemplate.accdb"	Vital="yes" DiskId="1" />
 				<File Id="General_G" Name="General.accdb"
 											Source="..\..\Release\General\General.accdb"	Vital="yes" DiskId="1" />
         <File Id="HistoryTemplateaccdb_G" Name="HistoryTemplate.accdb"
@@ -277,6 +291,20 @@
 							Vital="yes" DiskId="1">
         </File>
       </Component>  
+    </DirectoryRef>
+
+    <!--Providers-->
+    <DirectoryRef Id="Providers">
+      <Component Id="Providers" Guid="70AA2398-72A1-4132-A425-05C716C09505">
+        <File Id="CommInfoTask" Name="CommInfoTask.accde"
+							Source="..\..\Release\Providers\CommInfoTask.accde"
+							Vital="yes" DiskId="1">
+        </File>
+        <File Id="CommInfoTaskData" Name="CommInfoTaskData.accdb"
+              Source="..\..\Release\Providers\CommInfoTaskData.accdb"
+              Vital="yes" DiskId="1">
+        </File>
+      </Component>
     </DirectoryRef>
     
 		<!--Tablik-->
@@ -381,7 +409,8 @@
 				<Feature Id='KernelMainFeature' Title="Базовые компоненты ядра" Description='Базовые компоненты ядра'
 								 Display='expand' Level="1"
 						 ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='disallow' InstallDefault='local'>
-					<ComponentRef Id="Providers_A"/>
+          <ComponentRef Id="Providers"/>
+          <ComponentRef Id="Providers_A"/>
           <ComponentRef Id="Providers_C"/>
 					<ComponentRef Id="ControllerPart1"/>
 					<ComponentRef Id="ControllerPart2"/>
@@ -400,6 +429,7 @@
           <ComponentRef Id="SynchFiles"/>
           <ComponentRef Id="DocsKernel"/>
           <ComponentRef Id="TuneServicePart"/>
+          <ComponentRef Id="TemplatesPart1"/>
 				</Feature>
 			</Feature>
 

@@ -881,6 +881,10 @@ namespace VersionSynch
                         appRegistered = IsReg("sr", UAIKey);
                         application = "RAS";
                         break;
+                    case "RasInfoTask":
+                        appRegistered = IsReg("ri", UAIKey);
+                        application = "RasInfoTask";
+                        break;
                     case "Controller":
                         appRegistered = IsReg("rm", UAIKey);
                         application = "Controller";
@@ -889,6 +893,10 @@ namespace VersionSynch
                         appRegistered = IsReg("ra", UAIKey);
                         application = "Analyzer";
                         break;
+                    case "AnalyzerInfoTask":
+                        appRegistered = IsReg("ai", UAIKey);
+                        application = "AnalyzerInfoTask";
+                        break;
                     case "Excel":
                         appRegistered = IsReg("rr", UAIKey);
                         application = "Reporter";
@@ -896,6 +904,10 @@ namespace VersionSynch
                     case "CalcArchiveViewer":
                         appRegistered = IsReg("rv", UAIKey);
                         application = "CalcArchiveViewer";
+                        break;
+                    case "ProjectManager":
+                        appRegistered = IsReg("pm", UAIKey);
+                        application = "ProjectManager";
                         break;
                 }
                 if (appRegistered)

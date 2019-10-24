@@ -55,6 +55,13 @@
             this.butNewVersion = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
             this.butAddAnalog1 = new System.Windows.Forms.Button();
+            this.butLoadVedTest = new System.Windows.Forms.Button();
+            this.butSaveState = new System.Windows.Forms.Button();
+            this.butTestVizir = new System.Windows.Forms.Button();
+            this.butLoadState = new System.Windows.Forms.Button();
+            this.butSetDB = new System.Windows.Forms.Button();
+            this.butVisibleSaveState = new System.Windows.Forms.Button();
+            this.butEnableDeleteGraphic = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -324,11 +331,96 @@
             this.butAddAnalog1.UseVisualStyleBackColor = true;
             this.butAddAnalog1.Click += new System.EventHandler(this.butAddAnalog1_Click);
             // 
+            // butLoadVedTest
+            // 
+            this.butLoadVedTest.Location = new System.Drawing.Point(363, 384);
+            this.butLoadVedTest.Name = "butLoadVedTest";
+            this.butLoadVedTest.Size = new System.Drawing.Size(169, 45);
+            this.butLoadVedTest.TabIndex = 26;
+            this.butLoadVedTest.Text = "Test LoadVed";
+            this.butLoadVedTest.UseVisualStyleBackColor = true;
+            this.butLoadVedTest.Click += new System.EventHandler(this.butLoadVedTest_Click);
+            // 
+            // butSaveState
+            // 
+            this.butSaveState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSaveState.Location = new System.Drawing.Point(455, 350);
+            this.butSaveState.Name = "butSaveState";
+            this.butSaveState.Size = new System.Drawing.Size(77, 28);
+            this.butSaveState.TabIndex = 27;
+            this.butSaveState.Text = "Save State";
+            this.butSaveState.UseVisualStyleBackColor = true;
+            this.butSaveState.Click += new System.EventHandler(this.butSaveState_Click);
+            // 
+            // butTestVizir
+            // 
+            this.butTestVizir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butTestVizir.Location = new System.Drawing.Point(455, 454);
+            this.butTestVizir.Name = "butTestVizir";
+            this.butTestVizir.Size = new System.Drawing.Size(77, 28);
+            this.butTestVizir.TabIndex = 28;
+            this.butTestVizir.Text = "Test Vizir";
+            this.butTestVizir.UseVisualStyleBackColor = true;
+            this.butTestVizir.Click += new System.EventHandler(this.butTestVizir_Click);
+            // 
+            // butLoadState
+            // 
+            this.butLoadState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butLoadState.Location = new System.Drawing.Point(455, 316);
+            this.butLoadState.Name = "butLoadState";
+            this.butLoadState.Size = new System.Drawing.Size(77, 28);
+            this.butLoadState.TabIndex = 29;
+            this.butLoadState.Text = "Load State";
+            this.butLoadState.UseVisualStyleBackColor = true;
+            this.butLoadState.Click += new System.EventHandler(this.butLoadState_Click);
+            // 
+            // butSetDB
+            // 
+            this.butSetDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSetDB.Location = new System.Drawing.Point(455, 282);
+            this.butSetDB.Name = "butSetDB";
+            this.butSetDB.Size = new System.Drawing.Size(77, 28);
+            this.butSetDB.TabIndex = 30;
+            this.butSetDB.Text = "Set DB";
+            this.butSetDB.UseVisualStyleBackColor = true;
+            this.butSetDB.Click += new System.EventHandler(this.butSetDB_Click);
+            // 
+            // butVisibleSaveState
+            // 
+            this.butVisibleSaveState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butVisibleSaveState.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butVisibleSaveState.Location = new System.Drawing.Point(363, 350);
+            this.butVisibleSaveState.Name = "butVisibleSaveState";
+            this.butVisibleSaveState.Size = new System.Drawing.Size(77, 28);
+            this.butVisibleSaveState.TabIndex = 31;
+            this.butVisibleSaveState.Text = "Visible Save State";
+            this.butVisibleSaveState.UseVisualStyleBackColor = true;
+            this.butVisibleSaveState.Click += new System.EventHandler(this.butVisibleSaveState_Click);
+            // 
+            // butEnableDeleteGraphic
+            // 
+            this.butEnableDeleteGraphic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butEnableDeleteGraphic.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.butEnableDeleteGraphic.Location = new System.Drawing.Point(362, 316);
+            this.butEnableDeleteGraphic.Name = "butEnableDeleteGraphic";
+            this.butEnableDeleteGraphic.Size = new System.Drawing.Size(77, 28);
+            this.butEnableDeleteGraphic.TabIndex = 32;
+            this.butEnableDeleteGraphic.Text = "Enable Delete Graphic";
+            this.butEnableDeleteGraphic.UseVisualStyleBackColor = true;
+            this.butEnableDeleteGraphic.Click += new System.EventHandler(this.butEnableDeleteGraphic_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(559, 528);
+            this.Controls.Add(this.butEnableDeleteGraphic);
+            this.Controls.Add(this.butVisibleSaveState);
+            this.Controls.Add(this.butSetDB);
+            this.Controls.Add(this.butLoadState);
+            this.Controls.Add(this.butTestVizir);
+            this.Controls.Add(this.butSaveState);
+            this.Controls.Add(this.butLoadVedTest);
             this.Controls.Add(this.butAddAnalog1);
             this.Controls.Add(this.butAddDiscret);
             this.Controls.Add(this.butNewVersion);
@@ -389,6 +481,13 @@
         private System.Windows.Forms.Button butNewVersion;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button butAddAnalog1;
+        private System.Windows.Forms.Button butLoadVedTest;
+        private System.Windows.Forms.Button butSaveState;
+        private System.Windows.Forms.Button butTestVizir;
+        private System.Windows.Forms.Button butLoadState;
+        private System.Windows.Forms.Button butSetDB;
+        private System.Windows.Forms.Button butVisibleSaveState;
+        private System.Windows.Forms.Button butEnableDeleteGraphic;
     }
 }
 

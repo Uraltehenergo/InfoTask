@@ -66,10 +66,10 @@
 											Source="..\..\Release\General\Templates\ProjectGenTemplate.accdb"	Vital="yes" DiskId="1" />
         <File Id="ProjectGenDataTemplateaccdb" Name="ProjectGenDataTemplate.accdb"
 											Source="..\..\Release\General\Templates\ProjectGenDataTemplate.accdb"	Vital="yes" DiskId="1" />
-        <File Id="AnalyzerVedTemplateaccdb" Name="AnalyzerVedTemplate.accdb"
-											Source="..\..\Release\General\Templates\AnalyzerVedTemplate.accdb"	Vital="yes" DiskId="1" />
       </Component>
     </DirectoryRef>
+    
+    
     
     <DirectoryRef Id="Docs">
       <Component Id="DocsRASKosmotronika" Guid="{57107B37-4838-4605-A12C-D6E4DC07E976}">

@@ -21,6 +21,9 @@ namespace ActivationDrop
             newKey.SetValue("rr", "цKР>»И5ЧK[Я", RegistryValueKind.String);
             newKey.SetValue("rm", "ь1x:|2«}/>В", RegistryValueKind.String);
             newKey.SetValue("rv", "ь1x:|2«}/>В", RegistryValueKind.String);
+            newKey.SetValue("ri", "`[а!cFСТFлQ", RegistryValueKind.String);
+            newKey.SetValue("pm", "%oфбCPЫЮRЗ-", RegistryValueKind.String);
+            newKey.SetValue("ai", "нkрё!=ИYлмR", RegistryValueKind.String);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Provider
     [ExportMetadata("Code", "OvationSource")]
     public class OvationSource : SourceBase, ISource
     {
-        //name - имя провайдера, inf - строка свойств
+        //name - имя провайдера, inf - строка свойств-
         //public OvationSource(string name, string inf, Logger logger) : base(name, logger)
         //{
         //    Inf = inf;
@@ -259,7 +259,13 @@ namespace Provider
                         if (ob.StateSignal != null)
                             nwrite += ob.StateSignal.AddMoment(t, Stat(_histReader), 0, forBegin);
                         if (ob.ValueSignal != null)
-                            nwrite += ob.ValueSignal.AddMoment(t, RMean(_histReader), nd, forBegin);
+                            //правка(28.09.2018, добавлено преобразование к булевскому типу )
+                            if (ob.DataType == DataType.Boolean)
+                                nwrite += ob.ValueSignal.AddMoment(t, Convert.ToBoolean(RMean(_histReader)), nd, forBegin);
+                            else if (ob.DataType == DataType.Integer)
+                                nwrite += ob.ValueSignal.AddMoment(t, Convert.ToInt32(RMean(_histReader)), nd, forBegin);
+                            else
+                                nwrite += ob.ValueSignal.AddMoment(t, RMean(_histReader), nd, forBegin);
                         if (ob.BitSignals != null && ob.BitSignals.Count != 0)
                         {
                             int im = IMean(_histReader);
@@ -321,7 +327,7 @@ namespace Provider
                 }
                 foreach (var sig in ProviderSignals.Values)
                     if (sig.BeginMoment != null)
-                        NumWrite += sig.AddBegin();
+                        NumWrite += sig.AddBegin(BeginRead); //ab Добавлен параметр BeginRead
 
                 Logger.AddEvent("Получение изменений значений", _objectsId.Values.Count + " объектов");
                 _b = BeginRead;

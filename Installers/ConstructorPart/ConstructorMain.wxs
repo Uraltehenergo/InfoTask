@@ -26,7 +26,7 @@
 
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
-				<Directory Id="Constructor" Name="Constructor"/>
+        <Directory Id="Constructor" Name="Constructor"/>
 				<Directory Id="Providers" Name="Providers">
 					<Directory Id="PTest" Name="Test"/>
 				</Directory>
@@ -55,7 +55,7 @@
 				<!--<File Id="ProjectTemplateaccdb_Cons" Name="ProjectTemplate.accdb"
 											Source="..\..\Release\Constructor\ProjectTemplate.accdb"	Vital="yes" DiskId="1" />-->
 			</Component>
-			<Component Id="ConstructorPart2" Guid="E0B3C7B9-4675-452F-A1BE-71D8CD2FA54A" Permanent="yes">
+			<Component Id="ConstructorPart2" Guid="{5501DB8D-9C6F-4481-B34B-F8FE1A5A9516}" Permanent="yes">
 				<File Id="AppDataaccdb_Cons" Name="AppData.accdb"
 											Source="..\..\Release\Constructor\AppData.accdb"	Vital="yes" DiskId="1" />
 			</Component>
@@ -114,7 +114,7 @@
 			<!--<Condition Level="0">
 					<![CDATA[ISCONSTRUCTOR = "0"]]>
 				</Condition>-->
-			<ComponentRef Id="ConstructorPart1"/>
+      <ComponentRef Id="ConstructorPart1"/>
 			<ComponentRef Id="ConstructorPart2"/>
 			<!--<ComponentRef Id="Providers_TC"/>
 			<ComponentRef Id="Providers_TPT"/>-->

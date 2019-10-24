@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <?define ProductName="InfoTask. ProjectManager" ?>
+  <?define ProductVersion="1.3.5.0" ?>
+  <?define ProductCode="{1AC0AE67-7171-4A80-9D0D-2AFC75BC7851}"?>
+  <?define UpgradeCode="{CEA55A9A-9392-4F0D-91AD-E60E7195DC70}"?>
+  <?define Manufacturer="InfoTask"?>
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)"
+		   Language="1049" Version="$(var.ProductVersion)"
+		   Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" SummaryCodepage="1251" Description="RasInfoTask package" InstallScope="perMachine"/>
+
+      <Media Id="1" Cabinet="ProjectManager.cab" EmbedCab="yes" />
+
+      <Property Id="INSTALLLOCATION">
+        <RegistrySearch Id="targetdirsearch" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="InfoTaskPath"
+                            Type="directory">
+        </RegistrySearch>
+      </Property>
+
+      <Property Id="AAA">
+        <RegistrySearch Id="aaa" Root="HKLM" Key="Software\$(var.Manufacturer)" Name="KernelExistence"
+                            Type="raw">
+        </RegistrySearch>
+      </Property>
+
+      <!-- Constructor-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+        <Directory Id="Constructor" Name="Constructor"/>
+      </Directory>
+ 
+
+    <!--Пуск_Программы-->
+    <Directory Id="ProgramMenuFolder" Name="Programs">
+      <Directory Id="ProgramMenuUTEDir" Name="$(var.Manufacturer)">
+      </Directory>
+    </Directory>
+
+    <!--Рабочий стол-->
+    <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+      
+      <!--Constructor-->
+      <DirectoryRef Id="Constructor">
+        <Component Id="ProjectManager1" Guid="D61CBF57-D7EA-4C36-80FB-CE0D33F070A8">
+          <File Id="ProjectManageraccdb_A" Name="ProjectManager.accde"
+                            Source="..\..\Release\Constructor\ProjectManager.accde"	Vital="yes" DiskId="1" />
+        </Component>
+        
+        <Component Id="ProjectManager2" Guid="44242797-3D1A-4B71-92BE-8BB9702EC96A">
+          <File Id="ProjectManagerDataaccdb_A" Name="ProjectManagerData.accdb"
+                            Source="..\..\Release\Constructor\ProjectManagerData.accdb"	Vital="yes" DiskId="1" />
+        </Component>
+      </DirectoryRef>  
+
+    <DirectoryRef Id="ProgramMenuUTEDir">
+        <Component Id="CProgramMenuAnSC" Guid="{148F6E11-DB3A-48E9-B799-05413E843AB1}">
+          <Shortcut Id="ProgramMenuAnSC" Name="Менеджер проектов" Description="Программа Менеджер проектов" Target="[Constructor]ProjectManager.accde" Icon="ITicon" />
+          <RemoveFolder Id="rmvA" On="uninstall"/>
+          <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+        </Component>
+      </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+        <Component Id="CDesktopAnSC" Guid="{5AF2E365-981E-49B5-9228-F3160A63244A}">
+          <Shortcut Id="DesktopAnSC" Name="Менеджер проектов" Description="Программа Менеджер проектов" Target="[Constructor]ProjectManager.accde" Icon="ITicon32" />
+          <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value=""/>
+        </Component>
+      </DirectoryRef>
+
+      <Feature Id='ProjectManagerFeature' Title="Менеджер проектов" Description='Менеджер проектов' Display='expand' Level="1"
+         ConfigurableDirectory='INSTALLLOCATION' AllowAdvertise='no' Absent='allow' InstallDefault='local'>
+        <ComponentRef Id="ProjectManager1"/>
+        <ComponentRef Id="ProjectManager2"/>
+        <ComponentRef Id="CProgramMenuAnSC"/>
+        <ComponentRef Id="CDesktopAnSC"/>
+      </Feature>
+
+      <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="..\..\Release\Docs\License.rtf"/>
+
+      <UI Id='MyWixUI'>
+        <UIRef Id='WixUI_Minimal'/>
+        <UIRef Id='WixUI_ErrorProgressText'/>
+      </UI>
+
+      <Icon Id ="ITicon" SourceFile="..\..\Release\Constructor\ITiconPM.C.ico"/>
+      <Icon Id ="ITicon32" SourceFile="..\..\Release\Constructor\ITicon32PM.C.ico"/>
+
+      <CustomAction Id="ErrorCA" Error="Сначала установите InfoTask"></CustomAction>
+
+      <InstallUISequence>
+        <Custom Action="KillProcessId" Before="CostInitialize">Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+        <Custom Action="ErrorCA" Before="CostInitialize">	<![CDATA[AAA = "" AND NOT Installed]]> </Custom>
+      </InstallUISequence>
+
+      <Binary Id="ConfigFillB" SourceFile="..\ConfigFill\obj\x86\Release\ConfigFill.CA.dll"/>
+      <CustomAction Id="FillActionId"
+         BinaryKey="ConfigFillB"
+          DllEntry="ConfigFillProjectManager"
+          Return="check" />
+
+      <CustomAction Id="UnFillActionId"
+         BinaryKey="ConfigFillB"
+          DllEntry="ConfigFillProjectManagerU"
+          Return="check" />
+
+      <CustomAction Id="KillProcessId"
+         BinaryKey="ConfigFillB"
+          DllEntry="KillProcess"
+          Return="check" />
+
+      <Upgrade Id="$(var.UpgradeCode)">
+        <UpgradeVersion
+              Property="OLDFOUND"
+              Minimum="1.0.0"
+              IncludeMinimum="yes"
+              Maximum="$(var.ProductVersion)"
+              IncludeMaximum="no"
+              IgnoreRemoveFailure="yes"
+              MigrateFeatures="yes"
+							/>
+      </Upgrade>
+
+      <InstallExecuteSequence>
+        <Custom Action="FillActionId" After="InstallFinalize">Not Installed</Custom>
+        <Custom Action="UnFillActionId" After="InstallFinalize">Installed</Custom>
+        <RemoveExistingProducts Before="InstallInitialize"></RemoveExistingProducts>
+      </InstallExecuteSequence>
+
+
+	</Product>
+</Wix>

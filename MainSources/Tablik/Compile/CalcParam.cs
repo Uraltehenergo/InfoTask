@@ -1483,8 +1483,10 @@ namespace Tablik
             }
             rec.Put("Expr", s);
             rec.Put("UsedUnits", used.ToPropertyString("|") + TablikCompiler.UsingParamsString(UsingParams));
-            if (!IsSubParam && !isOldSignal) 
-                rec.Put("CodeSignal", firstSignal);
+            //ab 20.02.2019 закомментировано изменение CodeSignal по требованию ВИ
+            //if (!IsSubParam && !isOldSignal) 
+            //    rec.Put("CodeSignal", firstSignal);
+            //\ab
             rec.Update();
         }
     }

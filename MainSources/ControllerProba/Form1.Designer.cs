@@ -244,6 +244,7 @@
             this.Crypted.Name = "Crypted";
             this.Crypted.Size = new System.Drawing.Size(215, 20);
             this.Crypted.TabIndex = 19;
+            this.Crypted.TextChanged += new System.EventHandler(this.Crypted_TextChanged);
             // 
             // ButClone
             // 

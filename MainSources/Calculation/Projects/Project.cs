@@ -219,7 +219,7 @@ namespace Calculation
         public ArchiveInterval AbsoluteInterval { get; private set; }
         public ArchiveInterval AbsoluteDayInterval { get; private set; }
         public ArchiveInterval MomentsInterval { get; private set; }
-
+        
         //Чтение иформации по проекту из файла проекта
         public void ReadProject()
         {
@@ -266,7 +266,7 @@ namespace Calculation
                     IsManyBase = sys.SubValue("ArchiveOptions", "IsManyBase") == "True";
                     IsManyHour = sys.SubValue("ArchiveOptions", "IsManyHour") == "True";
                     IsManyDay = sys.SubValue("ArchiveOptions", "IsManyDay") == "True";
-                    IsManyMoments = sys.SubValue("ArchiveOptions", "IsManyMoments") == "True";    
+                    IsManyMoments = sys.SubValue("ArchiveOptions", "IsManyMoments") == "True";
                 }
             }
             catch (Exception ex)

@@ -60,7 +60,7 @@ namespace CommonTypes
         //funFormValues - функция формирования значений сигналов на основе прочитанных значений
         //errorWaiting - Время ожидания после ошибки считывания в мс
         //maxErrorCount - Количество блоков, которое нужно считать, чтобы понять, что связи нет, 0 - читать до конца
-        //maxErrorDepth - Глубина, до которой нужно дробить первый блок, если так и не было успешного считывания
+        //maxErrorDepth - Глуина, до которой нужно дробить первый блок, если так и не было успешного считывания
         public void ReadValuesByParts(Func<List<ProviderObject>, bool> funReadValues, Func<KeyValuePair<int, int>> funFormValues, List<List<ProviderObject>> parts, int reconnectsCount = 2, int reconnectWaiting = 500, int maxErrorCount = 3, int maxErrorDepth = 3, int errorWaiting = 100)
         {
             using (Logger.Start(0))

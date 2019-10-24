@@ -17,13 +17,17 @@ namespace Calculation
             _props.Add("DataType", _param.DataType.ToRussian());
             _props.Add("Units", _param.ArchiveParam.Units);
             _props.Add("Comment", _param.FirstParam.Comment);
-            _props.Add("Min", _param.ArchiveParam.Min.ToString());
-            _props.Add("Max", _param.ArchiveParam.Max.ToString());
-            if (_param.FirstParam.CodeSignal != null)
-            {
-                var dic = _param.FirstParam.Project.SignalsSources[_param.FirstParam.CodeSignal].TagObject.ToPropertyDicS();
-                _props.AddDic(dic);    
-            }
+            _props.Add("Min", _param.ArchiveParam.Min != null ? _param.ArchiveParam.Min.ToString() : null); //12.04.2019 не был обработан случай null
+            _props.Add("Max", _param.ArchiveParam.Max != null ? _param.ArchiveParam.Max.ToString() : null); //12.04.2019 не был обработан случай null
+            //ab 20.02.2019 
+            //if (_param.FirstParam.CodeSignal != null)
+            //{
+            //var dic = _param.FirstParam.Project.SignalsSources[_param.FirstParam.CodeSignal].TagObject.ToPropertyDicS();
+            //    _props.AddDic(dic);    
+            //}
+            _props.Add("CodeSignal", _param.FirstParam.CodeSignal);
+            //\ab
+
         }
 
         //Ссылка на VedSaver

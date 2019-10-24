@@ -138,6 +138,12 @@ namespace Tablik
         internal bool IsManyHour;
         internal bool IsManyDay;
         internal bool IsManyMoments;
+
+        //ab
+        //Файл списка объекта
+        private string _objectsFile;
+        public string ObjectsFile { get { return _objectsFile; } }
+        //\ab
         
         //Загрузка списка функций
         public void LoadFunctions()
@@ -263,6 +269,17 @@ namespace Tablik
                                 _code = sys.SubValue("ProjectInfo", "Project");
                                 _name = sys.SubValue("ProjectInfo", "ProjectName");
                                 sys.PutSubValue("ProjectInfo", "HandInputSource", HandInputSource);
+
+                                //ab
+                                _objectsFile = sys.Value("ObjectsFile");
+                                if (string.IsNullOrEmpty(_objectsFile)) _objectsFile = projectFile;
+                                if (_objectsFile != projectFile)
+                                    if (!DaoDb.Check(projectFile, new[] { "CalcParams", "CalcSubParams", "CalcParamsArchive", "Objects", "Signals", "SignalsInUse", "GraficsList", "GraficsValues" }))
+                                    {
+                                        AddError("В проекте указан неправильный файл списка объектов", null, projectFile);
+                                        _objectsFile = projectFile;
+                                    }
+                                //\ab
                             }
                         }
                         _projectFile = projectFile;
@@ -292,7 +309,8 @@ namespace Tablik
                     AddError("Проект не загружен");
                 else
                 {
-                    using (var reco = new RecDao(_projectFile, "SELECT CodeObject, NameObject, TagObject, ObjectId, CommName, ErrMess FROM Objects ORDER BY ObjectId"))
+                    //using (var reco = new RecDao(_projectFile, "SELECT CodeObject, NameObject, TagObject, ObjectId, CommName, ErrMess FROM Objects ORDER BY ObjectId"))
+                    using (var reco = new RecDao(_objectsFile, "SELECT CodeObject, NameObject, TagObject, ObjectId, CommName, ErrMess FROM Objects ORDER BY ObjectId")) //ab\
                     {
                         Procent = 10;
                         while (reco.Read())
@@ -370,7 +388,8 @@ namespace Tablik
                     var objectsId = new DicI<ObjectSignal>();
                     Signals.Clear();
                     SignalsList.Clear();
-                    using (var db = new DaoDb(_projectFile))
+                    //using (var db = new DaoDb(_projectFile))
+                    using (var db = new DaoDb(_objectsFile)) //ab\
                     {
                         using (var reco = new ReaderAdo(db, "SELECT CodeObject, NameObject, TagObject, ObjectId, CommName FROM Objects ORDER BY ObjectId"))
                         {
@@ -408,7 +427,10 @@ namespace Tablik
                 }
                 catch (Exception ex)
                 {
-                    AddError("Ошибка загрузки сигналов", ex);
+                    //ab
+                    //AddError("Ошибка загрузки сигналов", ex);
+                    AddError("Ошибка загрузки сигналов: " + ex.Message, ex);
+                    //\ab
                 }    
             }
             return FinishAtom(State.Signals, State.Project, "Проект: " + _code + @";  Сигналов: " + SignalsList.Count);

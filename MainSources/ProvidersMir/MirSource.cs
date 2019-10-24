@@ -194,9 +194,9 @@ namespace Provider
                 if (forBegin)
                 {
                     foreach (var sig in _signalsIndication.Values)
-                        sig.AddBegin();
+                        sig.AddBegin(BeginRead); //ab Было без параметра
                     foreach (var sig in _signalsUnit.Values)
-                        sig.AddBegin();
+                        sig.AddBegin(BeginRead); //ab Было без параметра
                 }
             }
             return true;

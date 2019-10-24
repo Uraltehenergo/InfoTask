@@ -964,11 +964,11 @@ namespace _4._0
                 _newForm.Init(sp, sp.AddHours(1));
                 _newForm.Show();
 
-                _newForm.AddAnalogGraphic("code1", 1, "Аналог 1", "an", "real", 4, 20, "мА");
+                _newForm.AddAnalogGraphic("code1", 1, "Аналог 1", "an", "real", 4, 20.123, "мА");
                 _newForm.AddDiscretGraphic("code2", 2, "Дискрет 1", "dig");
-                _newForm.AddAnalogGraphic("code3", 3, "Аналог 2", "an", "real", 0, 10, "кг");
+                _newForm.AddAnalogGraphic("code3", 3, "Аналог 2", "an", "real", 0, 10.987, "кг", 1);
                 _newForm.AddDiscretGraphic("code4", 4, "Дискрет 2", "dig");
-                _newForm.AddAnalogGraphic("code5", 5, "Аналог 3", "an", "real", -7, 22.83, "х/з");
+                _newForm.AddAnalogGraphic("code5", 5, "Аналог 3", "an", "real", -7, 22.835, "х/з", 2);
                 _newForm.AddDiscretGraphic("code6", 6, "Дискрет 3", "dig");
 
                 bool a = true;
@@ -1091,7 +1091,7 @@ namespace _4._0
                     i++;
                 }
 
-                var gr = _newForm.AddAnalogGraphic("code" + i, i, "Аналог " + k, "an", "real", null, null, "???");
+                var gr = _newForm.AddAnalogGraphic("code" + i, i, "Аналог " + k, "an", "real", 0, null, "???");
 
                 bool a = ((_newForm.AnalogGraphicCount % 2) != 0);
 
@@ -1117,7 +1117,7 @@ namespace _4._0
                 else
                 {
                     _xF = false;
-                    gr.AddValue(_newForm.TimeBegin, 1234567890, 0);
+                    gr.AddValue(_newForm.TimeBegin, 0, 0);
                 }
 
                 //gr.ReDrawStep(newForm.TimeBegin, newForm.TimeBegin.AddHours(1));
@@ -1162,6 +1162,78 @@ namespace _4._0
             }
         }
 
+        private void butLoadVedTest_Click(object sender, EventArgs e)
+        {
+            const string vedFile = @"C:\InfoTask\Debug\AnalyzerInfoTask\Наборы\Гр2\Ved\Н1_Линейная.accdb";
+
+            var testForm = new FormGraphic();
+            //testForm.Init(new DateTime(2018, 10, 25), new DateTime(2018, 10, 25, 8, 0, 0));
+            string errMes = testForm.InitVed(vedFile);
+            if (string.IsNullOrEmpty(errMes))
+            {
+                testForm.Show();
+
+                //testForm.ViewTimeBegin = new DateTime(2018, 10, 20, 12, 0, 0);
+                //testForm.ViewTimeBegin = new DateTime(2018, 10, 22, 12, 0, 0);
+                //testForm.ViewTimeEnd = new DateTime(2018, 10, 22, 12, 0, 0);
+                testForm.ViewTimeEnd = new DateTime(2018, 10, 20, 12, 0, 0);
+            }
+            else
+                MessageBox.Show(errMes);
+        }
+
+        private void butSaveState_Click(object sender, EventArgs e)
+        {
+            if (_newForm != null)
+            {
+                var res = _newForm.SaveState(@"C:\InfoTask\Debug\AnalyzerInfoTask\Наборы\Гр2\Ved\Н1_Линейная.accdb");
+                if (res != "") MessageBox.Show(res);
+            }
+            else MessageBox.Show(@"Нетути!");
+        }
+
+        private void butLoadState_Click(object sender, EventArgs e)
+        {
+            bool fg = false;
+            if (_newForm == null) fg = true;
+            else if (_newForm.IsDisposed) fg = true;
+
+            if (fg) _newForm = new FormGraphic();
+            var res = _newForm.LoadState(@"C:\InfoTask\Debug\AnalyzerInfoTask\Наборы\Гр2\Ved\Н1_Линейная.accdb");
+            if (res == "")
+                _newForm.Show();
+            else
+                MessageBox.Show(res);
+        }
+
+        private void butSetDB_Click(object sender, EventArgs e)
+        {
+            if (_newForm != null)
+            {
+                const string dbString = @"C:\InfoTask\Debug\AnalyzerInfoTask\Наборы\Гр2\Ved\Н1_Линейная.accdb";
+                _newForm.SetDatabase("Access", dbString);
+            }
+        }
+
+        private void butTestVizir_Click(object sender, EventArgs e)
+        {
+            if (_newForm != null)
+            {
+                MessageBox.Show(_newForm.VizirTime.ToString( ));
+            }
+            else MessageBox.Show("Нетути!");
+        }
+
+        private void butEnableDeleteGraphic_Click(object sender, EventArgs e)
+        {
+            if (_newForm != null) _newForm.EnableGraphicDelete = !_newForm.EnableGraphicDelete;
+        }
+
+        private void butVisibleSaveState_Click(object sender, EventArgs e)
+        {
+            if (_newForm != null) _newForm.VisibleSaveState = !_newForm.VisibleSaveState;
+        }
+        
         //private void buton14_Click(object sender, EventArgs e)
         //{
         //    DateTime sp = DateTime.Now.AddMinutes(-10);

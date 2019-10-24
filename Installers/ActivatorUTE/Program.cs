@@ -20,6 +20,9 @@ namespace ActivatorUTE
             newKey.SetValue("rr", "&уHy*x,uщ", RegistryValueKind.String);
             newKey.SetValue("rm", "sДщи[Uй,r", RegistryValueKind.String);
             newKey.SetValue("rv", "sДщи[Uй,r", RegistryValueKind.String);
+            newKey.SetValue("ri", "цgЪк]И>lр", RegistryValueKind.String);
+            newKey.SetValue("pm", "t«2WиZоэc", RegistryValueKind.String);
+            newKey.SetValue("ai", "Я=РIЪBЦ9«", RegistryValueKind.String);
         }
     }
 }

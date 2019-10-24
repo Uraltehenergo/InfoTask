@@ -11,10 +11,11 @@ namespace GraphicLibrary
     public abstract class Graphic
     {
         protected enum EDrawState { No, AllDots, DotsInInterval, SelectedDots }
-        /* No - график не отрисован
-         * AllPts - отрисованы все точки графика
-         * PtsInInterval - отрисованы все точки графика в заданном интервале
-         * SelectedPts - график отрисован с процедурой проряжения
+        /* Состояние отрисовки графика
+           No - график не отрисован
+           AllPts - отрисованы все точки графика
+           PtsInInterval - отрисованы все точки графика в заданном интервале
+           SelectedPts - график отрисован с процедурой проряжения
          */
 
     #region Prop
@@ -206,36 +207,38 @@ namespace GraphicLibrary
                     _minViewValue = (double)Param.OutMin;
                     _maxViewValue = (double)Param.OutMax;
                 }
-
-                if (Param.OutMin > Param.OutMax)
+                else if (Param.OutMin > Param.OutMax)
                 {
                     _minViewValue = (double)Param.OutMax;
                     _maxViewValue = (double)Param.OutMin;
                 }
-
-                _minViewValue = (double)Param.OutMin - 1;
-                _maxViewValue = (double)Param.OutMax + 1;
+                else
+                {
+                    _minViewValue = (double)Param.OutMin - 1;
+                    _maxViewValue = (double)Param.OutMax + 1;
+                }
             }
             else if (Param.OutMin != null)
             {
                 double min = MinValue ?? 0;
                 double max = MaxValue ?? 0;
 
-                if (max > Param.OutMin)
+                if (max >= Param.OutMin)
                 {
                     _minViewValue = (double)Param.OutMin;
                     if (max > 0)
-                        _maxViewValue = max + (max - MinViewValue) * 0.1;
-                    else
+                        _maxViewValue = max + (max - _minViewValue) * 0.1;
+                    else if (max < 0)
                         _maxViewValue = 0;
+                    else _maxViewValue = 1;
                 }
-                else
+                else if (max < Param.OutMin)
                 {
-                    _maxViewValue = (double)Param.OutMin;
+                    _maxViewValue = (double)Param.OutMin; 
                     if (min > 0)
                         _minViewValue = 0;
                     else
-                        _minViewValue = min - (MaxViewValue - min) * 0.1;
+                        _minViewValue = min - (_maxViewValue - min) * 0.1;
                 }
             }
             else if (Param.OutMax != null)
@@ -243,19 +246,20 @@ namespace GraphicLibrary
                 double min = MinValue ?? 0;
                 double max = MaxValue ?? 0;
 
-                if (min < Param.OutMax)
+                if (min <= Param.OutMax)
                 {
                     _maxViewValue = (double)Param.OutMax;
                     if (min > 0)
                         _minViewValue = 0;
-                    else
-                        _minViewValue = min - (MaxViewValue - min) * 0.1;
+                    else if (min < 0)
+                        _minViewValue = min - (_maxViewValue - min) * 0.1;
+                    else _minViewValue = -1;
                 }
                 else
                 {
                     _minViewValue = (double)Param.OutMax;
                     if (max > 0)
-                        _maxViewValue = max + (max - MinViewValue) * 0.1;
+                        _maxViewValue = max + (max - _minViewValue) * 0.1;
                     else
                         _maxViewValue = 0;
                 }
@@ -272,8 +276,8 @@ namespace GraphicLibrary
                 if (min < 0) min = min - (max - min) * 0.1;
                 if (min == max)
                 {
-                    min = -1;
-                    max = 1;
+                    min -= 1;
+                    max += 1;
                 }
 
                 _minViewValue = min;

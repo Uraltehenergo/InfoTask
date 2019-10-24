@@ -43,7 +43,8 @@ namespace Calculation
             {
                 try
                 {
-                    _source.Dispose();
+                    if (_source != null) //ban 22.01.2019
+                        _source.Dispose();
                     UpdateHistory(false);
                     CloseHistory();
                     _isClosed = true;

@@ -24,7 +24,9 @@
     <SuppressPdbOutput>True</SuppressPdbOutput>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AnalyzerMain.wxs" />
+    <Compile Include="AnalyzerMain.wxs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUIExtension">

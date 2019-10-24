@@ -15,7 +15,7 @@ namespace Calculation
             LastParam = project.CalcSubParamsId[sid];
             DataType = rec.GetString("DataType").ToDataType();
             ArchiveParam = new ArchiveParam(rec.GetString("FullCode"), DataType, rec.GetString("Units"), FirstParam, LastParam,
-                                                                    rec.GetString("SuperProcessType").ToSuperProcess(), rec.GetInt("DecPlaces", -1), rec.GetDouble("Min"), rec.GetDouble("Max"));
+                                                                    rec.GetString("SuperProcessType").ToSuperProcess(), rec.GetInt("DecPlaces", -1), rec.GetDoubleNull("Min"), rec.GetDoubleNull("Max")); //ab 12.04.2019 в Min и Max было rec.GetDouble
             _saveAbsolute = ArchiveParam.SuperProcess.IsAbsolute();
             _savePeriodic = ArchiveParam.SuperProcess.IsPeriodic();
         }
