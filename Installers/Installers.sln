@@ -72,6 +72,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "LogikaDriver", "LogikaDrive
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "KvintDriver", "KvintDriver\KvintDriver.wixproj", "{18308021-4EA3-41B2-82FF-BB83F895D4F8}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AlphaDriver", "AlphaDriver\AlphaDriver.wixproj", "{3E1B3B26-43A0-4868-967E-425DEACE7149}"
+EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "RasInfoTask", "SetupProject1\RasInfoTask.wixproj", "{134F7C74-57B4-44D9-9BF0-E0A3F8244EE7}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "ProjectManager", "ProjectManager\ProjectManager.wixproj", "{F5497C6D-CEE7-4326-AD8C-68B2438D9C43}"

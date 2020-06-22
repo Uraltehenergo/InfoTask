@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControllerMonitor", "Contro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvidersKvint", "ProvidersKvint\ProvidersKvint.csproj", "{1DB0B216-8E03-4ED6-AB6D-5D444D6E33A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProvidersAlpha", "ProvidersAlpha\ProvidersAlpha.csproj", "{64817A23-37DD-440A-BCDE-ED67017FA747}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuneService", "TuneService\TuneService.csproj", "{D0AE66C5-70DF-4AF5-9A3E-C136B33F11A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProviderOvation", "TestProviderOvation\TestProviderOvation.csproj", "{2617E211-EAD8-4321-BD86-0E1768C33706}"

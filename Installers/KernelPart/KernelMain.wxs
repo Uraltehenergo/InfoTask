@@ -102,7 +102,7 @@
     <DirectoryRef Id="Templates">
       <Component Id="TemplatesPart1" Guid="AE583D10-03B5-4B59-ACD9-BFB25B05BEF0">
         <File Id="AnalyzerVedTemplateaccdb" Name="AnalyzerVedTemplate.accdb"
-											Source="..\..\Release\General\AnalyzerVedTemplate.accdb"	Vital="yes" DiskId="1" />
+											Source="..\..\Release\General\Templates\AnalyzerVedTemplate.accdb"	Vital="yes" DiskId="1" />
       </Component>
     </DirectoryRef>
     
