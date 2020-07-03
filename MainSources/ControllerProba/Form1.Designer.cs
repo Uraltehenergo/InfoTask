@@ -55,6 +55,7 @@
             this.GenGrammars = new System.Windows.Forms.Button();
             this.ButIndex = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
+            this.ButAlpha = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -244,7 +245,6 @@
             this.Crypted.Name = "Crypted";
             this.Crypted.Size = new System.Drawing.Size(215, 20);
             this.Crypted.TabIndex = 19;
-            this.Crypted.TextChanged += new System.EventHandler(this.Crypted_TextChanged);
             // 
             // ButClone
             // 
@@ -341,11 +341,22 @@
             this.button12.UseVisualStyleBackColor = true;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
+            // ButAlpha
+            // 
+            this.ButAlpha.Location = new System.Drawing.Point(247, 449);
+            this.ButAlpha.Name = "ButAlpha";
+            this.ButAlpha.Size = new System.Drawing.Size(168, 48);
+            this.ButAlpha.TabIndex = 29;
+            this.ButAlpha.Text = "Альфа";
+            this.ButAlpha.UseVisualStyleBackColor = true;
+            this.ButAlpha.Click += new System.EventHandler(this.ButAlpha_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(804, 513);
+            this.ClientSize = new System.Drawing.Size(804, 618);
+            this.Controls.Add(this.ButAlpha);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.ButIndex);
             this.Controls.Add(this.GenGrammars);
@@ -409,5 +420,6 @@
         private System.Windows.Forms.Button GenGrammars;
         private System.Windows.Forms.Button ButIndex;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button ButAlpha;
     }
 }

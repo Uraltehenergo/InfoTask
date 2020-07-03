@@ -139,7 +139,7 @@ namespace ProvidersAlpha
         //Подготовка источника перед расчетом
         public void Prepare() { }
 
-        //Условие отбора по списку имен сигналов
+        //Условие отбора по списку NodeId сигналов
         private string GetSignalsConditionString()
         {
             var builder = new StringBuilder(" IN (");
@@ -177,6 +177,7 @@ namespace ProvidersAlpha
                     {
                         var sig = _signalsById[Convert.ToInt32(rec["NodeId"])];
                         DateTime time = Convert.ToDateTime(rec["Time"]);
+                        time = time.ToLocalTime();
                         switch (sig.DataType)
                         {
                             case DataType.Boolean:

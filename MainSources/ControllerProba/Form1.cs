@@ -313,9 +313,7 @@ namespace ControllerProba
 
         private void button11_Click(object sender, EventArgs e)
         {
-            //Crypted.Text = Crypting.Encrypt("true");
-           //Crypted.Text = Crypting.Decrypt("t«2WиZоэc");
-            Crypted.Text = Crypting.Encrypt("false");
+            Crypted.Text = Crypting.Encrypt("true");
         }
 
         private void butSubstring_Click(object sender, EventArgs e)
@@ -391,9 +389,15 @@ namespace ControllerProba
             var rec = new RecDao(db, "CalcParams");
         }
 
-        private void Crypted_TextChanged(object sender, EventArgs e)
+        private void ButAlpha_Click(object sender, EventArgs e)
         {
-
+            var r = new SourceReader();
+            r.RunSource("AlphaRegulSource", "Source", "DataSource=PostgreSQL35W;SERVER=localhost;PORT=5432;DATABASE=postgres;UID=postgres;PWD=1");
+            r.ClearSignals();
+            r.AddSignal("NR_T4.AI1.AI01.OUT.VALUE", "действ", "nodeid=130");
+            r.ReadValues(new DateTime(2020, 7, 3, 18, 30, 0));
+            r.ReadValues(new DateTime(2020, 7, 3, 18, 50, 0));
+            r.Close();
         }
     }
 }
